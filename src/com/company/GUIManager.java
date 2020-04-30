@@ -6,7 +6,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class GUIManager{
-
     private JFrame frame;
     private Dimension size;
     private LeftRequestList left;

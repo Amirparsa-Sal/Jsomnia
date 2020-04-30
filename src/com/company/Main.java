@@ -16,6 +16,7 @@ public class Main {
     javax.swing.UIManager$LookAndFeelInfo[Windows Classic com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel]
      */
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
+        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         GUIManager guiManager = new GUIManager(new Dimension(800,600),"Jsomnia");
         guiManager.showGUI();
     }
