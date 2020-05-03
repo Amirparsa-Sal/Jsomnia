@@ -27,9 +27,9 @@ public class GUIManager{
         frame.getLayeredPane().add(center,2);
     }
     public void showGUI(){
-        left.addToReqList(RequestMethod.GET,"FirstTry");
-        left.addToReqList(RequestMethod.POST,"SecondTry");
-        left.addToReqList(RequestMethod.DELETE,"ThirdTry");
+        left.addToReqList(new Request("FirstTry",RequestMethod.GET));
+        left.addToReqList(new Request("SecondTry",RequestMethod.POST));
+        left.addToReqList(new Request("ThirdTry",RequestMethod.DELETE));
         frame.setVisible(true);
         frame.addComponentListener(new ComponentAdapter() {
             @Override

@@ -79,7 +79,7 @@ public class RequestDialog extends JFrame {
         public void actionPerformed(ActionEvent e) {
             String requestName = requestNameField.getText();
             String requestMethod = ((String) requestMethodBox.getSelectedItem());
-            leftBar.addToReqList(RequestMethod.valueOf(requestMethod), requestName);
+            leftBar.addToReqList(new Request(requestName, RequestMethod.valueOf(requestMethod)));
             clear();
             setVisible(false);
         }

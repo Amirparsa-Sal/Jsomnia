@@ -8,13 +8,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class LeftRequestList extends JPanel {
 
     private boolean isFiltered;
     private Dimension size;
-    private ArrayList<JPanel> filteredRequestPanels;
-    private ArrayList<JPanel> allRequestPanels;
+    private LinkedHashMap<JPanel,Request> filteredRequestPanels;
+    private LinkedHashMap<JPanel,Request> allRequestPanels;
     private JButton newRequest;
     private JButton filterButton;
     private JButton resetButton;
@@ -34,8 +35,8 @@ public class LeftRequestList extends JPanel {
 //        this.setBorder(new LineBorder(new Color(85,85,85),1));
         this.size = size;
         this.bgColor = bgColor;
-        allRequestPanels = new ArrayList<>();
-        filteredRequestPanels = new ArrayList<>();
+        allRequestPanels = new LinkedHashMap<>();
+        filteredRequestPanels = new LinkedHashMap<>();
         Color requestDialogColor = new Color(bgColor.getRed() - 20, bgColor.getGreen() - 20, bgColor.getBlue() - 20);
         requestDialog = new RequestDialog(0, 0, new Dimension(270, 120), requestDialogColor, this);
         this.mother = mother;
@@ -77,19 +78,19 @@ public class LeftRequestList extends JPanel {
         this.add(resetButton);
     }
 
-    public void addToReqList(RequestMethod requestMethod, String requestName) {
+    public void addToReqList(Request request) {
         isFiltered = false;
         JPanel newRequestPanel = new JPanel();
         newRequestPanel.setBackground(bgColor);
-        JLabel requestMethodLabel = new JLabel(requestMethod.toString());
-        JLabel requestNameLabel = new JLabel(requestName);
+        JLabel requestMethodLabel = new JLabel(request.getRequestMethod().toString());
+        JLabel requestNameLabel = new JLabel(request.getName());
         requestMethodLabel.setForeground(Color.WHITE);
         requestNameLabel.setForeground(Color.WHITE);
         requestMethodLabel.setAlignmentX(SwingConstants.LEFT);
         requestNameLabel.setAlignmentX(SwingConstants.RIGHT);
         newRequestPanel.add(requestMethodLabel);
         newRequestPanel.add(requestNameLabel);
-        allRequestPanels.add(newRequestPanel);
+        allRequestPanels.put(newRequestPanel,request);
         this.reArrange();
         this.add(newRequestPanel);
         newRequestPanel.addMouseListener(new MouseAdapter() {
@@ -114,14 +115,16 @@ public class LeftRequestList extends JPanel {
         resetButton.setBounds(size.width / 2, 3 * size.height / 25, size.width / 2, size.height / 25);
         if (!isFiltered) {
             recoveryPanels();
-            for (int i = allRequestPanels.size() - 1; i >= 0; i--) {
-                int j = allRequestPanels.size() - 1 - i;
-                allRequestPanels.get(i).setBounds(0, (4 + j) * size.height / 25, size.width, size.height / 25);
+            ArrayList<JPanel> requestKeys = new ArrayList<>(allRequestPanels.keySet());
+            for (int i = requestKeys.size() - 1; i >= 0; i--) {
+                int j = requestKeys.size() - 1 - i;
+                requestKeys.get(i).setBounds(0, (4 + j) * size.height / 25, size.width, size.height / 25);
             }
         } else {
-            for (int i = filteredRequestPanels.size() - 1; i >= 0; i--) {
-                int j = filteredRequestPanels.size() - 1 - i;
-                filteredRequestPanels.get(i).setBounds(0, (4 + j) * size.height / 25, size.width, size.height / 25);
+            ArrayList<JPanel> filteredkeys = new ArrayList<>(filteredRequestPanels.keySet());
+            for (int i = filteredkeys.size() - 1; i >= 0; i--) {
+                int j = filteredkeys.size() - 1 - i;
+                filteredkeys.get(i).setBounds(0, (4 + j) * size.height / 25, size.width, size.height / 25);
             }
         }
     }
@@ -129,11 +132,11 @@ public class LeftRequestList extends JPanel {
     public void filterRequests(String search) {
         removeRequestPanels();
         filteredRequestPanels.clear();
-        for (JPanel jPanel : allRequestPanels) {
+        for (JPanel jPanel : allRequestPanels.keySet()) {
             JLabel methodLabel = (JLabel) jPanel.getComponent(0);
             JLabel nameLabel = (JLabel) jPanel.getComponent(1);
             if (methodLabel.getText().toLowerCase().contains(search.toLowerCase()) || nameLabel.getText().toLowerCase().contains(search.toLowerCase())) {
-                filteredRequestPanels.add(jPanel);
+                filteredRequestPanels.put(jPanel,allRequestPanels.get(jPanel));
                 this.add(jPanel);
             }
         }
@@ -150,7 +153,7 @@ public class LeftRequestList extends JPanel {
 
     private void recoveryPanels() {
         removeRequestPanels();
-        for (JPanel jPanel : allRequestPanels)
+        for (JPanel jPanel : allRequestPanels.keySet())
             this.add(jPanel);
         this.revalidate();
         this.repaint();
