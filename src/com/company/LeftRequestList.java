@@ -1,6 +1,7 @@
 package com.company;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,21 +25,23 @@ public class LeftRequestList extends JPanel {
     private JFrame mother;
 
     public LeftRequestList(int x, int y, Dimension size, Color bgColor, JFrame mother) {
+        super();
         //init panel
         isFiltered = false;
         this.setLayout(null);
         this.setBounds(x, y, size.width, size.height);
         this.setBackground(bgColor);
+//        this.setBorder(new LineBorder(new Color(85,85,85),1));
         this.size = size;
         this.bgColor = bgColor;
         allRequestPanels = new ArrayList<>();
         filteredRequestPanels = new ArrayList<>();
-        requestDialog = new RequestDialog(x + 200, y, new Dimension(270, 90), bgColor, this);
-        mother.getLayeredPane().add(requestDialog, 2);
+        Color requestDialogColor = new Color(bgColor.getRed() - 20, bgColor.getGreen() - 20, bgColor.getBlue() - 20);
+        requestDialog = new RequestDialog(0, 0, new Dimension(270, 120), requestDialogColor, this);
         this.mother = mother;
         //init title
         title = new JLabel("Jsomnia", SwingConstants.CENTER);
-        title.setBackground(Color.BLUE);
+        title.setBackground(new Color(0, 0, 95));
         title.setForeground(Color.WHITE);
         title.setOpaque(true);
         //init request button
@@ -109,7 +112,6 @@ public class LeftRequestList extends JPanel {
         filterField.setBounds(0, 2 * size.height / 25, size.width, size.height / 25);
         filterButton.setBounds(0, 3 * size.height / 25, size.width / 2, size.height / 25);
         resetButton.setBounds(size.width / 2, 3 * size.height / 25, size.width / 2, size.height / 25);
-        requestDialog.setBounds(x + 200, y, 270, 90);
         if (!isFiltered) {
             recoveryPanels();
             for (int i = allRequestPanels.size() - 1; i >= 0; i--) {
@@ -166,6 +168,8 @@ public class LeftRequestList extends JPanel {
         public void actionPerformed(ActionEvent e) {
             isFiltered = true;
             filterRequests(filterField.getText());
+            System.out.println(((JButton)e.getSource()).getText());
+
         }
     }
 

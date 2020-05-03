@@ -1,11 +1,12 @@
 package com.company;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class RequestDialog extends JPanel {
+public class RequestDialog extends JFrame {
 
     private Color bgcolor;
     private JLabel description;
@@ -16,10 +17,12 @@ public class RequestDialog extends JPanel {
     private LeftRequestList leftBar;
 
     public RequestDialog(int x, int y, Dimension size, Color bgcolor, LeftRequestList leftBar) {
+        super();
         this.leftBar = leftBar;
         //init window
-        this.setBounds(x, y, size.width, size.height);
         this.setLayout(null);
+        this.setSize(size.width+6,size.height+35);
+        this.setResizable(false);
         this.setBackground(bgcolor);
         this.bgcolor = bgcolor;
         //init Description
@@ -34,7 +37,7 @@ public class RequestDialog extends JPanel {
             if (requestMethod != RequestMethod.UNKNOWN)
                 requestMethodBox.addItem(requestMethod.toString());
         requestMethodBox.setBackground(bgcolor);
-        requestMethodBox.setForeground(Color.WHITE);
+
         requestMethodBox.setBounds(0, size.height / 3, size.width / 3, size.height / 3);
         //init Text Field
         requestNameField = new JTextField("Request name");
@@ -54,15 +57,15 @@ public class RequestDialog extends JPanel {
         cancelButton.setOpaque(true);
         cancelButton.setBackground(new Color(125, 0, 0));
         cancelButton.setForeground(Color.WHITE);
-        cancelButton.setBounds(size.width / 2, size.height * 2 / 3, size.width / 2, size.height / 3);
+        cancelButton.setBounds(size.width / 2, size.height* 2 / 3, size.width / 2, size.height / 3);
         cancelButton.addActionListener(new CancelListener());
         //show
+        this.setVisible(false);
         this.add(this.description);
-        this.add(requestNameField);
         this.add(requestMethodBox);
+        this.add(requestNameField);
         this.add(okButton);
         this.add(cancelButton);
-        this.setVisible(false);
     }
 
     private void clear() {
