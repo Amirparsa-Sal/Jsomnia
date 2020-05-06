@@ -14,7 +14,7 @@ public class CenterPanel extends JPanel {
     private JButton sendButton;
     private JButton saveButton;
     private JTabbedPane tabs;
-    
+    private BodyPanel bodyPanel;
 
     public CenterPanel(int x, int y, Dimension size, Color bgColor, JFrame mother) {
         super();
@@ -39,8 +39,9 @@ public class CenterPanel extends JPanel {
         saveButton = new JButton("Save");
         //tabs
         tabs = new JTabbedPane();
-        tabs.addTab("Body",null);
-        tabs.addTab("Headers",null);
+        bodyPanel = new BodyPanel(bgColor,new Dimension(size.width,size.height-50));
+        tabs.addTab("Body",bodyPanel);
+        tabs.addTab("Headers",new JPanel()); //needs to be completed
         //add items
         this.add(requestMethodBox);
         this.add(urlField);
@@ -57,6 +58,8 @@ public class CenterPanel extends JPanel {
         urlField.setBounds(width/6,0,width*3/6,40);
         sendButton.setBounds(width*4/6,0,width/6,40);
         saveButton.setBounds(width*5/6,0,width/6,40);
-        tabs.setBounds(0,50,width,height-50);
+        tabs.setBounds(1,50,width-1,height-50);
+        bodyPanel.setSize(width,height-50);
+        bodyPanel.reArrange();
     }
 }
