@@ -81,17 +81,27 @@ public class LeftRequestList extends JPanel {
     public void addToReqList(Request request) {
         isFiltered = false;
         JPanel newRequestPanel = new JPanel();
+        newRequestPanel.setLayout(null);
         newRequestPanel.setBackground(bgColor);
         JLabel requestMethodLabel = new JLabel(request.getRequestMethod().toString());
         JLabel requestNameLabel = new JLabel(request.getName());
+        JButton deleteButton = new JButton("×");
         requestMethodLabel.setForeground(Color.WHITE);
         requestNameLabel.setForeground(Color.WHITE);
-        requestMethodLabel.setAlignmentX(SwingConstants.LEFT);
-        requestNameLabel.setAlignmentX(SwingConstants.RIGHT);
+        requestNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteButton.setBackground(Color.RED);
+        deleteButton.setForeground(Color.WHITE);
+        deleteButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        deleteButton.addActionListener(new DeleteButtonListener());
+        deleteButton.setFocusable(false);
         newRequestPanel.add(requestMethodLabel);
         newRequestPanel.add(requestNameLabel);
+        newRequestPanel.add(deleteButton);
         allRequestPanels.put(newRequestPanel,request);
         this.reArrange();
+        requestMethodLabel.setBounds(newRequestPanel.getWidth()/12,0,newRequestPanel.getWidth()/3,newRequestPanel.getHeight());
+        requestNameLabel.setBounds(newRequestPanel.getWidth()*5/12,0,newRequestPanel.getWidth()/2,newRequestPanel.getHeight());
+        deleteButton.setBounds(newRequestPanel.getWidth()*5/6,0,newRequestPanel.getWidth()/5,newRequestPanel.getHeight());
         this.add(newRequestPanel);
         newRequestPanel.addMouseListener(new MouseAdapter() {
             @Override
@@ -108,23 +118,23 @@ public class LeftRequestList extends JPanel {
 
     public void reArrange() {
         int x = getX(), y = getY();
-        title.setBounds(0, 0, size.width, size.height / 25);
-        newRequest.setBounds(0, size.height / 25, size.width, size.height / 25);
-        filterField.setBounds(0, 2 * size.height / 25, size.width, size.height / 25);
-        filterButton.setBounds(0, 3 * size.height / 25, size.width / 2, size.height / 25);
-        resetButton.setBounds(size.width / 2, 3 * size.height / 25, size.width / 2, size.height / 25);
+        title.setBounds(0, 0, size.width, size.height / 24);
+        newRequest.setBounds(0, size.height / 24, size.width, size.height / 24);
+        filterField.setBounds(0, 2 * size.height / 24, size.width, size.height / 24);
+        filterButton.setBounds(0, 3 * size.height / 24, size.width / 2, size.height / 24);
+        resetButton.setBounds(size.width / 2, 3 * size.height / 24, size.width / 2, size.height / 24);
         if (!isFiltered) {
             recoveryPanels();
             ArrayList<JPanel> requestKeys = new ArrayList<>(allRequestPanels.keySet());
             for (int i = requestKeys.size() - 1; i >= 0; i--) {
                 int j = requestKeys.size() - 1 - i;
-                requestKeys.get(i).setBounds(0, (4 + j) * size.height / 25, size.width, size.height / 25);
+                requestKeys.get(i).setBounds(0, (4 + j) * size.height / 24, size.width, size.height / 24);
             }
         } else {
             ArrayList<JPanel> filteredkeys = new ArrayList<>(filteredRequestPanels.keySet());
             for (int i = filteredkeys.size() - 1; i >= 0; i--) {
                 int j = filteredkeys.size() - 1 - i;
-                filteredkeys.get(i).setBounds(0, (4 + j) * size.height / 25, size.width, size.height / 25);
+                filteredkeys.get(i).setBounds(0, (4 + j) * size.height / 24, size.width, size.height / 24);
             }
         }
     }
@@ -181,6 +191,22 @@ public class LeftRequestList extends JPanel {
         public void actionPerformed(ActionEvent e) {
             isFiltered = false;
             reArrange();
+        }
+    }
+
+    private class DeleteButtonListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel panel = (JPanel) ((JButton) e.getSource()).getParent();
+            allRequestPanels.remove(panel);
+            for (Component jPanel : LeftRequestList.this.getComponents()){
+                if (jPanel.equals(panel)) {
+                    LeftRequestList.this.remove(jPanel);
+                    break;
+                }
+            }
+            LeftRequestList.this.reArrange();
         }
     }
 }
