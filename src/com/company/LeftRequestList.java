@@ -13,7 +13,6 @@ import java.util.LinkedHashMap;
 public class LeftRequestList extends JPanel {
 
     private boolean isFiltered;
-    private Dimension size;
     private LinkedHashMap<JPanel,Request> filteredRequestPanels;
     private LinkedHashMap<JPanel,Request> allRequestPanels;
     private JButton newRequest;
@@ -32,8 +31,6 @@ public class LeftRequestList extends JPanel {
         this.setLayout(null);
         this.setBounds(x, y, size.width, size.height);
         this.setBackground(bgColor);
-//        this.setBorder(new LineBorder(new Color(85,85,85),1));
-        this.size = size;
         this.bgColor = bgColor;
         allRequestPanels = new LinkedHashMap<>();
         filteredRequestPanels = new LinkedHashMap<>();
@@ -117,24 +114,32 @@ public class LeftRequestList extends JPanel {
     }
 
     public void reArrange() {
-        int x = getX(), y = getY();
-        title.setBounds(0, 0, size.width, size.height / 24);
-        newRequest.setBounds(0, size.height / 24, size.width, size.height / 24);
-        filterField.setBounds(0, 2 * size.height / 24, size.width, size.height / 24);
-        filterButton.setBounds(0, 3 * size.height / 24, size.width / 2, size.height / 24);
-        resetButton.setBounds(size.width / 2, 3 * size.height / 24, size.width / 2, size.height / 24);
+        int width = getWidth(), height = getHeight();
+        title.setBounds(0, 0, width, height / 24);
+        newRequest.setBounds(0, height / 24, width, height / 24);
+        filterField.setBounds(0, 2 * height / 24, width, height / 24);
+        filterButton.setBounds(0, 3 * height / 24, width / 2, height / 24);
+        resetButton.setBounds(width / 2, 3 * height / 24, width / 2, height / 24);
         if (!isFiltered) {
             recoveryPanels();
             ArrayList<JPanel> requestKeys = new ArrayList<>(allRequestPanels.keySet());
             for (int i = requestKeys.size() - 1; i >= 0; i--) {
                 int j = requestKeys.size() - 1 - i;
-                requestKeys.get(i).setBounds(0, (4 + j) * size.height / 24, size.width, size.height / 24);
+                JPanel newRequestPanel= requestKeys.get(i);
+                newRequestPanel.setBounds(0, (4 + j) * height / 24, width, height / 24);
+                newRequestPanel.getComponent(0).setBounds(newRequestPanel.getWidth()/12,0,newRequestPanel.getWidth()/3,newRequestPanel.getHeight());
+                newRequestPanel.getComponent(1).setBounds(newRequestPanel.getWidth()*5/12,0,newRequestPanel.getWidth()/2,newRequestPanel.getHeight());
+                newRequestPanel.getComponent(2).setBounds(newRequestPanel.getWidth()*5/6,0,newRequestPanel.getWidth()/5,newRequestPanel.getHeight());
             }
         } else {
             ArrayList<JPanel> filteredkeys = new ArrayList<>(filteredRequestPanels.keySet());
             for (int i = filteredkeys.size() - 1; i >= 0; i--) {
                 int j = filteredkeys.size() - 1 - i;
-                filteredkeys.get(i).setBounds(0, (4 + j) * size.height / 24, size.width, size.height / 24);
+                JPanel newRequestPanel= filteredkeys.get(i);
+                newRequestPanel.setBounds(0, (4 + j) * height / 24, width, height / 24);
+                newRequestPanel.getComponent(0).setBounds(newRequestPanel.getWidth()/12,0,newRequestPanel.getWidth()/3,newRequestPanel.getHeight());
+                newRequestPanel.getComponent(1).setBounds(newRequestPanel.getWidth()*5/12,0,newRequestPanel.getWidth()/2,newRequestPanel.getHeight());
+                newRequestPanel.getComponent(2).setBounds(newRequestPanel.getWidth()*5/6,0,newRequestPanel.getWidth()/5,newRequestPanel.getHeight());
             }
         }
     }

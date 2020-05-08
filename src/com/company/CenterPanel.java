@@ -6,7 +6,6 @@ import java.awt.*;
 
 public class CenterPanel extends JPanel {
 
-    private Dimension size;
     private Color bgColor;
     private JFrame mother;
     private JComboBox requestMethodBox;
@@ -15,11 +14,11 @@ public class CenterPanel extends JPanel {
     private JButton saveButton;
     private JTabbedPane tabs;
     private BodyPanel bodyPanel;
+    private SetHeadersPanel setHeadersPanel;
 
     public CenterPanel(int x, int y, Dimension size, Color bgColor, JFrame mother) {
         super();
         //init
-        this.size = size;
         this.bgColor = bgColor;
         this.mother = mother;
         this.setLayout(null);
@@ -41,7 +40,8 @@ public class CenterPanel extends JPanel {
         tabs = new JTabbedPane();
         bodyPanel = new BodyPanel(bgColor,new Dimension(size.width,size.height-50));
         tabs.addTab("Body",bodyPanel);
-        tabs.addTab("Headers",new JPanel()); //needs to be completed
+        setHeadersPanel = new SetHeadersPanel(bgColor,new Dimension(size.width,size.height-50));
+        tabs.addTab("Headers",setHeadersPanel); //needs to be completed
         //add items
         this.add(requestMethodBox);
         this.add(urlField);
@@ -60,6 +60,8 @@ public class CenterPanel extends JPanel {
         saveButton.setBounds(width*5/6,0,width/6,40);
         tabs.setBounds(1,50,width-1,height-50);
         bodyPanel.setSize(width,height-50);
+        setHeadersPanel.setSize(width,height-50);
         bodyPanel.reArrange();
+        setHeadersPanel.reArrange();
     }
 }

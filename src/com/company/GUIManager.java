@@ -10,7 +10,6 @@ public class GUIManager{
     public static final Color bgColor= new Color(30,30,30);
 
     private JFrame frame;
-    private Dimension size;
     private LeftRequestList left;
     private CenterPanel center;
 
@@ -18,7 +17,6 @@ public class GUIManager{
         super();
         frame = new JFrame(name);
         frame.setSize(size.width,size.height);
-        this.size = size;
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         left = new LeftRequestList(0,0,new Dimension(200,size.height-45),bgColor,frame);
