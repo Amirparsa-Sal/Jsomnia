@@ -41,6 +41,7 @@ public class CenterPanel extends JPanel {
         saveButton = new JButton("Save");
         //second tabs
         setFormDataPanel = new SetHeadersPanel(bgColor,new Dimension(size.width,size.height-50));
+        setFormDataPanel.addHeader("New header", "New value", false, false);
         secondTabs = new JTabbedPane();
         bodyPanel = new BodyPanel(bgColor,new Dimension(size.width,size.height-50),true);
         secondTabs.add("Form data",setFormDataPanel);
@@ -49,6 +50,7 @@ public class CenterPanel extends JPanel {
         tabs = new JTabbedPane();
         tabs.addTab("Body",secondTabs);
         setHeadersPanel = new SetHeadersPanel(bgColor,new Dimension(size.width,size.height-50));
+        setHeadersPanel.addHeader("New header", "New value", false, false);
         tabs.addTab("Headers",setHeadersPanel);
         //add items
         this.add(requestMethodBox);

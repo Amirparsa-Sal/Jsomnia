@@ -1,5 +1,7 @@
 package com.company;
 
+import javafx.scene.input.MouseButton;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -18,11 +20,10 @@ public class SetHeadersPanel extends JPanel {
         this.setLayout(null);
         this.setBackground(bgColor);
         this.setBounds(0, 0, size.width, size.height);
-//        this.addHeader("Header", "Value", true, true);
-        this.addHeader("New header", "New value", false, false);
     }
 
     public void addHeader(String leftText, String rightText, boolean checkBoxVisibility, boolean buttonVisibility) {
+        System.out.println("***");
         Color color = new Color(bgColor.getRed() - 10, bgColor.getGreen() - 10, bgColor.getBlue() - 10);
         JPanel panel = new JPanel();
         panel.setLayout(null);
@@ -45,8 +46,34 @@ public class SetHeadersPanel extends JPanel {
         panel.add(checkBox);
         panel.add(deleteButton);
         panels.add(panel);
-        key.addFocusListener(new TextFocusListener());
-        value.addFocusListener(new TextFocusListener());
+        key.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getButton()== MouseEvent.BUTTON1) {
+                    JPanel panel = ((JPanel) ((JTextField) e.getSource()).getParent());
+                    if (!((JCheckBox) panel.getComponent(2)).isVisible()) {
+                        ((JCheckBox) panel.getComponent(2)).setVisible(true);
+                        ((JButton) panel.getComponent(3)).setVisible(true);
+                        SetHeadersPanel.this.addHeader("New header", "New value", false, false);
+                        SetHeadersPanel.this.reArrange();
+                    }
+                }
+            }
+        });
+        value.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getButton()== MouseEvent.BUTTON1) {
+                    JPanel panel = ((JPanel) ((JTextField) e.getSource()).getParent());
+                    if (!((JCheckBox) panel.getComponent(2)).isVisible()) {
+                        ((JCheckBox) panel.getComponent(2)).setVisible(true);
+                        ((JButton) panel.getComponent(3)).setVisible(true);
+                        SetHeadersPanel.this.addHeader("New header", "New value", false, false);
+                        SetHeadersPanel.this.reArrange();
+                    }
+                }
+            }
+        });
         this.add(panel);
         this.reArrange();
 
@@ -79,24 +106,6 @@ public class SetHeadersPanel extends JPanel {
                 }
             }
             SetHeadersPanel.this.reArrange();
-        }
-    }
-
-    private class TextFocusListener implements FocusListener{
-
-        @Override
-        public void focusGained(FocusEvent e) {
-            JPanel panel = ((JPanel) ((JTextField)e.getSource()).getParent());
-            if(!((JCheckBox)panel.getComponent(2)).isVisible()){
-                ((JCheckBox)panel.getComponent(2)).setVisible(true);
-                ((JButton)panel.getComponent(3)).setVisible(true);
-                SetHeadersPanel.this.addHeader("New header", "New value", false, false);
-                SetHeadersPanel.this.reArrange();
-            }
-        }
-        @Override
-        public void focusLost(FocusEvent e) {
-
         }
     }
 }

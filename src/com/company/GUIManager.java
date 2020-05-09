@@ -13,11 +13,12 @@ public class GUIManager{
     public static final Color bgColor= new Color(30,30,30);
 
     private boolean isFullScreen;
-    private JFrame frame;
     private LeftRequestList left;
     private CenterPanel center;
     private RightResponsePanel right;
     private MenuPanel up;
+    private OptionFrame optionFrame;
+    private JFrame frame;
 
     public GUIManager(Dimension size, String name) throws IOException {
         super();
@@ -30,6 +31,7 @@ public class GUIManager{
         left = new LeftRequestList(0,20,new Dimension(200,size.height-25),bgColor);
         center = new CenterPanel(200,20,new Dimension((size.width-200)/2,size.height-25),bgColor,frame);
         right = new RightResponsePanel(200 + (size.width-200)/2,20,bgColor, new Dimension((size.width-200)/2,size.height-25));
+        optionFrame = new OptionFrame();
         frame.getLayeredPane().add(left,1);
         frame.getLayeredPane().add(center,2);
         frame.getLayeredPane().add(right,3);
@@ -83,5 +85,9 @@ public class GUIManager{
 
     public void setFullScreen(boolean fullScreen) {
         isFullScreen = fullScreen;
+    }
+
+    public OptionFrame getOptionFrame() {
+        return optionFrame;
     }
 }

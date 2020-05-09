@@ -26,6 +26,7 @@ public class MenuPanel extends JMenuBar{
         JMenuItem options = new JMenuItem("Options");
         options.setMnemonic(KeyEvent.VK_O);
         options.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,KeyEvent.CTRL_MASK));
+        options.addActionListener(new OptionsListener());
         JMenuItem exit = new JMenuItem("Exit");
         exit.setMnemonic(KeyEvent.VK_E);
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4,KeyEvent.ALT_MASK));
@@ -55,6 +56,13 @@ public class MenuPanel extends JMenuBar{
         this.add(helpMenu);
     }
 
+    private class OptionsListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            manager.getOptionFrame().setVisible(true);
+        }
+    }
     private class ExitListener implements ActionListener {
 
         @Override
