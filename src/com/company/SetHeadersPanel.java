@@ -15,10 +15,10 @@ public class SetHeadersPanel extends JPanel {
         //init
         panels = new ArrayList<>();
         this.bgColor = bgColor;
-        this.setBackground(bgColor);
         this.setLayout(null);
+        this.setBackground(bgColor);
         this.setBounds(0, 0, size.width, size.height);
-        this.addHeader("Header", "Value", true, true);
+//        this.addHeader("Header", "Value", true, true);
         this.addHeader("New header", "New value", false, false);
     }
 
@@ -33,7 +33,6 @@ public class SetHeadersPanel extends JPanel {
         value.setBackground(color);
         value.setForeground(Color.WHITE);
         JCheckBox checkBox = new JCheckBox("Use");
-        checkBox.setSelected(true);
         checkBox.setVisible(checkBoxVisibility);
         JButton deleteButton = new JButton("×");
         deleteButton.setBackground(Color.RED);
@@ -48,8 +47,8 @@ public class SetHeadersPanel extends JPanel {
         panels.add(panel);
         key.addFocusListener(new TextFocusListener());
         value.addFocusListener(new TextFocusListener());
-        this.reArrange();
         this.add(panel);
+        this.reArrange();
 
     }
 
@@ -87,17 +86,13 @@ public class SetHeadersPanel extends JPanel {
 
         @Override
         public void focusGained(FocusEvent e) {
-            System.out.println("*");
             JPanel panel = ((JPanel) ((JTextField)e.getSource()).getParent());
-            ((JTextField)panel.getComponent(0)).setText("");
-            ((JTextField)panel.getComponent(1)).setText("");
             if(!((JCheckBox)panel.getComponent(2)).isVisible()){
                 ((JCheckBox)panel.getComponent(2)).setVisible(true);
                 ((JButton)panel.getComponent(3)).setVisible(true);
                 SetHeadersPanel.this.addHeader("New header", "New value", false, false);
                 SetHeadersPanel.this.reArrange();
             }
-
         }
         @Override
         public void focusLost(FocusEvent e) {

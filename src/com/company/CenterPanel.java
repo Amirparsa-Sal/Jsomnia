@@ -29,6 +29,7 @@ public class CenterPanel extends JPanel {
         this.setBackground(bgColor);
         //request method box
         requestMethodBox = new JComboBox();
+        ((JLabel)requestMethodBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
         for (RequestMethod requestMethod : RequestMethod.values())
             if (requestMethod != RequestMethod.UNKNOWN)
                 requestMethodBox.addItem(requestMethod.toString());
@@ -41,14 +42,13 @@ public class CenterPanel extends JPanel {
         //second tabs
         setFormDataPanel = new SetHeadersPanel(bgColor,new Dimension(size.width,size.height-50));
         secondTabs = new JTabbedPane();
-        bodyPanel = new BodyPanel(bgColor,new Dimension(size.width,size.height-50));
+        bodyPanel = new BodyPanel(bgColor,new Dimension(size.width,size.height-50),true);
         secondTabs.add("Form data",setFormDataPanel);
         secondTabs.add("JSON",bodyPanel);
         //tabs
         tabs = new JTabbedPane();
         tabs.addTab("Body",secondTabs);
         setHeadersPanel = new SetHeadersPanel(bgColor,new Dimension(size.width,size.height-50));
-
         tabs.addTab("Headers",setHeadersPanel);
         //add items
         this.add(requestMethodBox);
@@ -68,10 +68,10 @@ public class CenterPanel extends JPanel {
         saveButton.setBounds(width*5/6,0,width/6,40);
         tabs.setBounds(1,50,width-1,height-50);
         setFormDataPanel.setSize(width,height-50);
-        bodyPanel.setSize(width,height-50);
+        bodyPanel.setSize(width,height-120);
         setHeadersPanel.setSize(width,height-50);
+        setHeadersPanel.reArrange();
         setFormDataPanel.reArrange();
         bodyPanel.reArrange();
-        setHeadersPanel.reArrange();
     }
 }

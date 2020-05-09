@@ -22,9 +22,8 @@ public class LeftRequestList extends JPanel {
     private JTextField filterField;
     private Color bgColor;
     private RequestDialog requestDialog;
-    private JFrame mother;
 
-    public LeftRequestList(int x, int y, Dimension size, Color bgColor, JFrame mother) {
+    public LeftRequestList(int x, int y, Dimension size, Color bgColor) {
         super();
         //init panel
         isFiltered = false;
@@ -36,7 +35,6 @@ public class LeftRequestList extends JPanel {
         filteredRequestPanels = new LinkedHashMap<>();
         Color requestDialogColor = new Color(bgColor.getRed() - 20, bgColor.getGreen() - 20, bgColor.getBlue() - 20);
         requestDialog = new RequestDialog(0, 0, new Dimension(270, 120), requestDialogColor, this);
-        this.mother = mother;
         //init title
         title = new JLabel("Jsomnia", SwingConstants.CENTER);
         title.setBackground(new Color(0, 0, 95));
