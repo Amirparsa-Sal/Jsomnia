@@ -213,4 +213,3 @@ public class LeftRequestList extends JPanel {
         }
     }
 }
-

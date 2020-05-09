@@ -17,7 +17,7 @@ public class WebPreviewPanel extends JPanel {
         this.setLayout(null);
         this.setBounds(0,0,size.width,size.height);
         //web viewer
-        webViewer = new JEditorPane("http://www.google.co.uk");
+        webViewer = new JEditorPane();
         webViewer.setEditable(false);
         //scroll
         scrollPane = new JScrollPane(webViewer);
