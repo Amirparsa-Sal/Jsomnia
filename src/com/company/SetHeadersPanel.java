@@ -1,17 +1,18 @@
 package com.company;
 
-import javafx.scene.input.MouseButton;
-
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import javax.xml.bind.SchemaOutputResolver;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class SetHeadersPanel extends JPanel {
 
     private ArrayList<JPanel> panels;
     private Color bgColor;
+    private JScrollPane scrollPane;
+    private JPanel headersPanel;
 
     public SetHeadersPanel(Color bgColor, Dimension size) {
         //init
@@ -20,17 +21,27 @@ public class SetHeadersPanel extends JPanel {
         this.setLayout(null);
         this.setBackground(bgColor);
         this.setBounds(0, 0, size.width, size.height);
+        headersPanel = new JPanel();
+        headersPanel.setLayout(new BoxLayout(headersPanel, BoxLayout.PAGE_AXIS));
+        headersPanel.setBackground(bgColor);
+        scrollPane = new JScrollPane();
+        scrollPane.getViewport().add(headersPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.getViewport().setBackground(bgColor);
+        this.add(scrollPane);
+        headersPanel.setBounds(10,10,size.width-20,size.height-90);
+        scrollPane.setBounds(10,10,size.width-20,size.height-90);
     }
 
     public void addHeader(String leftText, String rightText, boolean checkBoxVisibility, boolean buttonVisibility) {
-        System.out.println("***");
         Color color = new Color(bgColor.getRed() - 10, bgColor.getGreen() - 10, bgColor.getBlue() - 10);
         JPanel panel = new JPanel();
-        panel.setLayout(null);
-        JTextField key = new JTextField(leftText);
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        panel.setLayout(new BoxLayout(panel,BoxLayout.LINE_AXIS));
+        JTextField key = new JTextField(leftText,10);
         key.setBackground(color);
         key.setForeground(Color.WHITE);
-        JTextField value = new JTextField(rightText);
+        JTextField value = new JTextField(rightText,10);
         value.setBackground(color);
         value.setForeground(Color.WHITE);
         JCheckBox checkBox = new JCheckBox("Use");
@@ -46,6 +57,7 @@ public class SetHeadersPanel extends JPanel {
         panel.add(checkBox);
         panel.add(deleteButton);
         panels.add(panel);
+        headersPanel.add(panel);
         key.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -55,7 +67,6 @@ public class SetHeadersPanel extends JPanel {
                         ((JCheckBox) panel.getComponent(2)).setVisible(true);
                         ((JButton) panel.getComponent(3)).setVisible(true);
                         SetHeadersPanel.this.addHeader("New header", "New value", false, false);
-                        SetHeadersPanel.this.reArrange();
                     }
                 }
             }
@@ -69,27 +80,25 @@ public class SetHeadersPanel extends JPanel {
                         ((JCheckBox) panel.getComponent(2)).setVisible(true);
                         ((JButton) panel.getComponent(3)).setVisible(true);
                         SetHeadersPanel.this.addHeader("New header", "New value", false, false);
-                        SetHeadersPanel.this.reArrange();
                     }
                 }
             }
         });
-        this.add(panel);
         this.reArrange();
 
     }
 
-    public void reArrange() {
-        int i = 0;
-        for (JPanel panel : panels) {
-            panel.setBounds(10, 10 + getHeight() * i / 20, getWidth() - 20, getHeight() / 20);
-            panel.getComponent(0).setBounds(0, 0, panel.getWidth() / 3, panel.getHeight());
-            panel.getComponent(1).setBounds(panel.getWidth() / 3, 0, panel.getWidth() / 3, panel.getHeight());
-            panel.getComponent(2).setBounds(panel.getWidth() * 2 / 3, 0, panel.getWidth() / 6, panel.getHeight());
-            panel.getComponent(3).setBounds(panel.getWidth() * 5 / 6, 0, panel.getWidth() / 6, panel.getHeight());
-            i++;
-        }
 
+    public void reArrange() {
+        int width = getWidth(), height = getHeight();
+        headersPanel.setBounds(10,10,width-20,height-90);
+        scrollPane.setBounds(10,10,width-20,height-90);
+        int i=0;
+        for (JPanel panel : panels) {
+            panel.setMaximumSize(new Dimension(width,height / 20));
+            panel.setMinimumSize(new Dimension(width,height / 20));
+            panel.setLocation(0,height * i /20);
+        }
     }
 
     private class DeleteButtonListener implements ActionListener {
@@ -99,12 +108,7 @@ public class SetHeadersPanel extends JPanel {
             JPanel panel = ((JPanel) ((JButton) e.getSource()).getParent());
             panel.requestFocus();
             panels.remove(panel);
-            for (Component jPanel : SetHeadersPanel.this.getComponents()) {
-                if (jPanel.equals(panel)) {
-                    SetHeadersPanel.this.remove(jPanel);
-                    break;
-                }
-            }
+            headersPanel.remove(panel);
             SetHeadersPanel.this.reArrange();
         }
     }

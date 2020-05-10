@@ -1,7 +1,6 @@
 package com.company;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,8 +32,7 @@ public class LeftRequestList extends JPanel {
         this.bgColor = bgColor;
         allRequestPanels = new LinkedHashMap<>();
         filteredRequestPanels = new LinkedHashMap<>();
-        Color requestDialogColor = new Color(bgColor.getRed() - 20, bgColor.getGreen() - 20, bgColor.getBlue() - 20);
-        requestDialog = new RequestDialog(0, 0, new Dimension(270, 120), requestDialogColor, this);
+        requestDialog = new RequestDialog(0, 0, new Dimension(270, 120), bgColor, this);
         //init title
         title = new JLabel("Jsomnia", SwingConstants.CENTER);
         title.setBackground(new Color(0, 0, 95));
@@ -47,6 +45,7 @@ public class LeftRequestList extends JPanel {
         newRequest.setOpaque(true);
         newRequest.setFocusable(false);
         newRequest.addActionListener(new NewRequestListener());
+        newRequest.setMnemonic('n');
         //init filter text field
         filterField = new JTextField("Filter");
         filterField.setBackground(Color.DARK_GRAY);
@@ -175,6 +174,7 @@ public class LeftRequestList extends JPanel {
     private class NewRequestListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            requestDialog.setLocation(GUIManager.screenSize.width/2-requestDialog.getWidth()/2,GUIManager.screenSize.height/2-requestDialog.getHeight()/2);
             requestDialog.setVisible(true);
         }
     }

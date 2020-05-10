@@ -18,7 +18,7 @@ public class Main {
      */
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, IOException {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-        GUIManager guiManager = new GUIManager(new Dimension(1000,800),"Jsomnia");
+        GUIManager guiManager = GUIManager.getInstance();
         guiManager.showGUI();
     }
 }
