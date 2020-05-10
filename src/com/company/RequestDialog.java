@@ -11,7 +11,7 @@ public class RequestDialog extends JFrame {
     private Color bgcolor;
     private JLabel description;
     private JTextField requestNameField;
-    private JComboBox<String> requestMethodBox;
+    private JComboBox requestMethodBox;
     private JButton okButton;
     private JButton cancelButton;
     private LeftRequestList leftBar;
@@ -32,12 +32,13 @@ public class RequestDialog extends JFrame {
         this.description.setBackground(bgcolor);
         this.description.setForeground(Color.WHITE);
         //init box
-        requestMethodBox = new JComboBox<String>();
+        requestMethodBox = new JComboBox();
+        ((JLabel)requestMethodBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
         for (RequestMethod requestMethod : RequestMethod.values())
-            if (requestMethod != RequestMethod.UNKNOWN)
+            if (requestMethod != RequestMethod.UNKNOWN) {
                 requestMethodBox.addItem(requestMethod.toString());
+            }
         requestMethodBox.setBackground(bgcolor);
-
         requestMethodBox.setBounds(0, size.height / 3, size.width / 3, size.height / 3);
         //init Text Field
         requestNameField = new JTextField("Request name");

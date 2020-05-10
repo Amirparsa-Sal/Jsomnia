@@ -64,7 +64,7 @@ public class RightResponsePanel extends JPanel{
         statusLabel.setBounds(10,0,width/6,40);
         timeLabel.setBounds(width/6 + 20,0,width/6,40);
         sizeLabel.setBounds(width*2/6 + 30,0,width/6,40);
-        tabs.setBounds(10,50,width,height-40);
+        tabs.setBounds(10,50,width-20,height-60);
         rawTextPanel.reArrange();
         webViewer.reArrange();
         headersTablePanel.reArrange();

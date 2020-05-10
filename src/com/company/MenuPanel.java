@@ -41,6 +41,7 @@ public class MenuPanel extends JMenuBar{
         JCheckBoxMenuItem toggleSidebar = new JCheckBoxMenuItem("Toggle Sidebar");
         toggleSidebar.setMnemonic(KeyEvent.VK_T);
         toggleSidebar.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T,KeyEvent.CTRL_MASK));
+        toggleSidebar.addActionListener(new ToggleSideListener());
         JCheckBoxMenuItem toggleFullScreen = new JCheckBoxMenuItem("Toggle Full Screen");
         toggleFullScreen.setMnemonic(KeyEvent.VK_F);
         toggleFullScreen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_MASK));
@@ -81,6 +82,14 @@ public class MenuPanel extends JMenuBar{
         }
     }
 
+    private class ToggleSideListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GUIManager.getInstance().setToggleSide(!GUIManager.getInstance().isToggleSide());
+            GUIManager.getInstance().reArrange();
+        }
+    }
     private class FullScreenListener implements ActionListener {
 
         @Override
@@ -88,6 +97,8 @@ public class MenuPanel extends JMenuBar{
             JFrame frame = new JFrame("Jsomnia");
             JFrame motherFrame = manager.getFrame();
             frame.setLayeredPane(motherFrame.getLayeredPane());
+            manager.setFrame(frame);
+            manager.initFrame();
             if(!manager.isFullScreen()){
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 frame.setUndecorated(true);
@@ -97,10 +108,8 @@ public class MenuPanel extends JMenuBar{
                 frame.setSize(1000,800);
                 manager.setFullScreen(false);
             }
-            manager.setFrame(frame);
             manager.showGUI();
             motherFrame.dispose();
-            motherFrame = frame;
             int jOptionPane;
             manager.reArrange();
             if(manager.isFullScreen()) {

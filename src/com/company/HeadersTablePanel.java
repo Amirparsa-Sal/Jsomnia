@@ -54,8 +54,8 @@ public class HeadersTablePanel extends JPanel{
 
     public void reArrange(){
         int width = getWidth(), height = getHeight();
-        scrollPane.setBounds(10,10,width-40,height-120);
         saveToClipButton.setBounds(width/4,height-110,width/2,60);
+        scrollPane.setBounds(10,10,width-40,height-120);
     }
 
     public void addRow(String name, String value){

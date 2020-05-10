@@ -1,7 +1,6 @@
 package com.company;
 
 import javax.swing.*;
-import javax.swing.plaf.PopupMenuUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -14,6 +13,7 @@ public class GUIManager{
     public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     private boolean isFullScreen;
+    private boolean isToggleSide;
     private LeftRequestList left;
     private CenterPanel center;
     private RightResponsePanel right;
@@ -27,10 +27,19 @@ public class GUIManager{
         return instance;
     }
 
+    public boolean isToggleSide() {
+        return isToggleSide;
+    }
+
+    public void setToggleSide(boolean toggleSide) {
+        isToggleSide = toggleSide;
+    }
+
     private GUIManager(){
         super();
         Dimension size = new Dimension(1000,800);
         isFullScreen = false;
+        isToggleSide = false;
         frame = new JFrame("Jsomnia");
         frame.setSize(size.width,size.height);
         frame.setLayout(null);
@@ -48,6 +57,65 @@ public class GUIManager{
         frame.getLayeredPane().add(center,2);
         frame.getLayeredPane().add(right,3);
         frame.getLayeredPane().add(up,4);
+        this.initFrame();
+    }
+
+
+    public void showGUI(){
+        frame.setLocation(screenSize.width/2 - frame.getWidth()/2,screenSize.height/2 - frame.getHeight()/2);
+        frame.setVisible(true);
+    }
+
+    public void reArrange(){
+        up.setBounds(0,0,frame.getWidth(),20);
+        if(isToggleSide()){
+            left.setVisible(false);
+            if(!isFullScreen()) {
+                center.setBounds(0, 20, frame.getWidth() / 2, frame.getHeight() - 45);
+                right.setBounds(frame.getWidth()/ 2, 20, frame.getWidth() / 2 - 20, frame.getHeight() - 45);
+            }
+            else{
+                center.setBounds(0, 20, frame.getWidth()/ 2, frame.getHeight());
+                right.setBounds( frame.getWidth()/ 2 , 20, frame.getWidth() / 2 , frame.getHeight());
+            }
+        }
+        else {
+            left.setVisible(true);
+            if (!isFullScreen()) {
+                left.setBounds(0, 20, 200, frame.getHeight() - 45);
+                center.setBounds(200, 20, (frame.getWidth() - 200) / 2, frame.getHeight() - 45);
+                right.setBounds(200 + (frame.getWidth() - 200) / 2, 20, (frame.getWidth() - 200) / 2 - 20, frame.getHeight() - 45);
+            } else {
+                left.setBounds(0, 20, 200, frame.getHeight());
+                center.setBounds(200, 20, (frame.getWidth() - 200) / 2, frame.getHeight());
+                right.setBounds(200 + (frame.getWidth() - 200) / 2, 20, (frame.getWidth() - 200) / 2, frame.getHeight());
+            }
+        }
+        left.reArrange();
+        center.reArrange();
+        right.reArrange();
+    }
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public void setFrame(JFrame frame) {
+        this.frame = frame;
+    }
+
+    public boolean isFullScreen() {
+        return isFullScreen;
+    }
+
+    public void setFullScreen(boolean fullScreen) {
+        isFullScreen = fullScreen;
+    }
+
+    public OptionFrame getOptionFrame() {
+        return optionFrame;
+    }
+
+    public void initFrame(){
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -92,59 +160,19 @@ public class GUIManager{
                     frame.setVisible(true);
             }
         });
-    }
-
-    public void showGUI(){
-        frame.setLocation(screenSize.width/2 - frame.getWidth()/2,screenSize.height/2 - frame.getHeight()/2);
-        frame.setVisible(true);
+        frame.addWindowStateListener(new WindowStateListener() {
+            @Override
+            public void windowStateChanged(WindowEvent e) {
+                if (e.getNewState() == JFrame.MAXIMIZED_BOTH) {
+                    reArrange();
+                }
+            }
+        });
         frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 reArrange();
             }
         });
-        frame.addWindowStateListener(new WindowStateListener() {
-            @Override
-            public void windowStateChanged(WindowEvent e) {
-                if (e.getNewState() == JFrame.MAXIMIZED_BOTH)
-                    reArrange();
-            }
-        });
-    }
-
-    public void reArrange(){
-        up.setBounds(0,0,frame.getWidth(),20);
-        if(!isFullScreen()) {
-            left.setBounds(0, 20, 200, frame.getHeight() - 45);
-            center.setBounds(200, 20, (frame.getWidth() - 200) / 2, frame.getHeight() - 45);
-            right.setBounds(200 + (frame.getWidth() - 200) / 2, 20, (frame.getWidth() - 200) / 2 - 20, frame.getHeight() - 45);
-        }
-        else{
-            left.setBounds(0, 20, 200, frame.getHeight());
-            center.setBounds(200, 20, (frame.getWidth() - 200) / 2, frame.getHeight());
-            right.setBounds(200 + (frame.getWidth() - 200) / 2, 20, (frame.getWidth() - 200) / 2 , frame.getHeight());
-        }
-        left.reArrange();
-        center.reArrange();
-        right.reArrange();
-    }
-    public JFrame getFrame() {
-        return frame;
-    }
-
-    public void setFrame(JFrame frame) {
-        this.frame = frame;
-    }
-
-    public boolean isFullScreen() {
-        return isFullScreen;
-    }
-
-    public void setFullScreen(boolean fullScreen) {
-        isFullScreen = fullScreen;
-    }
-
-    public OptionFrame getOptionFrame() {
-        return optionFrame;
     }
 }
