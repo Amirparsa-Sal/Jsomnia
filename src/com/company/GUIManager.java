@@ -1,8 +1,10 @@
 package com.company;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -37,7 +39,7 @@ public class GUIManager{
 
     private GUIManager(){
         super();
-        Dimension size = new Dimension(1000,800);
+        Dimension size = new Dimension(1200,800);
         isFullScreen = false;
         isToggleSide = false;
         frame = new JFrame("Jsomnia");
@@ -57,6 +59,7 @@ public class GUIManager{
         frame.getLayeredPane().add(center,2);
         frame.getLayeredPane().add(right,3);
         frame.getLayeredPane().add(up,4);
+//        this.showSplashScreen();
         this.initFrame();
     }
 
@@ -113,6 +116,29 @@ public class GUIManager{
 
     public OptionFrame getOptionFrame() {
         return optionFrame;
+    }
+
+    public void showSplashScreen(){
+        JFrame splashScreenFrame = new JFrame();
+        JLabel img = new JLabel();
+        try {
+            BufferedImage bufferedImage = ImageIO.read(new File(new File(".").getAbsolutePath() + "\\Assets\\SplashScreen.png"));
+            img = new JLabel(new ImageIcon(bufferedImage));
+        } catch (IOException e) {
+            System.out.println("Resource not found");
+            System.exit(-1);
+        }
+        splashScreenFrame.add(img);
+        splashScreenFrame.setLocation(screenSize.width/2 - 1000/2,screenSize.height/2 - 384/2);
+        splashScreenFrame.setUndecorated(true);
+        splashScreenFrame.pack();
+        splashScreenFrame.setVisible(true);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        splashScreenFrame.dispose();
     }
 
     public void initFrame(){

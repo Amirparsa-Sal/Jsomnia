@@ -29,7 +29,7 @@ public class WebPreviewPanel extends JPanel {
 
     public void reArrange(){
         int width = getWidth(), height = getHeight();
-        webViewer.setBounds(10,10,width-40,height-40);
-        scrollPane.setBounds(10,10,width-40,height-40);
+        webViewer.setBounds(10,10,width-20,height-20);
+        scrollPane.setBounds(10,10,width-20,height-20);
     }
 }

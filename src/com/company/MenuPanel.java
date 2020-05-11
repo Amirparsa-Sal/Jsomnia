@@ -6,10 +6,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.xml.bind.JAXBPermission;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -86,8 +83,10 @@ public class MenuPanel extends JMenuBar{
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            JFrame frame = GUIManager.getInstance().getFrame();
             GUIManager.getInstance().setToggleSide(!GUIManager.getInstance().isToggleSide());
             GUIManager.getInstance().reArrange();
+            frame.dispatchEvent(new ComponentEvent(frame, ComponentEvent.COMPONENT_RESIZED));
         }
     }
     private class FullScreenListener implements ActionListener {
