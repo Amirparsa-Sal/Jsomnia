@@ -2,21 +2,43 @@ package com.company;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * Represents the right panel of the GUI
+ * @author Amirparsa Salmankhah
+ * @version 1.0.0
+ */
 public class RightResponsePanel extends JPanel{
-
+    //Background color
     private Color bgColor;
+    //Status label
     private JLabel statusLabel;
+    //Time label
     private JLabel timeLabel;
+    //Size label
     private JLabel sizeLabel;
+    //First tabs
     private JTabbedPane tabs;
+    //Second tabs
     private JTabbedPane secondTabs;
+    //Web viewer
     private WebPreviewPanel webViewer;
+    //Raw data panel
     private BodyPanel rawTextPanel;
+    //Headers Panel
     private HeadersTablePanel headersTablePanel;
 
+    /**
+     * Constructor with 4 parameters
+     * @param x x of the panel
+     * @param y y of the panel
+     * @param size size of the panel
+     * @param bgColor Background color of the panel
+     */
     public RightResponsePanel(int x,int y, Color bgColor, Dimension size) throws IOException {
         this.bgColor = bgColor;
         this.setLayout(null);
@@ -50,6 +72,8 @@ public class RightResponsePanel extends JPanel{
         tabs.add("Headers",headersTablePanel);
         secondTabs.add("Raw data",rawTextPanel);
         secondTabs.add("Visual preview",webViewer);
+        tabs.addChangeListener(new TabChangeListener());
+        secondTabs.addChangeListener(new TabChangeListener());
         this.add(statusLabel);
         this.add(timeLabel);
         this.add(sizeLabel);
@@ -58,6 +82,9 @@ public class RightResponsePanel extends JPanel{
         this.reArrange();
     }
 
+    /**
+     * Rearranges the panel
+     */
     public void reArrange(){
         int width=getWidth(), height=getHeight();
         rawTextPanel.setBounds(10,10,width-20,height-120);
@@ -68,5 +95,13 @@ public class RightResponsePanel extends JPanel{
         rawTextPanel.reArrange();
         webViewer.reArrange();
         headersTablePanel.reArrange();
+    }
+
+    private class TabChangeListener implements ChangeListener{
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            GUIManager.getInstance().getFrame().requestFocus();
+        }
     }
 }

@@ -1,21 +1,40 @@
 package com.company;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Represents a class for request dialog
+ * @author Amirparsa Salmankhah
+ * @version 1.0.0
+ */
 public class RequestDialog extends JFrame {
 
+    //Background color
     private Color bgcolor;
+    //Description label
     private JLabel description;
+    //Request name text field
     private JTextField requestNameField;
+    //Request method combo box
     private JComboBox requestMethodBox;
+    //OK Button
     private JButton okButton;
+    //Cancel Button
     private JButton cancelButton;
+    //Left request list
     private LeftRequestList leftBar;
 
+    /**
+     * Constructor with 5 parameter
+     * @param x x of the frame
+     * @param y y of the frame
+     * @param size size of the frame
+     * @param bgcolor Background color of the frame
+     * @param leftBar Left request list
+     */
     public RequestDialog(int x, int y, Dimension size, Color bgcolor, LeftRequestList leftBar) {
         super();
         this.leftBar = leftBar;
@@ -79,10 +98,12 @@ public class RequestDialog extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             String requestName = requestNameField.getText();
-            String requestMethod = ((String) requestMethodBox.getSelectedItem());
-            leftBar.addToReqList(new Request(requestName, RequestMethod.valueOf(requestMethod)));
-            clear();
-            setVisible(false);
+            if(!requestName.equals("")) {
+                String requestMethod = ((String) requestMethodBox.getSelectedItem());
+                leftBar.addToReqList(new Request(requestName, RequestMethod.valueOf(requestMethod)));
+                clear();
+                setVisible(false);
+            }
         }
     }
 

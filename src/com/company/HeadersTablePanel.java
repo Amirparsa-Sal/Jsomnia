@@ -2,7 +2,6 @@ package com.company;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -10,31 +9,45 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class HeadersTablePanel extends JPanel{
+/**
+ * Represents a class for headers panel
+ */
+public class HeadersTablePanel extends JPanel {
 
+    //Background color
     private Color bgColor;
+    //Table of the haeders
     private JTable headersTable;
+    //Scroll
     private JScrollPane scrollPane;
+    //Save to clipboard button
     private JButton saveToClipButton;
+    //Number of rows
     private int numOfRows;
 
-    public HeadersTablePanel(Color bgColor, Dimension size){
+    /**
+     * Constrcutor with 2 paramters
+     *
+     * @param bgColor Background of the panel
+     * @param size    Size of the panel
+     */
+    public HeadersTablePanel(Color bgColor, Dimension size) {
         //init
         numOfRows = 0;
         this.setLayout(null);
         this.bgColor = bgColor;
         this.setBackground(bgColor);
-        this.setBounds(0,0,size.width,size.height);
+        this.setBounds(0, 0, size.width, size.height);
         //table
-        headersTable = new JTable(new DefaultTableModel(null, new Object[]{"Name","Value"})){
+        headersTable = new JTable(new DefaultTableModel(null, new Object[]{"Name", "Value"})) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        this.addRow("Title","Jsomnia");
-        this.addRow("Time","04:25");
-        this.addRow("Mode","Plain Text");
+        this.addRow("Title", "Jsomnia");
+        this.addRow("Time", "04:25");
+        this.addRow("Mode", "Plain Text");
         //scroll
         scrollPane = new JScrollPane(headersTable);
         scrollPane.setBackground(bgColor);
@@ -45,38 +58,38 @@ public class HeadersTablePanel extends JPanel{
         saveToClipButton.setOpaque(false);
         saveToClipButton.setBackground(bgColor);
         saveToClipButton.setForeground(Color.WHITE);
-        saveToClipButton.setBorder(new LineBorder(Color.BLACK,1));
+        saveToClipButton.setBorder(new LineBorder(Color.BLACK, 1));
         saveToClipButton.addActionListener(new ClipboardListener());
         this.reArrange();
         this.add(scrollPane);
         this.add(saveToClipButton);
     }
 
-    public void reArrange(){
+    /**
+     * Rearranges the panel
+     */
+    public void reArrange() {
         int width = getWidth(), height = getHeight();
-        saveToClipButton.setBounds(width/4,height-110,width/2,60);
-        scrollPane.setBounds(10,10,width-20,height-120);
+        saveToClipButton.setBounds(width / 4, height - 110, width / 2, 60);
+        scrollPane.setBounds(10, 10, width - 20, height - 120);
     }
 
-    public void addRow(String name, String value){
-        DefaultTableModel dtm = (DefaultTableModel)headersTable.getModel();
-        dtm.addRow(new Object[]{name,value});
+    private void addRow(String name, String value) {
+        DefaultTableModel dtm = (DefaultTableModel) headersTable.getModel();
+        dtm.addRow(new Object[]{name, value});
         numOfRows++;
     }
 
-    private class ClipboardListener implements ActionListener{
+    private class ClipboardListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             String data = "";
-            for(int i=0;i<numOfRows;i++) {
-                data += headersTable.getValueAt(i,0);
-                data += ": ";
-                data += headersTable.getValueAt(i,1);
-            }
+            for (int i = 0; i < numOfRows; i++)
+                data += headersTable.getValueAt(i, 0) + ": " + headersTable.getValueAt(i, 1) + "\n";
             StringSelection stringSelection = new StringSelection(data);
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection,null);
+            clipboard.setContents(stringSelection, null);
         }
     }
 }

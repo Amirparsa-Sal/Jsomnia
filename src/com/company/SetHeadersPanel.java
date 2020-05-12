@@ -7,13 +7,27 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * Represents a class for setting headers
+ * @author Amirparsa Salmnakhah
+ * @version 1.0.0
+ */
 public class SetHeadersPanel extends JPanel {
 
+    //List OF panels
     private ArrayList<JPanel> panels;
+    //Background color
     private Color bgColor;
+    //Scroll
     private JScrollPane scrollPane;
+    //Panel of panels
     private JPanel headersPanel;
 
+    /**
+     * Constructor with 2 parameters
+     * @param bgColor Background color of the panel
+     * @param size Size of the panel
+     */
     public SetHeadersPanel(Color bgColor, Dimension size) {
         //init
         panels = new ArrayList<>();
@@ -33,10 +47,16 @@ public class SetHeadersPanel extends JPanel {
         scrollPane.setBounds(10,10,size.width-20,size.height-90);
     }
 
+    /**
+     * Adds a header to the list
+     * @param leftText key of the header
+     * @param rightText Value of the header
+     * @param checkBoxVisibility Check box visibility
+     * @param buttonVisibility Delete button visibility
+     */
     public void addHeader(String leftText, String rightText, boolean checkBoxVisibility, boolean buttonVisibility) {
         Color color = new Color(bgColor.getRed() - 10, bgColor.getGreen() - 10, bgColor.getBlue() - 10);
         JPanel panel = new JPanel();
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
         panel.setLayout(new BoxLayout(panel,BoxLayout.LINE_AXIS));
         JTextField key = new JTextField(leftText,10);
         key.setBackground(color);
@@ -88,7 +108,9 @@ public class SetHeadersPanel extends JPanel {
 
     }
 
-
+    /**
+     * Rearranges the panel
+     */
     public void reArrange() {
         int width = getWidth(), height = getHeight();
         headersPanel.setBounds(10,10,width-20,height-90);
