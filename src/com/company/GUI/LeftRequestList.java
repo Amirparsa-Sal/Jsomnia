@@ -1,4 +1,7 @@
-package com.company;
+package com.company.GUI;
+
+import com.company.Logic.Request;
+import com.company.Logic.RequestMethod;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +19,7 @@ public class LeftRequestList extends JPanel {
     //is filtered or not
     private boolean isFiltered;
     //filtered request panels
-    private LinkedHashMap<JPanel,Request> filteredRequestPanels;
+    private LinkedHashMap<JPanel, Request> filteredRequestPanels;
     //all request panels
     private LinkedHashMap<JPanel,Request> allRequestPanels;
     //background color

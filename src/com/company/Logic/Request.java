@@ -1,4 +1,4 @@
-package com.company;
+package com.company.Logic;
 
 import java.util.ArrayList;
 
@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * @version 1.0.0
  */
 public class Request {
+
     //Name of the request
     private String name;
     //URL of the request
@@ -21,6 +22,18 @@ public class Request {
     private boolean responseVisibility;
     //Follow redirection
     private boolean followRedirection;
+    //body
+    private String data;
+    //mode
+    private boolean isJson;
+
+    /**
+     * Constructor with no parameter
+     */
+    public Request() {
+        requestMethod = RequestMethod.UNKNOWN;
+        headers = new ArrayList<>();
+    }
 
     /**
      * Constructor with 2 parameters
@@ -31,6 +44,7 @@ public class Request {
     public Request(String name, RequestMethod requestMethod) {
         this.name = name;
         this.requestMethod = requestMethod;
+        headers = new ArrayList<>();
     }
 
     /**
@@ -141,16 +155,41 @@ public class Request {
         return followRedirection;
     }
 
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public boolean isJson() {
+        return isJson;
+    }
+
+    public void setJson(boolean json) {
+        isJson = json;
+    }
+
     /**
      * Converts the request to a string
      *
      * @return Request string
      */
+
+
     @Override
     public String toString() {
-        String str = "URL: " + url + " | " + "Method: " + requestMethod + " | " + "Headers: ";
+        String str = "name: " + name + "\n" +
+                "url: " + url + "\n" +
+                "Method: " + requestMethod.toString() + "\n" +
+                "response visibility: " + responseVisibility + "\n" +
+                "follow redirect: " + followRedirection + "\n" +
+                "data: " + data + "\n" +
+                "isJson: " + isJson + "\n";
+        str += "Headers: ";
         for (RequestHeader requestHeader : headers)
-            str += requestHeader.toString();
+            str += requestHeader.toString() + " ";
         return str;
     }
 }

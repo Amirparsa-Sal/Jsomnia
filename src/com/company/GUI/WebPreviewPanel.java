@@ -1,4 +1,4 @@
-package com.company;
+package com.company.GUI;
 
 import com.teamdev.jxbrowser.browser.Browser;
 import com.teamdev.jxbrowser.engine.Engine;

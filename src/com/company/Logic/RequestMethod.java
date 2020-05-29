@@ -1,4 +1,4 @@
-package com.company;
+package com.company.Logic;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -11,9 +11,9 @@ public enum RequestMethod {
 
      //Method names hash map
 
-    static HashMap<String,RequestMethod> methodNames;
+    public static HashMap<String,RequestMethod> methodNames;
     //method colors hash map
-    static HashMap<String, Color> colors;
+    public static HashMap<String, Color> colors;
 
     static {
         methodNames = new HashMap<>();

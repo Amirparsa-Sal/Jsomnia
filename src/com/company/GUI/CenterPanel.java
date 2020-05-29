@@ -1,4 +1,6 @@
-package com.company;
+package com.company.GUI;
+
+import com.company.Logic.RequestMethod;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;

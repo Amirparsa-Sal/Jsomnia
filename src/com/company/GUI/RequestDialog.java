@@ -1,4 +1,7 @@
-package com.company;
+package com.company.GUI;
+
+import com.company.Logic.Request;
+import com.company.Logic.RequestMethod;
 
 import javax.swing.*;
 import java.awt.*;
