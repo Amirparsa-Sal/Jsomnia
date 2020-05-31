@@ -5,7 +5,7 @@ import com.company.Logic.Request;
 public class ResponseVisibilityCommand extends Command {
 
     public ResponseVisibilityCommand() {
-        super("-i", null);
+        super("-i", null, CommandType.NON_ARGUMENTAL);
     }
 
     @Override

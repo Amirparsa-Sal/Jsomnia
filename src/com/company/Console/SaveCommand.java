@@ -6,7 +6,7 @@ import com.company.Logic.RequestManager;
 public class SaveCommand extends Command {
 
     public SaveCommand() {
-        super("-S", "--save");
+        super("-S", "--save", CommandType.NON_ARGUMENTAL);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.company.Logic;
 
+import java.io.BufferedOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Represents a class for requests.
@@ -31,7 +33,7 @@ public class Request {
      * Constructor with no parameter
      */
     public Request() {
-        requestMethod = RequestMethod.UNKNOWN;
+        requestMethod = RequestMethod.GET;
         headers = new ArrayList<>();
     }
 
@@ -142,7 +144,7 @@ public class Request {
      *
      * @return true if yes and false if not
      */
-    public boolean isResponseVisibility() {
+    public boolean getResponseVisibility() {
         return responseVisibility;
     }
 
@@ -191,5 +193,23 @@ public class Request {
         for (RequestHeader requestHeader : headers)
             str += requestHeader.toString() + " ";
         return str;
+    }
+
+    public String getContentType(){
+        if(isJson)
+            return "application/json";
+        return "multipart/form-data";
+    }
+
+    public HashMap<String,String> getFormDataPairs(){
+        if(isJson)
+            return null;
+        HashMap<String,String> dataHashMap = new HashMap<>();
+        String[] pairs = data.substring(0,data.length()-1).split("&");
+        for(String pair : pairs){
+            String[] splitedPairs = pair.split("=");
+            dataHashMap.put(splitedPairs[0],splitedPairs[1]);
+        }
+        return dataHashMap;
     }
 }

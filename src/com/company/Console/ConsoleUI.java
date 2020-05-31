@@ -34,8 +34,9 @@ public class ConsoleUI {
         System.out.println(response);
     }
 
-    public void printError(String errorMessage) {
-        System.out.println("Error: " + errorMessage);
+    public void raiseError(String errorMessage) {
+        System.err.print("Error! " + errorMessage);
+        System.exit(-1);
     }
 
     public void printFile(File file) {

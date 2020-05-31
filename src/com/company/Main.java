@@ -3,6 +3,7 @@ package com.company;
 import com.company.Console.*;
 import com.company.GUI.GUIManager;
 import com.company.Logic.Request;
+import com.company.Logic.RequestManager;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class Main {
         OutputCommand oc = new OutputCommand();
         ResponseVisibilityCommand rvc = new ResponseVisibilityCommand();
         SaveCommand sc = new SaveCommand();
+        HelpCommand hp = new HelpCommand();
     }
 
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, IOException {
@@ -35,6 +37,11 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         String command = sc.nextLine();
         Request request = Parser.commandToRequest(command);
-        System.out.println(request);
+        RequestManager.getInstance().sendRequest(request);
+//        System.out.println(request);
+
+//        initCommands();
+//        ConsoleUI console = ConsoleUI.getInstance();
+//        console.ProcessCommand(Parser.strArrToString(args))
     }
 }

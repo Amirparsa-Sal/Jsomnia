@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class OutputCommand extends Command {
 
     public OutputCommand() {
-        super("-O", "--output");
+        super("-O", "--output", CommandType.MULTI_TYPE);
     }
 
     @Override

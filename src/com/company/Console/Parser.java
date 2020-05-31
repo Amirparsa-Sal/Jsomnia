@@ -2,39 +2,55 @@ package com.company.Console;
 
 import com.company.Logic.Request;
 import com.company.Logic.RequestHeader;
-import com.sun.deploy.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
 
-    public static Request commandToRequest(String command) {
+    public static Request commandToRequest(String syntax) {
+        boolean flag = true;
         Request request = new Request();
-        command = removeSpaces(command);
-        String[] splitedCommands = command.split(" ");
-        ArrayList<String> commandList = new ArrayList<>();
-        for (String str : splitedCommands)
-            commandList.add(str);
+        syntax = removeSpaces(syntax);
+        String[] splitedCommands = syntax.split(" ");
+        ArrayList<String> commandList = strArrToArrayList(splitedCommands);
         commandList.add(null);
         for (int i = 0; i < commandList.size() - 1; i++) {
             String arg = commandList.get(i);
+            String nextArg = commandList.get(i+1);
             System.out.println(arg);
-            Pattern pattern = Pattern.compile("((ftp://|http://|https://))?((W|w){3}.)?[a-zA-Z0-9]+[.][a-zA-Z]+(/[a-zA-Z0-9]+)*");
-            Matcher matcher = pattern.matcher(arg);
-            Command commandType = Commands.getInstance().findCommandBySign(arg);
-            if (commandType != null)
-                commandType.execute(commandList.get(i + 1), request);
-            else if (matcher.matches())
+            Command command = Commands.getInstance().findCommandBySign(arg);
+            if (command != null) {
+                if(command.getType() == Command.CommandType.MULTI_TYPE){
+                    if(nextArg==null || nextArg.charAt(0)=='-')
+                        command.execute(null, request);
+                    else{
+                        command.execute(nextArg, request);
+                        i++;
+                    }
+                }
+                else if(command.getType()== Command.CommandType.ARGUMENTAL){
+                    if(nextArg==null || nextArg.charAt(0)=='-')
+                        ConsoleUI.getInstance().raiseError("Invalid syntax: " + arg + " must take parameters");
+                    else{
+                        command.execute(nextArg, request);
+                        i++;
+                    }
+                }
+                else
+                    command.execute(null, request);
+            }
+            else if (isMatch(arg,"((ftp://|http://|https://))?((W|w){3}.)?[a-zA-Z0-9.]+[.][a-zA-Z]+(/[a-zA-Z0-9]+)*"))
                 request.setUrl(commandList.get(i));
+            else
+                ConsoleUI.getInstance().raiseError("Invalid syntax: " + arg + " is not defined");
         }
         return request;
     }
 
     public static ArrayList<RequestHeader> splitHeaders(String headers) {
-        if (headers.charAt(0) != '"' || headers.charAt(headers.length() - 1) != '"')
-            return null;
         ArrayList<RequestHeader> list = new ArrayList<>();
         String[] headersList = headers.substring(1, headers.length() - 1).split(";");
         for (String str : headersList) {
@@ -54,9 +70,29 @@ public class Parser {
                 check = !check;
             if (c != ' ')
                 newStr += c;
-            else if (c == ' ' && check)
+            else if (check)
                 newStr += c;
         }
         return newStr;
     }
+
+    public static boolean isMatch(String str, String regex){
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(str);
+        return matcher.matches();
+    }
+
+    public static ArrayList<String> strArrToArrayList(String[] strArr){
+        ArrayList<String> strings = new ArrayList<>();
+        Collections.addAll(strings, strArr);
+        return strings;
+    }
+
+    public static String strArrToString(String[] strArr){
+        String newStr = "";
+        for(String str : strArr)
+            newStr += str;
+        return newStr;
+    }
 }
+

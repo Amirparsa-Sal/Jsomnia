@@ -5,7 +5,7 @@ import com.company.Logic.Request;
 public class FollowRedirectCommand extends Command {
 
     public FollowRedirectCommand() {
-        super("-f", null);
+        super("-f", null, CommandType.NON_ARGUMENTAL);
     }
 
     @Override
