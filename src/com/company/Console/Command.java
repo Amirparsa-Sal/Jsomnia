@@ -30,5 +30,5 @@ public abstract class Command {
         return type;
     }
 
-    public abstract boolean execute(String arg, Request request);
+    public abstract void execute(String arg, Request request);
 }

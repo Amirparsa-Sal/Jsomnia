@@ -1,6 +1,5 @@
 package com.company.Logic;
 
-import java.io.BufferedOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,6 +11,9 @@ import java.util.HashMap;
  */
 public class Request {
 
+    public enum BodyType{
+        FORM_DATA, JSON, BINARY_FILE, UNKNOWN;
+    }
     //Name of the request
     private String name;
     //URL of the request
@@ -26,14 +28,15 @@ public class Request {
     private boolean followRedirection;
     //body
     private String data;
-    //mode
-    private boolean isJson;
+    //body type
+    private BodyType bodyType;
 
     /**
      * Constructor with no parameter
      */
     public Request() {
         requestMethod = RequestMethod.GET;
+        bodyType = BodyType.UNKNOWN;
         headers = new ArrayList<>();
     }
 
@@ -46,6 +49,7 @@ public class Request {
     public Request(String name, RequestMethod requestMethod) {
         this.name = name;
         this.requestMethod = requestMethod;
+        bodyType = BodyType.UNKNOWN;
         headers = new ArrayList<>();
     }
 
@@ -153,7 +157,7 @@ public class Request {
      *
      * @return true if yes and false if not
      */
-    public boolean isFollowRedirection() {
+    public boolean getFollowRedirection() {
         return followRedirection;
     }
 
@@ -165,12 +169,12 @@ public class Request {
         this.data = data;
     }
 
-    public boolean isJson() {
-        return isJson;
+    public BodyType getBodyType() {
+        return bodyType;
     }
 
-    public void setJson(boolean json) {
-        isJson = json;
+    public void setBodyType(BodyType bodyType) {
+        this.bodyType = bodyType;
     }
 
     /**
@@ -188,7 +192,7 @@ public class Request {
                 "response visibility: " + responseVisibility + "\n" +
                 "follow redirect: " + followRedirection + "\n" +
                 "data: " + data + "\n" +
-                "isJson: " + isJson + "\n";
+                "body type: " + bodyType.toString() + "\n";
         str += "Headers: ";
         for (RequestHeader requestHeader : headers)
             str += requestHeader.toString() + " ";
@@ -196,20 +200,23 @@ public class Request {
     }
 
     public String getContentType(){
-        if(isJson)
+        if(bodyType == BodyType.JSON)
             return "application/json";
+        else if(bodyType == BodyType.BINARY_FILE)
+            return "application/octet-stream";
         return "multipart/form-data";
     }
 
     public HashMap<String,String> getFormDataPairs(){
-        if(isJson)
-            return null;
-        HashMap<String,String> dataHashMap = new HashMap<>();
-        String[] pairs = data.substring(0,data.length()-1).split("&");
-        for(String pair : pairs){
-            String[] splitedPairs = pair.split("=");
-            dataHashMap.put(splitedPairs[0],splitedPairs[1]);
+        if(bodyType == BodyType.FORM_DATA) {
+            HashMap<String, String> dataHashMap = new HashMap<>();
+            String[] pairs = data.substring(0, data.length() - 1).split("&");
+            for (String pair : pairs) {
+                String[] splitedPairs = pair.split("=");
+                dataHashMap.put(splitedPairs[0], splitedPairs[1]);
+            }
+            return dataHashMap;
         }
-        return dataHashMap;
+        return null;
     }
 }

@@ -9,8 +9,7 @@ public class FollowRedirectCommand extends Command {
     }
 
     @Override
-    public boolean execute(String arg, Request request) {
+    public void execute(String arg, Request request) {
         request.setFollowRedirection(true);
-        return true;
     }
 }

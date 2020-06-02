@@ -12,15 +12,12 @@ public class HeadersCommand extends Command {
     }
 
     @Override
-    public boolean execute(String arg, Request request) {
+    public void execute(String arg, Request request) {
         if (arg == null)
-            return true;
-        if(!Parser.isMatch(arg,"\\\"([a-zA-Z0-9]+:[a-zA-Z0-9]+;)*([a-zA-Z0-9]+:[a-zA-Z0-9]+)\\\"")) {
+            return;
+        if(!Parser.isMatch(arg,"\\\"([a-zA-Z0-9]+:[a-zA-Z0-9]+;)*([a-zA-Z0-9]+:[a-zA-Z0-9]+)\\\""))
             ConsoleUI.getInstance().raiseError("Please right the headers in correct form[example: \"key1:value1;key2:value2\"]");
-            return false;
-        }
         ArrayList<RequestHeader> headers = Parser.splitHeaders(arg);
         request.setHeaders(headers);
-        return true;
     }
 }

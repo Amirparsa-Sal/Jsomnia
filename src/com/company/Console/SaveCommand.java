@@ -10,8 +10,7 @@ public class SaveCommand extends Command {
     }
 
     @Override
-    public boolean execute(String arg, Request request) {
+    public void execute(String arg, Request request) {
         RequestManager.getInstance().setSaveRequest(true);
-        return true;
     }
 }

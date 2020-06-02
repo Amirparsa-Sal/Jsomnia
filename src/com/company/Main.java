@@ -27,6 +27,7 @@ public class Main {
         ResponseVisibilityCommand rvc = new ResponseVisibilityCommand();
         SaveCommand sc = new SaveCommand();
         HelpCommand hp = new HelpCommand();
+        UploadCommand uc = new UploadCommand();
     }
 
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, IOException {

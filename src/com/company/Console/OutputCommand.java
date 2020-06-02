@@ -13,14 +13,15 @@ public class OutputCommand extends Command {
     }
 
     @Override
-    public boolean execute(String arg, Request request) {
+    public void execute(String arg, Request request) {
         RequestManager.getInstance().setOutput(true);
+        if(arg.charAt(0)!='\"' || arg.charAt(arg.length()-1)!='\"')
+            ConsoleUI.getInstance().raiseError("Please place the --upload arguments in double quotes.");
         if (arg == null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
             LocalDateTime time = LocalDateTime.now();
             RequestManager.getInstance().setOutputName("output_[" + formatter.format(time) + "]");
         } else
-            RequestManager.getInstance().setOutputName(arg);
-        return true;
+            RequestManager.getInstance().setOutputName(arg.substring(1,arg.length()-1));
     }
 }

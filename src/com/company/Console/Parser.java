@@ -20,7 +20,6 @@ public class Parser {
         for (int i = 0; i < commandList.size() - 1; i++) {
             String arg = commandList.get(i);
             String nextArg = commandList.get(i+1);
-            System.out.println(arg);
             Command command = Commands.getInstance().findCommandBySign(arg);
             if (command != null) {
                 if(command.getType() == Command.CommandType.MULTI_TYPE){
@@ -42,7 +41,7 @@ public class Parser {
                 else
                     command.execute(null, request);
             }
-            else if (isMatch(arg,"((ftp://|http://|https://))?((W|w){3}.)?[a-zA-Z0-9.]+[.][a-zA-Z]+(/[a-zA-Z0-9]+)*"))
+            else if (isMatch(arg,"((ftp://|http://|https://))?((W|w){3}.)?[a-zA-Z0-9.\\-_]+[.][a-zA-Z]+(/[a-zA-Z0-9.\\-_]+)*\\??(?:&?[^=&]*=[^=&]*)*"))
                 request.setUrl(commandList.get(i));
             else
                 ConsoleUI.getInstance().raiseError("Invalid syntax: " + arg + " is not defined");
@@ -52,6 +51,9 @@ public class Parser {
 
     public static ArrayList<RequestHeader> splitHeaders(String headers) {
         ArrayList<RequestHeader> list = new ArrayList<>();
+        System.out.println(headers);
+        if(headers.equals("\"\""))
+            return list;
         String[] headersList = headers.substring(1, headers.length() - 1).split(";");
         for (String str : headersList) {
             int index = str.indexOf(':');
