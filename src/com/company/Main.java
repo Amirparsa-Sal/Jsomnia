@@ -1,7 +1,6 @@
 package com.company;
 
 import com.company.Console.*;
-import com.company.GUI.GUIManager;
 import com.company.Logic.Request;
 import com.company.Logic.RequestManager;
 
@@ -39,10 +38,9 @@ public class Main {
         String command = sc.nextLine();
         Request request = Parser.commandToRequest(command);
         RequestManager.getInstance().sendRequest(request);
-//        System.out.println(request);
 
 //        initCommands();
 //        ConsoleUI console = ConsoleUI.getInstance();
-//        console.ProcessCommand(Parser.strArrToString(args))
+//        console.ProcessCommand(Parser.strArrToString(args));
     }
 }

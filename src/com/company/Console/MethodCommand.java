@@ -7,7 +7,7 @@ import com.company.Logic.RequestMethod;
 public class MethodCommand extends Command {
 
     public MethodCommand() {
-        super("-M", "--method",CommandType.ARGUMENTAL);
+        super("-M", "--method", CommandType.ARGUMENTAL);
     }
 
     @Override

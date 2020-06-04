@@ -1,7 +1,6 @@
 package com.company.Logic;
 
 import com.company.Console.ConsoleUI;
-import sun.misc.IOUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -12,9 +11,8 @@ import java.util.List;
 
 public class RequestManager {
 
-    private final String BOUNDARY = "--JSOMNIA--BOUNDARY";
     public static RequestManager instance = null;
-
+    private final String BOUNDARY = "--JSOMNIA--BOUNDARY";
     private boolean saveRequest = false;
     private boolean output = false;
     private String outputName;
@@ -64,7 +62,6 @@ public class RequestManager {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(request.getRequestMethod().toString());
             connection.setInstanceFollowRedirects(request.getFollowRedirection());
-            System.out.println(request.getContentType());
             connection.setRequestProperty("Content-Type", request.getContentType() + "; boundary=" + BOUNDARY);
             for (RequestHeader requestHeader : request.getHeaders())
                 connection.setRequestProperty(requestHeader.getKey(), requestHeader.getValue());
@@ -77,11 +74,10 @@ public class RequestManager {
                 showResponseHeaders(connection);
             BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
 
-            if(output) {
+            if (output) {
                 saveOutput(bufferedInputStream);
                 System.out.println("Response body saved in " + outputName);
-            }
-            else{
+            } else {
                 byte[] bytes = new byte[1024];
                 int n = 0;
                 String response = "";
@@ -95,8 +91,8 @@ public class RequestManager {
             }
         } catch (FileNotFoundException e) {
             try {
-                if (connection.getResponseCode() == 404)
-                    ConsoleUI.getInstance().raiseError("Cannot " + request.getRequestMethod().toString() + " this page(404 Not Found)!");
+                if (connection.getResponseCode() / 100 == 4)
+                    ConsoleUI.getInstance().raiseError("Cannot " + request.getRequestMethod().toString() + " this page(" + connection.getResponseMessage() + ")!");
                 else
                     showResponseHeaders(connection);
             } catch (IOException ex) {
@@ -104,6 +100,15 @@ public class RequestManager {
             }
         } catch (UnknownHostException e) {
             ConsoleUI.getInstance().raiseError("Cannot resolve host name! check the website address or your internet connection and try again!");
+        } catch (IOException e) {
+            try {
+                if (connection.getResponseCode() / 100 == 4)
+                    ConsoleUI.getInstance().raiseError("Cannot " + request.getRequestMethod().toString() + " this page(" + connection.getResponseMessage() + ")!");
+                else
+                    showResponseHeaders(connection);
+            } catch (IOException ex) {
+                ConsoleUI.getInstance().raiseError("Cannot " + request.getRequestMethod().toString() + " this page!");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -133,7 +138,7 @@ public class RequestManager {
                 }
             }
             bufferedOutputStream.write(("--" + BOUNDARY + "--\r\n").getBytes());
-        } else if (request.getBodyType() == Request.BodyType.BINARY_FILE){
+        } else if (request.getBodyType() == Request.BodyType.BINARY_FILE) {
             File file = new File(request.getData());
             BufferedInputStream newBuffer = new BufferedInputStream(new FileInputStream(file));
             byte[] bytes = new byte[(int) file.length()]; //needs to be completed
@@ -157,7 +162,7 @@ public class RequestManager {
         System.out.println();
     }
 
-    private void saveOutput(BufferedInputStream bufferedInputStream){
+    private void saveOutput(BufferedInputStream bufferedInputStream) {
         BufferedOutputStream bufferedOutputStream = null;
         File file = new File(outputName);
         try {
@@ -171,8 +176,7 @@ public class RequestManager {
             bufferedOutputStream.close();
         } catch (FileNotFoundException e) {
             ConsoleUI.getInstance().raiseError("Cannot create the file :(");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ConsoleUI.getInstance().raiseError("Cannot create the file :(");
         }
 

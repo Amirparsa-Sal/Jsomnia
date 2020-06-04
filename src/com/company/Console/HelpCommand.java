@@ -1,11 +1,8 @@
 package com.company.Console;
 
 import com.company.Logic.Request;
-import com.company.Logic.RequestManager;
 
-import java.io.Console;
-
-public class HelpCommand extends Command{
+public class HelpCommand extends Command {
 
     public HelpCommand() {
         super("-h", "--help", Command.CommandType.NON_ARGUMENTAL);

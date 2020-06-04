@@ -12,36 +12,32 @@ public class Parser {
 
     public static Request commandToRequest(String syntax) {
         boolean flag = true;
+        syntax = syntax.trim();
         Request request = new Request();
-        syntax = removeSpaces(syntax);
-        String[] splitedCommands = syntax.split(" ");
-        ArrayList<String> commandList = strArrToArrayList(splitedCommands);
+        ArrayList<String> commandList = splitCommand(syntax);
         commandList.add(null);
         for (int i = 0; i < commandList.size() - 1; i++) {
             String arg = commandList.get(i);
-            String nextArg = commandList.get(i+1);
+            String nextArg = commandList.get(i + 1);
             Command command = Commands.getInstance().findCommandBySign(arg);
             if (command != null) {
-                if(command.getType() == Command.CommandType.MULTI_TYPE){
-                    if(nextArg==null || nextArg.charAt(0)=='-')
+                if (command.getType() == Command.CommandType.MULTI_TYPE) {
+                    if (nextArg == null || nextArg.charAt(0) == '-')
                         command.execute(null, request);
-                    else{
+                    else {
                         command.execute(nextArg, request);
                         i++;
                     }
-                }
-                else if(command.getType()== Command.CommandType.ARGUMENTAL){
-                    if(nextArg==null || nextArg.charAt(0)=='-')
+                } else if (command.getType() == Command.CommandType.ARGUMENTAL) {
+                    if (nextArg == null || nextArg.charAt(0) == '-')
                         ConsoleUI.getInstance().raiseError("Invalid syntax: " + arg + " must take parameters");
-                    else{
+                    else {
                         command.execute(nextArg, request);
                         i++;
                     }
-                }
-                else
+                } else
                     command.execute(null, request);
-            }
-            else if (isMatch(arg,"((ftp://|http://|https://))?((W|w){3}.)?[a-zA-Z0-9.\\-_]+[.][a-zA-Z]+(/[a-zA-Z0-9.\\-_]+)*\\??(?:&?[^=&]*=[^=&]*)*"))
+            } else if (isMatch(arg, "((http://|https://))?((W|w){3}.)?[a-zA-Z0-9.\\-_]+[.][a-zA-Z]+(/[a-zA-Z0-9.\\-_]+)*\\??(?:&?[^=&]*=[^=&]*)*"))
                 request.setUrl(commandList.get(i));
             else
                 ConsoleUI.getInstance().raiseError("Invalid syntax: " + arg + " is not defined");
@@ -52,13 +48,13 @@ public class Parser {
     public static ArrayList<RequestHeader> splitHeaders(String headers) {
         ArrayList<RequestHeader> list = new ArrayList<>();
         System.out.println(headers);
-        if(headers.equals("\"\""))
+        if (headers.equals("\"\""))
             return list;
         String[] headersList = headers.substring(1, headers.length() - 1).split(";");
         for (String str : headersList) {
             int index = str.indexOf(':');
-            list.add(new RequestHeader(str.substring(0, index), str.substring(index + 1, str.length())));
-            System.out.println(str.substring(0, index) + " " + str.substring(index + 1, str.length()));
+            list.add(new RequestHeader(str.substring(0, index), str.substring(index + 1)));
+            System.out.println(str.substring(0, index) + " " + str.substring(index + 1));
         }
         return list;
     }
@@ -78,23 +74,39 @@ public class Parser {
         return newStr;
     }
 
-    public static boolean isMatch(String str, String regex){
+    public static boolean isMatch(String str, String regex) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();
     }
 
-    public static ArrayList<String> strArrToArrayList(String[] strArr){
+    public static ArrayList<String> strArrToArrayList(String[] strArr) {
         ArrayList<String> strings = new ArrayList<>();
         Collections.addAll(strings, strArr);
         return strings;
     }
 
-    public static String strArrToString(String[] strArr){
+    public static String strArrToString(String[] strArr) {
         String newStr = "";
-        for(String str : strArr)
+        for (String str : strArr)
             newStr += str;
         return newStr;
     }
-}
 
+    private static ArrayList<String> splitCommand(String syntax) {
+        boolean isInQuote = false;
+        ArrayList<String> commandList = new ArrayList<>();
+        syntax += ' ';
+        String section = "";
+        for (int i = 0; i < syntax.length(); i++) {
+            if (syntax.charAt(i) == ' ' && !isInQuote) {
+                commandList.add(section);
+                section = "";
+                continue;
+            } else if (syntax.charAt(i) == '\"')
+                isInQuote = !isInQuote;
+            section += syntax.charAt(i);
+        }
+        return commandList;
+    }
+}

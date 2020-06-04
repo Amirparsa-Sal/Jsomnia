@@ -3,10 +3,6 @@ package com.company.Console;
 import com.company.Logic.Request;
 
 public abstract class Command {
-    public static enum CommandType {
-        ARGUMENTAL, NON_ARGUMENTAL, MULTI_TYPE;
-    }
-
     private String oneLetterSign;
     private String longSign;
     private CommandType type;
@@ -31,4 +27,8 @@ public abstract class Command {
     }
 
     public abstract void execute(String arg, Request request);
+
+    public enum CommandType {
+        ARGUMENTAL, NON_ARGUMENTAL, MULTI_TYPE
+    }
 }

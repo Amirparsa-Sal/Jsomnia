@@ -11,6 +11,7 @@ import java.awt.*;
 
 /**
  * Represents a class for viewing web pages.
+ *
  * @author Amirparsa Salmankhah
  * @version 1.0.0
  */
@@ -42,8 +43,9 @@ public class WebPreviewPanel extends JPanel {
 
     /**
      * Constructor with 2 parameters
+     *
      * @param bgColor Background of the panel
-     * @param size Size of the panel
+     * @param size    Size of the panel
      */
     public WebPreviewPanel(Color bgColor, Dimension size) {
         this.bgColor = bgColor;

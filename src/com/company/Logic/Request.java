@@ -11,9 +11,6 @@ import java.util.HashMap;
  */
 public class Request {
 
-    public enum BodyType{
-        FORM_DATA, JSON, BINARY_FILE, UNKNOWN;
-    }
     //Name of the request
     private String name;
     //URL of the request
@@ -72,57 +69,24 @@ public class Request {
     }
 
     /**
-     * URL stter
-     *
-     * @param url URL of the request
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    /**
-     * Request method setter
-     *
-     * @param requestMethod Method of the request
-     */
-    public void setRequestMethod(RequestMethod requestMethod) {
-        this.requestMethod = requestMethod;
-    }
-
-    /**
-     * Headers setter
-     *
-     * @param headers list of the headers
-     */
-    public void setHeaders(ArrayList<RequestHeader> headers) {
-        this.headers = headers;
-    }
-
-    /**
-     * Response visibility setter
-     *
-     * @param responseVisibility Response visibility
-     */
-    public void setResponseVisibility(boolean responseVisibility) {
-        this.responseVisibility = responseVisibility;
-    }
-
-    /**
-     * Follow redirection setter
-     *
-     * @param followRedirection Follow redirection
-     */
-    public void setFollowRedirection(boolean followRedirection) {
-        this.followRedirection = followRedirection;
-    }
-
-    /**
      * URL getter
      *
      * @return URL of the request
      */
     public String getUrl() {
         return url;
+    }
+
+    /**
+     * URL stter
+     *
+     * @param url URL of the request
+     */
+    public void setUrl(String url) {
+        if (url.substring(0, 7).equals("http://") || url.substring(0, 8).equals("https://"))
+            this.url = url;
+        else
+            this.url = "http://" + url;
     }
 
     /**
@@ -135,12 +99,30 @@ public class Request {
     }
 
     /**
+     * Request method setter
+     *
+     * @param requestMethod Method of the request
+     */
+    public void setRequestMethod(RequestMethod requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
+    /**
      * Headers getter
      *
      * @return list of headers
      */
     public ArrayList<RequestHeader> getHeaders() {
         return headers;
+    }
+
+    /**
+     * Headers setter
+     *
+     * @param headers list of the headers
+     */
+    public void setHeaders(ArrayList<RequestHeader> headers) {
+        this.headers = headers;
     }
 
     /**
@@ -153,12 +135,30 @@ public class Request {
     }
 
     /**
+     * Response visibility setter
+     *
+     * @param responseVisibility Response visibility
+     */
+    public void setResponseVisibility(boolean responseVisibility) {
+        this.responseVisibility = responseVisibility;
+    }
+
+    /**
      * checks if the request follow redirection
      *
      * @return true if yes and false if not
      */
     public boolean getFollowRedirection() {
         return followRedirection;
+    }
+
+    /**
+     * Follow redirection setter
+     *
+     * @param followRedirection Follow redirection
+     */
+    public void setFollowRedirection(boolean followRedirection) {
+        this.followRedirection = followRedirection;
     }
 
     public String getData() {
@@ -199,16 +199,16 @@ public class Request {
         return str;
     }
 
-    public String getContentType(){
-        if(bodyType == BodyType.JSON)
+    public String getContentType() {
+        if (bodyType == BodyType.JSON)
             return "application/json";
-        else if(bodyType == BodyType.BINARY_FILE)
+        else if (bodyType == BodyType.BINARY_FILE)
             return "application/octet-stream";
         return "multipart/form-data";
     }
 
-    public HashMap<String,String> getFormDataPairs(){
-        if(bodyType == BodyType.FORM_DATA) {
+    public HashMap<String, String> getFormDataPairs() {
+        if (bodyType == BodyType.FORM_DATA) {
             HashMap<String, String> dataHashMap = new HashMap<>();
             String[] pairs = data.substring(0, data.length() - 1).split("&");
             for (String pair : pairs) {
@@ -218,5 +218,9 @@ public class Request {
             return dataHashMap;
         }
         return null;
+    }
+
+    public enum BodyType {
+        FORM_DATA, JSON, BINARY_FILE, UNKNOWN
     }
 }

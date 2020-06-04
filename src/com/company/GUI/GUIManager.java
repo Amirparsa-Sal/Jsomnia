@@ -16,12 +16,12 @@ import java.io.IOException;
  */
 public class GUIManager {
 
-    //The only instance of GUI Manager
-    private static GUIManager instance;
-    //Background color
-    public static Color bgColor = new Color(30, 30, 30);
     //Size of the screen
     public static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    //Background color
+    public static Color bgColor = new Color(30, 30, 30);
+    //The only instance of GUI Manager
+    private static GUIManager instance;
     //is full screen or not
     private boolean isFullScreen;
     //is toggle sidebar or not
@@ -40,6 +40,33 @@ public class GUIManager {
     private JFrame frame;
     //Splash screen
     private JFrame splashScreen;
+
+    private GUIManager() {
+        super();
+        Dimension size = new Dimension(1200, 800);
+        isFullScreen = false;
+        isToggleSide = false;
+        frame = new JFrame("Jsomnia");
+        frame.setSize(size.width, size.height);
+        frame.setLayout(null);
+        frame.setBackground(bgColor);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        up = new MenuPanel(new Dimension(size.width, 20));
+        left = new LeftRequestList(0, 20, new Dimension(200, size.height - 25), bgColor);
+        center = new CenterPanel(200, 20, new Dimension((size.width - 200) / 2, size.height - 25), bgColor);
+        this.showSplashScreen();
+        try {
+            right = new RightResponsePanel(200 + (size.width - 200) / 2, 20, bgColor, new Dimension((size.width - 200) / 2, size.height - 25));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        optionFrame = new OptionFrame();
+        frame.getLayeredPane().add(left, 1);
+        frame.getLayeredPane().add(center, 2);
+        frame.getLayeredPane().add(right, 3);
+        frame.getLayeredPane().add(up, 4);
+        this.initFrame();
+    }
 
     /**
      * Creates an instance of the GUIManager class
@@ -69,35 +96,6 @@ public class GUIManager {
     public void setToggleSide(boolean toggleSide) {
         isToggleSide = toggleSide;
     }
-
-
-    private GUIManager() {
-        super();
-        Dimension size = new Dimension(1200, 800);
-        isFullScreen = false;
-        isToggleSide = false;
-        frame = new JFrame("Jsomnia");
-        frame.setSize(size.width, size.height);
-        frame.setLayout(null);
-        frame.setBackground(bgColor);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        up = new MenuPanel(new Dimension(size.width, 20));
-        left = new LeftRequestList(0, 20, new Dimension(200, size.height - 25), bgColor);
-        center = new CenterPanel(200, 20, new Dimension((size.width - 200) / 2, size.height - 25), bgColor);
-        this.showSplashScreen();
-        try {
-            right = new RightResponsePanel(200 + (size.width - 200) / 2, 20, bgColor, new Dimension((size.width - 200) / 2, size.height - 25));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        optionFrame = new OptionFrame();
-        frame.getLayeredPane().add(left, 1);
-        frame.getLayeredPane().add(center, 2);
-        frame.getLayeredPane().add(right, 3);
-        frame.getLayeredPane().add(up, 4);
-        this.initFrame();
-    }
-
 
     /**
      * Shows the GUI

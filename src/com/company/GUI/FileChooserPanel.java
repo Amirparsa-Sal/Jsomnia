@@ -1,7 +1,5 @@
 package com.company.GUI;
 
-import javafx.stage.FileChooser;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,12 +14,12 @@ import java.io.File;
  */
 public class FileChooserPanel extends JPanel {
 
-    //Background color
-    private Color bgColor;
     //description label
     private final JLabel label = new JLabel("Selected File: ");
     //Address text field
     private final JTextField addressField = new JTextField("No file selected");
+    //Background color
+    private Color bgColor;
     //Reset button
     private JButton resetButton;
     //Load button

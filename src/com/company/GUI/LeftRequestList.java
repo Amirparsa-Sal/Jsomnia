@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 
 /**
  * Represnts left panel of the GUI
+ *
  * @author Amirparsa Salmankhah
  * @version 1.0.0
  */
@@ -21,7 +22,7 @@ public class LeftRequestList extends JPanel {
     //filtered request panels
     private LinkedHashMap<JPanel, Request> filteredRequestPanels;
     //all request panels
-    private LinkedHashMap<JPanel,Request> allRequestPanels;
+    private LinkedHashMap<JPanel, Request> allRequestPanels;
     //background color
     private Color bgColor;
     //Title label
@@ -43,9 +44,10 @@ public class LeftRequestList extends JPanel {
 
     /**
      * Constructor with 4 parameters
-     * @param x x of the panel
-     * @param y y of the panel
-     * @param size size of the panel
+     *
+     * @param x       x of the panel
+     * @param y       y of the panel
+     * @param size    size of the panel
      * @param bgColor Background color of the panel
      */
     public LeftRequestList(int x, int y, Dimension size, Color bgColor) {
@@ -108,18 +110,19 @@ public class LeftRequestList extends JPanel {
 
     /**
      * Adds a request to the list
+     *
      * @param request The request
      */
     public void addToReqList(Request request) {
         isFiltered = false;
         JPanel newRequestPanel = new JPanel();
         newRequestPanel.setLayout(null);
-        newRequestPanel.setMaximumSize(new Dimension(getWidth()-2, getHeight()/24));
-        newRequestPanel.setMinimumSize(new Dimension(getWidth()-2, getHeight()/24));
-        if(allRequestPanels.size()%2==0)
+        newRequestPanel.setMaximumSize(new Dimension(getWidth() - 2, getHeight() / 24));
+        newRequestPanel.setMinimumSize(new Dimension(getWidth() - 2, getHeight() / 24));
+        if (allRequestPanels.size() % 2 == 0)
             newRequestPanel.setBackground(bgColor);
         else
-            newRequestPanel.setBackground(new Color(bgColor.getRed()+10,bgColor.getGreen()+10,bgColor.getBlue()+10));
+            newRequestPanel.setBackground(new Color(bgColor.getRed() + 10, bgColor.getGreen() + 10, bgColor.getBlue() + 10));
         JLabel requestMethodLabel = new JLabel(request.getRequestMethod().toString());
         JLabel requestNameLabel = new JLabel(request.getName());
         JButton deleteButton = new JButton("×");
@@ -135,7 +138,7 @@ public class LeftRequestList extends JPanel {
         newRequestPanel.add(requestMethodLabel);
         newRequestPanel.add(requestNameLabel);
         newRequestPanel.add(deleteButton);
-        allRequestPanels.put(newRequestPanel,request);
+        allRequestPanels.put(newRequestPanel, request);
         panelsPanel.add(newRequestPanel);
         this.reArrange();
         GUIManager.getInstance().getFrame().dispatchEvent(new ComponentEvent(GUIManager.getInstance().getFrame(), ComponentEvent.COMPONENT_RESIZED));
@@ -147,11 +150,11 @@ public class LeftRequestList extends JPanel {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                ArrayList<JPanel> ourPanels= new ArrayList(allRequestPanels.keySet());
-                if(ourPanels.indexOf(e.getComponent())%2==0)
+                ArrayList<JPanel> ourPanels = new ArrayList(allRequestPanels.keySet());
+                if (ourPanels.indexOf(e.getComponent()) % 2 == 0)
                     e.getComponent().setBackground(bgColor);
                 else
-                    e.getComponent().setBackground(new Color(bgColor.getRed()+10,bgColor.getGreen()+10,bgColor.getBlue()+10));
+                    e.getComponent().setBackground(new Color(bgColor.getRed() + 10, bgColor.getGreen() + 10, bgColor.getBlue() + 10));
             }
         });
 
@@ -167,29 +170,29 @@ public class LeftRequestList extends JPanel {
         filterField.setBounds(0, 2 * height / 24, width, height / 24);
         filterButton.setBounds(0, 3 * height / 24, width / 2, height / 24);
         resetButton.setBounds(width / 2, 3 * height / 24, width / 2, height / 24);
-        scrollPane.setBounds(1, 4 * height / 24, width-2, height * 5 / 6 - 30);
-        panelsPanel.setBounds(1, 4 * height / 24, width-2, height * 5 / 6 - 30);
+        scrollPane.setBounds(1, 4 * height / 24, width - 2, height * 5 / 6 - 30);
+        panelsPanel.setBounds(1, 4 * height / 24, width - 2, height * 5 / 6 - 30);
         if (!isFiltered) {
             removeRequestPanels();
             ArrayList<JPanel> requestKeys = new ArrayList<>(allRequestPanels.keySet());
-            for (int i = requestKeys.size()-1; i >=0; i--) {
-                JPanel newRequestPanel= requestKeys.get(i);
-                newRequestPanel.setMaximumSize(new Dimension(width-2, height / 24));
-                newRequestPanel.setMinimumSize(new Dimension(width-2, height/24));
-                newRequestPanel.getComponent(0).setBounds(newRequestPanel.getWidth()/12,0,newRequestPanel.getWidth()/4,newRequestPanel.getHeight());
-                newRequestPanel.getComponent(1).setBounds(newRequestPanel.getWidth()*4/12 + 5,0,newRequestPanel.getWidth()*5/12 - 5,newRequestPanel.getHeight());
-                newRequestPanel.getComponent(2).setBounds(newRequestPanel.getWidth()*9/12,0,newRequestPanel.getWidth()/5,newRequestPanel.getHeight());
+            for (int i = requestKeys.size() - 1; i >= 0; i--) {
+                JPanel newRequestPanel = requestKeys.get(i);
+                newRequestPanel.setMaximumSize(new Dimension(width - 2, height / 24));
+                newRequestPanel.setMinimumSize(new Dimension(width - 2, height / 24));
+                newRequestPanel.getComponent(0).setBounds(newRequestPanel.getWidth() / 12, 0, newRequestPanel.getWidth() / 4, newRequestPanel.getHeight());
+                newRequestPanel.getComponent(1).setBounds(newRequestPanel.getWidth() * 4 / 12 + 5, 0, newRequestPanel.getWidth() * 5 / 12 - 5, newRequestPanel.getHeight());
+                newRequestPanel.getComponent(2).setBounds(newRequestPanel.getWidth() * 9 / 12, 0, newRequestPanel.getWidth() / 5, newRequestPanel.getHeight());
                 panelsPanel.add(newRequestPanel);
             }
         } else {
             ArrayList<JPanel> filteredkeys = new ArrayList<>(filteredRequestPanels.keySet());
             for (int i = filteredkeys.size() - 1; i >= 0; i--) {
-                JPanel newRequestPanel= filteredkeys.get(i);
-                newRequestPanel.setMaximumSize(new Dimension(width-2, height / 24));
-                newRequestPanel.setMinimumSize(new Dimension(width-2, height/24));
-                newRequestPanel.getComponent(0).setBounds(newRequestPanel.getWidth()/12,0,newRequestPanel.getWidth()/4,newRequestPanel.getHeight());
-                newRequestPanel.getComponent(1).setBounds(newRequestPanel.getWidth()*4/12 + 5,0,newRequestPanel.getWidth()*5/12 - 5,newRequestPanel.getHeight());
-                newRequestPanel.getComponent(2).setBounds(newRequestPanel.getWidth()*9/12,0,newRequestPanel.getWidth()/5,newRequestPanel.getHeight());
+                JPanel newRequestPanel = filteredkeys.get(i);
+                newRequestPanel.setMaximumSize(new Dimension(width - 2, height / 24));
+                newRequestPanel.setMinimumSize(new Dimension(width - 2, height / 24));
+                newRequestPanel.getComponent(0).setBounds(newRequestPanel.getWidth() / 12, 0, newRequestPanel.getWidth() / 4, newRequestPanel.getHeight());
+                newRequestPanel.getComponent(1).setBounds(newRequestPanel.getWidth() * 4 / 12 + 5, 0, newRequestPanel.getWidth() * 5 / 12 - 5, newRequestPanel.getHeight());
+                newRequestPanel.getComponent(2).setBounds(newRequestPanel.getWidth() * 9 / 12, 0, newRequestPanel.getWidth() / 5, newRequestPanel.getHeight());
                 panelsPanel.add(newRequestPanel);
             }
         }
@@ -197,6 +200,7 @@ public class LeftRequestList extends JPanel {
 
     /**
      * Filters the request
+     *
      * @param search filter string
      */
     public void filterRequests(String search) {
@@ -206,7 +210,7 @@ public class LeftRequestList extends JPanel {
             JLabel methodLabel = (JLabel) jPanel.getComponent(0);
             JLabel nameLabel = (JLabel) jPanel.getComponent(1);
             if (methodLabel.getText().toLowerCase().contains(search.toLowerCase()) || nameLabel.getText().toLowerCase().contains(search.toLowerCase())) {
-                filteredRequestPanels.put(jPanel,allRequestPanels.get(jPanel));
+                filteredRequestPanels.put(jPanel, allRequestPanels.get(jPanel));
                 this.add(jPanel);
             }
         }
@@ -227,7 +231,7 @@ public class LeftRequestList extends JPanel {
     private class NewRequestListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            requestDialog.setLocation(GUIManager.screenSize.width/2-requestDialog.getWidth()/2,GUIManager.screenSize.height/2-requestDialog.getHeight()/2);
+            requestDialog.setLocation(GUIManager.screenSize.width / 2 - requestDialog.getWidth() / 2, GUIManager.screenSize.height / 2 - requestDialog.getHeight() / 2);
             requestDialog.setVisible(true);
         }
     }
@@ -237,7 +241,7 @@ public class LeftRequestList extends JPanel {
         public void actionPerformed(ActionEvent e) {
             isFiltered = true;
             filterRequests(filterField.getText());
-            System.out.println(((JButton)e.getSource()).getText());
+            System.out.println(((JButton) e.getSource()).getText());
 
         }
     }
@@ -250,13 +254,13 @@ public class LeftRequestList extends JPanel {
         }
     }
 
-    private class DeleteButtonListener implements ActionListener{
+    private class DeleteButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             JPanel panel = (JPanel) ((JButton) e.getSource()).getParent();
             allRequestPanels.remove(panel);
-            for (Component jPanel : LeftRequestList.this.getComponents()){
+            for (Component jPanel : LeftRequestList.this.getComponents()) {
                 if (jPanel.equals(panel)) {
                     LeftRequestList.this.remove(jPanel);
                     break;

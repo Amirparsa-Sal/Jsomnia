@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
@@ -138,21 +140,21 @@ public class OptionFrame extends JFrame {
     }
 
     /**
-     * System tray getter
-     *
-     * @return System tray
-     */
-    public Boolean getSystemTray() {
-        return ((JCheckBox) checkBoxPanel.getComponent(1)).isSelected();
-    }
-
-    /**
      * FolLow redirect setter
      *
      * @param isSelected Follow redirect mode
      */
     public void setFollowRedirect(boolean isSelected) {
         ((JCheckBox) checkBoxPanel.getComponent(0)).setSelected(isSelected);
+    }
+
+    /**
+     * System tray getter
+     *
+     * @return System tray
+     */
+    public Boolean getSystemTray() {
+        return ((JCheckBox) checkBoxPanel.getComponent(1)).isSelected();
     }
 
     /**

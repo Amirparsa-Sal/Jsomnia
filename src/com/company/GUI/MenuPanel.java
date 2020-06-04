@@ -68,6 +68,91 @@ public class MenuPanel extends JMenuBar {
         this.add(helpMenu);
     }
 
+    private static class AboutFrame extends JFrame {
+        private static AboutFrame instance;
+
+        //Name
+        public JLabel name;
+        //ID
+        public JLabel id;
+        //Contact
+        public JLabel contact;
+
+        private AboutFrame() {
+            super();
+            this.setTitle("About");
+            this.setResizable(false);
+            this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
+            this.getContentPane().setBackground(GUIManager.bgColor);
+            name = new JLabel("Created by Amirparsa Salmankhah");
+            name.setBackground(GUIManager.bgColor);
+            name.setForeground(Color.WHITE);
+            name.setAlignmentX(Component.CENTER_ALIGNMENT);
+            id = new JLabel("Student ID: 9831034");
+            id.setBackground(GUIManager.bgColor);
+            id.setForeground(Color.WHITE);
+            id.setAlignmentX(Component.CENTER_ALIGNMENT);
+            contact = new JLabel("Email: Amirparsa.s@aut.ac.ir | Telegram: @Amirparsa_s");
+            contact.setBackground(GUIManager.bgColor);
+            contact.setForeground(Color.WHITE);
+            contact.setAlignmentX(Component.CENTER_ALIGNMENT);
+            this.getContentPane().add(name);
+            this.getContentPane().add(id);
+            this.getContentPane().add(contact);
+            this.pack();
+            this.setLocation(GUIManager.screenSize.width / 2 - this.getWidth() / 2, GUIManager.screenSize.height / 2 - this.getHeight() / 2);
+        }
+
+        /**
+         * Returns the only instance of the class
+         *
+         * @returnthe only instance of the class
+         */
+        public static AboutFrame getInstance() {
+            if (instance == null)
+                instance = new AboutFrame();
+            return instance;
+        }
+    }
+
+    private static class HelpFrame extends JFrame {
+        private static HelpFrame instance;
+
+        private JLabel workers;
+        private JLabel toBeDone;
+
+        private HelpFrame() {
+            super();
+            this.setTitle("Help");
+            this.setResizable(false);
+            this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
+            this.getContentPane().setBackground(GUIManager.bgColor);
+            //workers
+            try {
+                BufferedImage bufferedImage = ImageIO.read(new File(new File(".").getAbsolutePath() + "\\Assets\\workers.png"));
+                workers = new JLabel(new ImageIcon(bufferedImage));
+            } catch (IOException e) {
+                System.out.println("Resource not found");
+                System.exit(-1);
+            }
+            //label
+            workers.setAlignmentX(Component.CENTER_ALIGNMENT);
+            toBeDone = new JLabel("To be done in next phase");
+            toBeDone.setBackground(GUIManager.bgColor);
+            toBeDone.setForeground(Color.WHITE);
+            toBeDone.setAlignmentX(Component.CENTER_ALIGNMENT);
+            this.add(workers);
+            this.add(toBeDone);
+            this.pack();
+        }
+
+        public static HelpFrame getInstance() {
+            if (instance == null)
+                instance = new HelpFrame();
+            return instance;
+        }
+    }
+
     private class OptionsListener implements ActionListener {
 
         @Override
@@ -141,91 +226,6 @@ public class MenuPanel extends JMenuBar {
             MenuPanel.HelpFrame.getInstance().setLocation(GUIManager.screenSize.width / 2 - size.width / 2, GUIManager.screenSize.height / 2 - size.height / 2);
             MenuPanel.HelpFrame.getInstance().setVisible(true);
 
-        }
-    }
-
-    private static class AboutFrame extends JFrame {
-        private static AboutFrame instance;
-
-        //Name
-        public JLabel name;
-        //ID
-        public JLabel id;
-        //Contact
-        public JLabel contact;
-
-        /**
-         * Returns the only instance of the class
-         *
-         * @returnthe only instance of the class
-         */
-        public static AboutFrame getInstance() {
-            if (instance == null)
-                instance = new AboutFrame();
-            return instance;
-        }
-
-        private AboutFrame() {
-            super();
-            this.setTitle("About");
-            this.setResizable(false);
-            this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
-            this.getContentPane().setBackground(GUIManager.bgColor);
-            name = new JLabel("Created by Amirparsa Salmankhah");
-            name.setBackground(GUIManager.bgColor);
-            name.setForeground(Color.WHITE);
-            name.setAlignmentX(Component.CENTER_ALIGNMENT);
-            id = new JLabel("Student ID: 9831034");
-            id.setBackground(GUIManager.bgColor);
-            id.setForeground(Color.WHITE);
-            id.setAlignmentX(Component.CENTER_ALIGNMENT);
-            contact = new JLabel("Email: Amirparsa.s@aut.ac.ir | Telegram: @Amirparsa_s");
-            contact.setBackground(GUIManager.bgColor);
-            contact.setForeground(Color.WHITE);
-            contact.setAlignmentX(Component.CENTER_ALIGNMENT);
-            this.getContentPane().add(name);
-            this.getContentPane().add(id);
-            this.getContentPane().add(contact);
-            this.pack();
-            this.setLocation(GUIManager.screenSize.width / 2 - this.getWidth() / 2, GUIManager.screenSize.height / 2 - this.getHeight() / 2);
-        }
-    }
-
-    private static class HelpFrame extends JFrame {
-        private static HelpFrame instance;
-
-        private JLabel workers;
-        private JLabel toBeDone;
-
-        public static HelpFrame getInstance() {
-            if (instance == null)
-                instance = new HelpFrame();
-            return instance;
-        }
-
-        private HelpFrame() {
-            super();
-            this.setTitle("Help");
-            this.setResizable(false);
-            this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
-            this.getContentPane().setBackground(GUIManager.bgColor);
-            //workers
-            try {
-                BufferedImage bufferedImage = ImageIO.read(new File(new File(".").getAbsolutePath() + "\\Assets\\workers.png"));
-                workers = new JLabel(new ImageIcon(bufferedImage));
-            } catch (IOException e) {
-                System.out.println("Resource not found");
-                System.exit(-1);
-            }
-            //label
-            workers.setAlignmentX(Component.CENTER_ALIGNMENT);
-            toBeDone = new JLabel("To be done in next phase");
-            toBeDone.setBackground(GUIManager.bgColor);
-            toBeDone.setForeground(Color.WHITE);
-            toBeDone.setAlignmentX(Component.CENTER_ALIGNMENT);
-            this.add(workers);
-            this.add(toBeDone);
-            this.pack();
         }
     }
 }

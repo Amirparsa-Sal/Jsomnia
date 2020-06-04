@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 
 /**
  * Represents a class for request dialog
+ *
  * @author Amirparsa Salmankhah
  * @version 1.0.0
  */
@@ -32,9 +33,10 @@ public class RequestDialog extends JFrame {
 
     /**
      * Constructor with 5 parameter
-     * @param x x of the frame
-     * @param y y of the frame
-     * @param size size of the frame
+     *
+     * @param x       x of the frame
+     * @param y       y of the frame
+     * @param size    size of the frame
      * @param bgcolor Background color of the frame
      * @param leftBar Left request list
      */
@@ -43,7 +45,7 @@ public class RequestDialog extends JFrame {
         this.leftBar = leftBar;
         //init window
         this.setLayout(null);
-        this.setSize(size.width+6,size.height+35);
+        this.setSize(size.width + 6, size.height + 35);
         this.setResizable(false);
         this.setBackground(bgcolor);
         this.bgcolor = bgcolor;
@@ -55,7 +57,7 @@ public class RequestDialog extends JFrame {
         this.description.setForeground(Color.WHITE);
         //init box
         requestMethodBox = new JComboBox();
-        ((JLabel)requestMethodBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+        ((JLabel) requestMethodBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
         for (RequestMethod requestMethod : RequestMethod.values())
             if (requestMethod != RequestMethod.UNKNOWN) {
                 requestMethodBox.addItem(requestMethod.toString());
@@ -80,7 +82,7 @@ public class RequestDialog extends JFrame {
         cancelButton.setOpaque(true);
         cancelButton.setBackground(new Color(125, 0, 0));
         cancelButton.setForeground(Color.WHITE);
-        cancelButton.setBounds(size.width / 2, size.height* 2 / 3, size.width / 2, size.height / 3);
+        cancelButton.setBounds(size.width / 2, size.height * 2 / 3, size.width / 2, size.height / 3);
         cancelButton.addActionListener(new CancelListener());
         //show
         this.setVisible(false);
@@ -101,7 +103,7 @@ public class RequestDialog extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             String requestName = requestNameField.getText();
-            if(!requestName.equals("")) {
+            if (!requestName.equals("")) {
                 String requestMethod = ((String) requestMethodBox.getSelectedItem());
                 leftBar.addToReqList(new Request(requestName, RequestMethod.valueOf(requestMethod)));
                 clear();
