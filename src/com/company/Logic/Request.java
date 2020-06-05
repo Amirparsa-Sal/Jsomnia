@@ -1,5 +1,6 @@
 package com.company.Logic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,8 +10,9 @@ import java.util.HashMap;
  * @author Amirparsa Salmankhah
  * @version 1.0.0
  */
-public class Request {
+public class Request implements Serializable {
 
+    public static final long serialVersionUID = 1L;
     //Name of the request
     private String name;
     //URL of the request
@@ -186,13 +188,13 @@ public class Request {
 
     @Override
     public String toString() {
-        String str = "name: " + name + "\n" +
-                "url: " + url + "\n" +
-                "Method: " + requestMethod.toString() + "\n" +
-                "response visibility: " + responseVisibility + "\n" +
-                "follow redirect: " + followRedirection + "\n" +
-                "data: " + data + "\n" +
-                "body type: " + bodyType.toString() + "\n";
+        String str = "name: " + name + " | " +
+                "url: " + url + " | " +
+                "Method: " + requestMethod.toString() + " | " +
+                "response visibility: " + responseVisibility + " | " +
+                "follow redirect: " + followRedirection + " | " +
+                "data: " + data + " | " +
+                "body type: " + bodyType.toString() + " | ";
         str += "Headers: ";
         for (RequestHeader requestHeader : headers)
             str += requestHeader.toString() + " ";

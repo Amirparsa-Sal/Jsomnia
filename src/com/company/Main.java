@@ -1,12 +1,10 @@
 package com.company;
 
 import com.company.Console.*;
-import com.company.Logic.Request;
-import com.company.Logic.RequestManager;
+import com.company.Logic.Response;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.Scanner;
 
 
 /**
@@ -33,14 +31,19 @@ public class Main {
 //        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        GUIManager guiManager = GUIManager.getInstance();
 //        guiManager.showGUI();
-        initCommands();
-        Scanner sc = new Scanner(System.in);
-        String command = sc.nextLine();
-        Request request = Parser.commandToRequest(command);
-        RequestManager.getInstance().sendRequest(request);
 
 //        initCommands();
-//        ConsoleUI console = ConsoleUI.getInstance();
-//        console.ProcessCommand(Parser.strArrToString(args));
+//        Scanner sc = new Scanner(System.in);
+//        String command = sc.nextLine();
+//        Request request = Parser.commandToRequest(command);
+//        Response response = RequestManager.getInstance().sendRequest(request);
+//        ConsoleUI.getInstance().print(response.toString());
+        if (args.length == 0)
+            return;
+        initCommands();
+        ConsoleUI console = ConsoleUI.getInstance();
+        Response response = console.ProcessCommand(args);
+        if (response != null)
+            ConsoleUI.getInstance().print(response.toString());
     }
 }

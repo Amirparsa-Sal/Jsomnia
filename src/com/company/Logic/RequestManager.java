@@ -6,8 +6,9 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 
 public class RequestManager {
 
@@ -54,6 +55,8 @@ public class RequestManager {
     }
 
     public Response sendRequest(Request request) {
+        if (request.getName() == null)
+            request.setName("Request " + (getNumberOfRequests() + 1));
         HttpURLConnection connection = null;
         Response response = null;
         if (request.getUrl() == null)
@@ -74,25 +77,29 @@ public class RequestManager {
             }
             //working with response
             response = new Response();
+            long startTime = System.currentTimeMillis();
+            connection.getInputStream();
+            long finishTime = System.currentTimeMillis();
+            response.setTime(finishTime - startTime);
             response.setVisible(request.getResponseVisibility());
             response.setHeaders(new HashMap<>(connection.getHeaderFields()));
-//            if (request.getResponseVisibility())
-//                showResponseHeaders(connection);
             BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
             if (output) {
                 saveOutput(bufferedInputStream);
                 response.setBody("Response body saved in " + outputName);
             } else {
                 byte[] bytes = new byte[1024];
-                int n = 0;
+                int n = 0, sum = 0;
                 String responseBody = "";
                 while ((n = bufferedInputStream.read(bytes)) != -1) {
+                    sum += n;
                     responseBody += new String(bytes, 0, n);
                 }
                 if (responseBody.equals(""))
                     response.setBody("No body returned!");
                 else
                     response.setBody("Body:\n" + responseBody);
+                response.setSize(sum);
             }
         } catch (FileNotFoundException e) {
             try {
@@ -113,10 +120,12 @@ public class RequestManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (isSaveRequest())
+            saveRequestInList(request);
         return response;
     }
 
-    public void setOutputStream(Request request, BufferedOutputStream bufferedOutputStream) throws IOException {
+    private void setOutputStream(Request request, BufferedOutputStream bufferedOutputStream) throws IOException {
         if (request.getData() == null)
             return;
         if (request.getBodyType() == Request.BodyType.JSON)
@@ -153,17 +162,6 @@ public class RequestManager {
         bufferedOutputStream.close();
     }
 
-//    private void showResponseHeaders(HttpURLConnection connection) {
-//        HashMap<String, List<String>> headers = new HashMap<>(connection.getHeaderFields());
-//        for (String key : headers.keySet()) {
-//            System.out.print(key + ": ");
-//            for (String value : headers.get(key))
-//                System.out.print(value + " ");
-//            System.out.println();
-//        }
-//        System.out.println();
-//    }
-
     private void saveOutput(BufferedInputStream bufferedInputStream) {
         BufferedOutputStream bufferedOutputStream = null;
         File file = new File(outputName);
@@ -181,6 +179,67 @@ public class RequestManager {
         } catch (IOException e) {
             ConsoleUI.getInstance().raiseError("Cannot create the file :(");
         }
+    }
+
+    public int getNumberOfRequests() {
+        int n = 0;
+        for (int i = 1; ; i++) {
+            if (Files.exists(Paths.get("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + i + ".dat")))
+                n++;
+            else
+                break;
+        }
+        return n;
+    }
+
+    public void saveRequestInList(Request request) {
+        File file = null;
+        if (!Files.exists(Paths.get("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + (getNumberOfRequests() + 1) + ".dat"))) {
+            file = new File("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + (getNumberOfRequests() + 1) + ".dat");
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(request);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+            fileOutputStream.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Request loadRequestFromList(int number) {
+        if (!Files.exists(Paths.get("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + number + ".dat")))
+            return null;
+        File file = new File("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + number + ".dat");
+        FileInputStream fileInputStream = null;
+        Request request = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            request = ((Request) objectInputStream.readObject());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return request;
+    }
+
+    public void showListOfRequests() {
+        for (int i = 1; i <= getNumberOfRequests(); i++)
+            System.out.println(i + ") " + loadRequestFromList(i));
     }
 }
 

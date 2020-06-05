@@ -2,6 +2,8 @@ package com.company.Console;
 
 import com.company.Logic.Request;
 import com.company.Logic.RequestHeader;
+import com.company.Logic.RequestManager;
+import com.company.Logic.Response;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,20 +17,36 @@ public class Parser {
         Request request = new Request();
         ArrayList<String> commandList = strArrToArrayList(syntax);
         commandList.add(null);
+        if (syntax.length == 1 && syntax[0].equals("list")) {
+            RequestManager.getInstance().showListOfRequests();
+            return null;
+        } else if (syntax[0].equals("fire")) {
+            for (int i = 1; i < syntax.length; i++) {
+                Request ourRequest = RequestManager.getInstance().loadRequestFromList(Integer.parseInt(syntax[i]));
+                if (ourRequest == null)
+                    ConsoleUI.getInstance().raiseError("Request " + syntax[i] + " not found!");
+                Response response = RequestManager.getInstance().sendRequest(ourRequest);
+                System.out.println("Request " + syntax[i] + ":");
+                if (response != null)
+                    ConsoleUI.getInstance().print(response.toString());
+                ConsoleUI.getInstance().print("------------------------------------");
+            }
+            return null;
+        }
         for (int i = 0; i < commandList.size() - 1; i++) {
             String arg = commandList.get(i);
             String nextArg = commandList.get(i + 1);
             Command command = Commands.getInstance().findCommandBySign(arg);
             if (command != null) {
                 if (command.getType() == Command.CommandType.MULTI_TYPE) {
-                    if (nextArg == null || nextArg.charAt(0) == '-')
+                    if (nextArg == null || Commands.getInstance().isCommand(nextArg))
                         command.execute(null, request);
                     else {
                         command.execute(nextArg, request);
                         i++;
                     }
                 } else if (command.getType() == Command.CommandType.ARGUMENTAL) {
-                    if (nextArg == null || nextArg.charAt(0) == '-')
+                    if (nextArg == null || Commands.getInstance().isCommand(nextArg))
                         ConsoleUI.getInstance().raiseError("Invalid syntax: " + arg + " must take parameters");
                     else {
                         command.execute(nextArg, request);
@@ -84,28 +102,4 @@ public class Parser {
         Collections.addAll(strings, strArr);
         return strings;
     }
-
-//    public static String strArrToString(String[] strArr) {
-//        String newStr = "";
-//        for (String str : strArr)
-//            newStr += str + " ";
-//        return newStr;
-//    }
-
-//    private static ArrayList<String> splitCommand(String syntax) {
-//        boolean isInQuote = false;
-//        ArrayList<String> commandList = new ArrayList<>();
-//        syntax += ' ';
-//        String section = "";
-//        for (int i = 0; i < syntax.length(); i++) {
-//            if (syntax.charAt(i) == ' ' && !isInQuote) {
-//                commandList.add(section);
-//                section = "";
-//                continue;
-//            } else if (syntax.charAt(i) == '\"')
-//                isInQuote = !isInQuote;
-//            section += syntax.charAt(i);
-//        }
-//        return commandList;
-//    }
 }
