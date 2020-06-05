@@ -2,6 +2,7 @@ package com.company.Console;
 
 import com.company.Logic.Request;
 import com.company.Logic.RequestManager;
+import com.company.Logic.Response;
 
 import java.io.File;
 import java.util.Scanner;
@@ -22,12 +23,11 @@ public class ConsoleUI {
         return command;
     }
 
-    public boolean ProcessCommand(String command) {
+    public Response ProcessCommand(String[] command) {
         Request request = Parser.commandToRequest(command);
         if (request == null)
-            return false;
-        RequestManager.getInstance().sendRequest(request);
-        return true;
+            return null;
+        return RequestManager.getInstance().sendRequest(request);
     }
 
     public void print(String response) {

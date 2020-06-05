@@ -17,7 +17,7 @@ public class JsonCommand extends Command {
         String save = arg;
         arg = arg.replace('{', '=');
         arg = arg.replace('}', '=');
-        if (!Parser.isMatch(arg, "\\\"=([ ]*[a-zA-Z0-9-]+:[a-zA-Z0-9-]+[ ]*,[ ]*)*([a-zA-Z0-9-]+:[a-zA-Z0-9-]+)[ ]*=\\\""))
+        if (!Parser.isMatch(arg, "=([ ]*[a-zA-Z0-9-]+:[a-zA-Z0-9-]+[ ]*,[ ]*)*([a-zA-Z0-9-]+:[a-zA-Z0-9-]+)[ ]*="))
             ConsoleUI.getInstance().raiseError("Please right the json in correct form[example: \"{key1:value1,key2:value2\"}]");
         request.setData(save);
         request.setBodyType(Request.BodyType.JSON);

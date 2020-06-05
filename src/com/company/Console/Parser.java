@@ -10,11 +10,10 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
-    public static Request commandToRequest(String syntax) {
+    public static Request commandToRequest(String[] syntax) {
         boolean flag = true;
-        syntax = syntax.trim();
         Request request = new Request();
-        ArrayList<String> commandList = splitCommand(syntax);
+        ArrayList<String> commandList = strArrToArrayList(syntax);
         commandList.add(null);
         for (int i = 0; i < commandList.size() - 1; i++) {
             String arg = commandList.get(i);
@@ -86,27 +85,27 @@ public class Parser {
         return strings;
     }
 
-    public static String strArrToString(String[] strArr) {
-        String newStr = "";
-        for (String str : strArr)
-            newStr += str;
-        return newStr;
-    }
+//    public static String strArrToString(String[] strArr) {
+//        String newStr = "";
+//        for (String str : strArr)
+//            newStr += str + " ";
+//        return newStr;
+//    }
 
-    private static ArrayList<String> splitCommand(String syntax) {
-        boolean isInQuote = false;
-        ArrayList<String> commandList = new ArrayList<>();
-        syntax += ' ';
-        String section = "";
-        for (int i = 0; i < syntax.length(); i++) {
-            if (syntax.charAt(i) == ' ' && !isInQuote) {
-                commandList.add(section);
-                section = "";
-                continue;
-            } else if (syntax.charAt(i) == '\"')
-                isInQuote = !isInQuote;
-            section += syntax.charAt(i);
-        }
-        return commandList;
-    }
+//    private static ArrayList<String> splitCommand(String syntax) {
+//        boolean isInQuote = false;
+//        ArrayList<String> commandList = new ArrayList<>();
+//        syntax += ' ';
+//        String section = "";
+//        for (int i = 0; i < syntax.length(); i++) {
+//            if (syntax.charAt(i) == ' ' && !isInQuote) {
+//                commandList.add(section);
+//                section = "";
+//                continue;
+//            } else if (syntax.charAt(i) == '\"')
+//                isInQuote = !isInQuote;
+//            section += syntax.charAt(i);
+//        }
+//        return commandList;
+//    }
 }
