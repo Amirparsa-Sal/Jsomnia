@@ -19,7 +19,7 @@ public class HeadersCommand extends Command {
             ConsoleUI.getInstance().raiseError("headers are not in correct format[example: \"key1:value1;key2:value2\"]");
             ConsoleUI.getInstance().print("Are you sure you want to send the request?[Y/n]");
             String command = ConsoleUI.getInstance().getCommand();
-            if(!command.equals("Y"))
+            if (!command.equals("Y"))
                 ConsoleUI.getInstance().exitWithMessage("Sending request canceled!");
         }
         ArrayList<RequestHeader> headers = Parser.splitHeaders(arg);

@@ -59,7 +59,7 @@ public class ConsoleUI {
         System.exit(-1);
     }
 
-    public void exitWithMessage(String message){
+    public void exitWithMessage(String message) {
         print(message);
         System.exit(-1);
     }

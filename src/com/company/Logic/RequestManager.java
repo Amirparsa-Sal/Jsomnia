@@ -106,7 +106,7 @@ public class RequestManager {
         if (request.getFollowRedirection() && response.getCode() / 100 == 3) {
             setSaveRequest(false);
             String url = connection.getHeaderField("Location");
-            if(url!=null) {
+            if (url != null) {
                 request.setUrl(url);
                 response = sendRequest(request);
             }
@@ -146,7 +146,7 @@ public class RequestManager {
             while ((n = newBuffer.read(bytes)) > 0)
                 bufferedOutputStream.write(bytes, 0, n);
             newBuffer.close();
-        }else if(request.getBodyType() == Request.BodyType.URL_ENCODED){
+        } else if (request.getBodyType() == Request.BodyType.URL_ENCODED) {
             bufferedOutputStream.write(request.getData().getBytes());
         }
         bufferedOutputStream.flush();

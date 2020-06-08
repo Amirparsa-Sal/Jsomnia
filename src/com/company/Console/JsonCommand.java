@@ -20,7 +20,7 @@ public class JsonCommand extends Command {
             ConsoleUI.getInstance().print("The json data is not in correct format[example: \"{'key1':'value1','key2':'value2'}\"]");
             ConsoleUI.getInstance().print("Are you sure you want to send the request?[Y/n]");
             String command = ConsoleUI.getInstance().getCommand();
-            if(!command.equals("Y"))
+            if (!command.equals("Y"))
                 ConsoleUI.getInstance().exitWithMessage("Sending request canceled!");
         }
         request.setData(save);

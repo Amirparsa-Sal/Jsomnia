@@ -61,7 +61,7 @@ public class Parser {
         ArrayList<RequestHeader> list = new ArrayList<>();
         if (headers.equals(""))
             return list;
-        String[] headersList = headers.substring(0, headers.length()).split(";");
+        String[] headersList = headers.split(";");
         for (String str : headersList) {
             int index = str.indexOf(':');
             list.add(new RequestHeader(str.substring(0, index), str.substring(index + 1)));

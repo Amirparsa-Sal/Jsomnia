@@ -10,7 +10,8 @@ public class HelpCommand extends Command {
 
     @Override
     public void execute(String arg, Request request) {
-        ConsoleUI.getInstance().print("-d --data : adds multipart/form-data [example: -d \"key1=value1&key2=value2\"]\n" +
+        ConsoleUI.getInstance().print("-d --data <data> : adds multipart/form-data [example: -d \"key1=value1&key2=value2\"]\n" +
+                "-e --encoded <data> : adds form urlencoded data [example: -e \"key1=value1&key2=value2\"]\n" +
                 "-f : turns on follow redirect for the request\n" +
                 "-H --header <headers>: adds headers to the request [example: -H \"key1:value1;key2:value2\"]\n" +
                 "-h --help : shows list of commands\n" +

@@ -14,7 +14,7 @@ public class FormUrlEncodedCommand extends Command {
             ConsoleUI.getInstance().raiseError("form urlencoded data is not in correct form[example: \"key1=value1&key2=value2\"]");
             ConsoleUI.getInstance().print("Are you sure you want to send the request?[Y/n]");
             String command = ConsoleUI.getInstance().getCommand();
-            if(!command.equals("Y"))
+            if (!command.equals("Y"))
                 ConsoleUI.getInstance().exitWithMessage("Sending request canceled!");
         }
         request.setData(arg);

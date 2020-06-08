@@ -226,7 +226,7 @@ public class Request implements Serializable {
             return "application/json";
         else if (bodyType == BodyType.BINARY_FILE)
             return "application/octet-stream";
-        else if(bodyType == BodyType.URL_ENCODED)
+        else if (bodyType == BodyType.URL_ENCODED)
             return "application/x-www-form-urlencoded";
         return "multipart/form-data";
     }
@@ -250,6 +250,6 @@ public class Request implements Serializable {
     }
 
     public enum BodyType {
-        FORM_DATA, JSON, BINARY_FILE,URL_ENCODED, UNKNOWN
+        FORM_DATA, JSON, BINARY_FILE, URL_ENCODED, UNKNOWN
     }
 }
