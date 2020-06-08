@@ -12,9 +12,25 @@ public class ConsoleUI {
     private static ConsoleUI instance = null;
     private Scanner scanner;
 
+    private static void init(){
+        FollowRedirectCommand frc = new FollowRedirectCommand();
+        FormDataCommand fdc = new FormDataCommand();
+        HeadersCommand hc = new HeadersCommand();
+        JsonCommand jc = new JsonCommand();
+        MethodCommand mc = new MethodCommand();
+        OutputCommand oc = new OutputCommand();
+        ResponseVisibilityCommand rvc = new ResponseVisibilityCommand();
+        SaveCommand sc = new SaveCommand();
+        HelpCommand hp = new HelpCommand();
+        UploadCommand uc = new UploadCommand();
+        NameCommand nc = new NameCommand();
+    }
+
     public static ConsoleUI getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new ConsoleUI();
+            init();
+        }
         return instance;
     }
 
@@ -25,7 +41,7 @@ public class ConsoleUI {
 
     public Response ProcessCommand(String[] command) {
         Request request = Parser.commandToRequest(command);
-        if (request == null)
+        if (request == null || request.isEmpty())
             return null;
         return RequestManager.getInstance().sendRequest(request);
     }

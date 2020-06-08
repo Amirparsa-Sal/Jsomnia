@@ -15,27 +15,11 @@ public class RequestManager {
     public static RequestManager instance = null;
     private final String BOUNDARY = "--JSOMNIA--BOUNDARY";
     private boolean saveRequest = false;
-    private boolean output = false;
-    private String outputName;
 
     public static RequestManager getInstance() {
         if (instance == null)
             instance = new RequestManager();
         return instance;
-    }
-
-    private void resetManager() {
-        saveRequest = false;
-        output = false;
-        outputName = null;
-    }
-
-    public boolean isOutput() {
-        return output;
-    }
-
-    public void setOutput(boolean output) {
-        this.output = output;
     }
 
     public boolean isSaveRequest() {
@@ -46,17 +30,11 @@ public class RequestManager {
         this.saveRequest = saveRequest;
     }
 
-    public String getOutputName() {
-        return outputName;
-    }
-
-    public void setOutputName(String outputName) {
-        this.outputName = outputName;
-    }
-
     public Response sendRequest(Request request) {
         if (request.getName() == null)
             request.setName("Request " + (getNumberOfRequests() + 1));
+        if(request.getRequestMethod() == RequestMethod.UNKNOWN)
+            request.setRequestMethod(RequestMethod.GET);
         HttpURLConnection connection = null;
         Response response = null;
         if (request.getUrl() == null)
@@ -67,7 +45,10 @@ public class RequestManager {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(request.getRequestMethod().toString());
             connection.setInstanceFollowRedirects(request.getFollowRedirection());
-            connection.setRequestProperty("Content-Type", request.getContentType() + "; boundary=" + BOUNDARY);
+            if(request.getContentType().equals("multipart/form-data"))
+                connection.setRequestProperty("Content-Type", "multipart/form-data" + "; boundary=" + BOUNDARY);
+            else
+                connection.setRequestProperty("Content-Type", request.getContentType());
             for (RequestHeader requestHeader : request.getHeaders())
                 connection.setRequestProperty(requestHeader.getKey(), requestHeader.getValue());
             if (request.getRequestMethod() != RequestMethod.GET) {
@@ -77,16 +58,16 @@ public class RequestManager {
             }
             //working with response
             response = new Response();
+            response.setVisible(request.getResponseVisibility());
             long startTime = System.currentTimeMillis();
-            connection.getInputStream();
+            response.setHeaders(new HashMap<>(connection.getHeaderFields()));
             long finishTime = System.currentTimeMillis();
             response.setTime(finishTime - startTime);
-            response.setVisible(request.getResponseVisibility());
-            response.setHeaders(new HashMap<>(connection.getHeaderFields()));
+            response.setCode(connection.getResponseCode());
             BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
-            if (output) {
-                saveOutput(bufferedInputStream);
-                response.setBody("Response body saved in " + outputName);
+            if (request.isOutput()) {
+                saveOutput(bufferedInputStream,request);
+                response.setBody("Response body saved in " + request.getOutputName());
             } else {
                 byte[] bytes = new byte[1024];
                 int n = 0, sum = 0;
@@ -104,7 +85,7 @@ public class RequestManager {
         } catch (FileNotFoundException e) {
             try {
                 if (connection.getResponseCode() / 100 == 4)
-                    response.setBody("Cannot " + request.getRequestMethod().toString() + " this page(" + connection.getResponseMessage() + ")!");
+                    response.setBody("Cannot " + request.getRequestMethod().toString() + " this page!");
             } catch (IOException ex) {
                 ConsoleUI.getInstance().raiseError("Cannot " + request.getRequestMethod().toString() + " this page!");
             }
@@ -113,7 +94,7 @@ public class RequestManager {
         } catch (IOException e) {
             try {
                 if (connection.getResponseCode() / 100 == 4)
-                    response.setBody("Cannot " + request.getRequestMethod().toString() + " this page(" + connection.getResponseMessage() + ")!");
+                    response.setBody("Cannot " + request.getRequestMethod().toString() + " this page!");
             } catch (IOException ex) {
                 response.setBody("Cannot " + request.getRequestMethod().toString() + " this page!");
             }
@@ -122,6 +103,12 @@ public class RequestManager {
         }
         if (isSaveRequest())
             saveRequestInList(request);
+        if(request.getResponseVisibility() && response.getCode()/100==3){
+            setSaveRequest(false);
+            String url = connection.getHeaderField("Location");
+            request.setUrl(url);
+            response = sendRequest(request);
+        }
         return response;
     }
 
@@ -162,9 +149,9 @@ public class RequestManager {
         bufferedOutputStream.close();
     }
 
-    private void saveOutput(BufferedInputStream bufferedInputStream) {
+    private void saveOutput(BufferedInputStream bufferedInputStream,Request request) {
         BufferedOutputStream bufferedOutputStream = null;
-        File file = new File(outputName);
+        File file = new File(request.getOutputName());
         try {
             file.createNewFile();
             bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file));

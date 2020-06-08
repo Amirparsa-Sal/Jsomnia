@@ -18,6 +18,7 @@ public class Response {
         headers = new HashMap<>();
         String body = "";
         isVisible = false;
+        sizeUnit = "B";
     }
 
     public HashMap<String, List<String>> getHeaders() {
@@ -87,11 +88,10 @@ public class Response {
             }
             str += '\n';
         }
-        str += body + "\n\n";
-        if (body.substring(0, 5).equals("Body:")) {
-            str += "Time : " + time + " ms\n";
-            str += "Size : " + size + sizeUnit;
-        }
+        str += body;
+        str += "\n\n";
+        str += "Time : " + time + " ms\n";
+        str += "Size : " + size + " " + sizeUnit;
         return str;
     }
 }

@@ -29,12 +29,13 @@ public class Request implements Serializable {
     private String data;
     //body type
     private BodyType bodyType;
-
+    private boolean output = false;
+    private String outputName;
     /**
      * Constructor with no parameter
      */
     public Request() {
-        requestMethod = RequestMethod.GET;
+        requestMethod = RequestMethod.UNKNOWN;
         bodyType = BodyType.UNKNOWN;
         headers = new ArrayList<>();
     }
@@ -51,7 +52,21 @@ public class Request implements Serializable {
         bodyType = BodyType.UNKNOWN;
         headers = new ArrayList<>();
     }
+    public boolean isOutput() {
+        return output;
+    }
 
+    public void setOutput(boolean output) {
+        this.output = output;
+    }
+
+    public String getOutputName() {
+        return outputName;
+    }
+
+    public void setOutputName(String outputName) {
+        this.outputName = outputName;
+    }
     /**
      * Name getter
      *
@@ -193,6 +208,8 @@ public class Request implements Serializable {
                 "Method: " + requestMethod.toString() + " | " +
                 "response visibility: " + responseVisibility + " | " +
                 "follow redirect: " + followRedirection + " | " +
+                "Has output: " + output + " | " +
+                "Output name: " + outputName + " | " +
                 "data: " + data + " | " +
                 "body type: " + bodyType.toString() + " | ";
         str += "Headers: ";
@@ -212,7 +229,7 @@ public class Request implements Serializable {
     public HashMap<String, String> getFormDataPairs() {
         if (bodyType == BodyType.FORM_DATA) {
             HashMap<String, String> dataHashMap = new HashMap<>();
-            String[] pairs = data.substring(0, data.length() - 1).split("&");
+            String[] pairs = data.split("&");
             for (String pair : pairs) {
                 String[] splitedPairs = pair.split("=");
                 dataHashMap.put(splitedPairs[0], splitedPairs[1]);
@@ -222,6 +239,10 @@ public class Request implements Serializable {
         return null;
     }
 
+    public boolean isEmpty(){
+        return name==null && url==null && requestMethod == RequestMethod.UNKNOWN && headers.size()==0 && !responseVisibility && !followRedirection
+                && data==null && bodyType == BodyType.UNKNOWN && !output && outputName == null;
+    }
     public enum BodyType {
         FORM_DATA, JSON, BINARY_FILE, UNKNOWN
     }
