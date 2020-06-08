@@ -1,7 +1,6 @@
 package com.company.Console;
 
 import com.company.Logic.Request;
-import com.company.Logic.RequestManager;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

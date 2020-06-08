@@ -31,6 +31,7 @@ public class Request implements Serializable {
     private BodyType bodyType;
     private boolean output = false;
     private String outputName;
+
     /**
      * Constructor with no parameter
      */
@@ -52,6 +53,7 @@ public class Request implements Serializable {
         bodyType = BodyType.UNKNOWN;
         headers = new ArrayList<>();
     }
+
     public boolean isOutput() {
         return output;
     }
@@ -67,6 +69,7 @@ public class Request implements Serializable {
     public void setOutputName(String outputName) {
         this.outputName = outputName;
     }
+
     /**
      * Name getter
      *
@@ -223,6 +226,8 @@ public class Request implements Serializable {
             return "application/json";
         else if (bodyType == BodyType.BINARY_FILE)
             return "application/octet-stream";
+        else if(bodyType == BodyType.URL_ENCODED)
+            return "application/x-www-form-urlencoded";
         return "multipart/form-data";
     }
 
@@ -239,11 +244,12 @@ public class Request implements Serializable {
         return null;
     }
 
-    public boolean isEmpty(){
-        return name==null && url==null && requestMethod == RequestMethod.UNKNOWN && headers.size()==0 && !responseVisibility && !followRedirection
-                && data==null && bodyType == BodyType.UNKNOWN && !output && outputName == null;
+    public boolean isEmpty() {
+        return name == null && url == null && requestMethod == RequestMethod.UNKNOWN && headers.size() == 0 && !responseVisibility && !followRedirection
+                && data == null && bodyType == BodyType.UNKNOWN && !output && outputName == null;
     }
+
     public enum BodyType {
-        FORM_DATA, JSON, BINARY_FILE, UNKNOWN
+        FORM_DATA, JSON, BINARY_FILE,URL_ENCODED, UNKNOWN
     }
 }

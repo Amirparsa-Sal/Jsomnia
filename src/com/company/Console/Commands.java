@@ -27,14 +27,14 @@ public class Commands {
 
     public Command findCommandBySign(String sign) {
         for (Command command : commandsList)
-            if ((command.getLongSign() != null && command.getLongSign().equals(sign)) || (command.getOneLetterSign()!=null && command.getOneLetterSign().equals(sign)))
+            if ((command.getLongSign() != null && command.getLongSign().equals(sign)) || (command.getOneLetterSign() != null && command.getOneLetterSign().equals(sign)))
                 return command;
         return null;
     }
 
     public boolean isCommand(String sign) {
         for (Command command : commandsList)
-            if ((command.getLongSign() != null && command.getLongSign().equals(sign)) || (command.getOneLetterSign()!=null && command.getOneLetterSign().equals(sign)))
+            if ((command.getLongSign() != null && command.getLongSign().equals(sign)) || (command.getOneLetterSign() != null && command.getOneLetterSign().equals(sign)))
                 return true;
         return false;
     }

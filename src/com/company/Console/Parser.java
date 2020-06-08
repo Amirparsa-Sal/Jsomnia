@@ -2,8 +2,6 @@ package com.company.Console;
 
 import com.company.Logic.Request;
 import com.company.Logic.RequestHeader;
-import com.company.Logic.RequestManager;
-import com.company.Logic.Response;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,17 +20,16 @@ public class Parser {
             //finding next arg
             String nextArg = "";
             int n = 0;
-            for(int j=i+1; j<commandList.size();j++) {
-                if (commandList.get(j) != null && !Commands.getInstance().isCommand(commandList.get(j)) && !isMatch(commandList.get(j), "((http://|https://))?((W|w){3}.)?[a-zA-Z0-9.\\-_]+[.][a-zA-Z]+(/[a-zA-Z0-9.\\-_]+)*\\??(?:&?[^=&]*=[^=&]*)*")) {
+            for (int j = i + 1; j < commandList.size(); j++) {
+                if (commandList.get(j) != null && !Commands.getInstance().isCommand(commandList.get(j))) {
                     nextArg += commandList.get(j) + " ";
                     n++;
-                }
-                else
+                } else
                     break;
             }
             i += n;
-            if(!nextArg.equals(""))
-                nextArg = nextArg.substring(0,nextArg.length()-1);
+            if (!nextArg.equals(""))
+                nextArg = nextArg.substring(0, nextArg.length() - 1);
             //processing command
             Command command = Commands.getInstance().findCommandBySign(arg);
             if (command != null) {
@@ -48,8 +45,10 @@ public class Parser {
                     else {
                         command.execute(nextArg, request);
                     }
-                } else
+                } else {
                     command.execute(null, request);
+                    i -= n;
+                }
             } else if (isMatch(arg, "((http://|https://))?((W|w){3}.)?[a-zA-Z0-9.\\-_]+[.][a-zA-Z]+(/[a-zA-Z0-9.\\-_]+)*\\??(?:&?[^=&]*=[^=&]*)*"))
                 request.setUrl(commandList.get(i));
             else
@@ -60,14 +59,12 @@ public class Parser {
 
     public static ArrayList<RequestHeader> splitHeaders(String headers) {
         ArrayList<RequestHeader> list = new ArrayList<>();
-        System.out.println(headers);
-        if (headers.equals("\"\""))
+        if (headers.equals(""))
             return list;
-        String[] headersList = headers.substring(1, headers.length() - 1).split(";");
+        String[] headersList = headers.substring(0, headers.length()).split(";");
         for (String str : headersList) {
             int index = str.indexOf(':');
             list.add(new RequestHeader(str.substring(0, index), str.substring(index + 1)));
-            System.out.println(str.substring(0, index) + " " + str.substring(index + 1));
         }
         return list;
     }

@@ -13,8 +13,6 @@ public class FireCommand extends Command {
     @Override
     public void execute(String arg, Request request) {
         String[] syntax = arg.split(" ");
-        for(String str : syntax)
-            System.out.println(str);
         for (int i = 0; i < syntax.length; i++) {
             Request ourRequest = RequestManager.getInstance().loadRequestFromList(Integer.parseInt(syntax[i]));
             if (ourRequest == null)

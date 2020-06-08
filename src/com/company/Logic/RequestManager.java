@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 public class RequestManager {
 
+    private static final String PATH = "C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\";
     public static RequestManager instance = null;
     private final String BOUNDARY = "--JSOMNIA--BOUNDARY";
     private boolean saveRequest = false;
@@ -33,7 +34,7 @@ public class RequestManager {
     public Response sendRequest(Request request) {
         if (request.getName() == null)
             request.setName("Request " + (getNumberOfRequests() + 1));
-        if(request.getRequestMethod() == RequestMethod.UNKNOWN)
+        if (request.getRequestMethod() == RequestMethod.UNKNOWN)
             request.setRequestMethod(RequestMethod.GET);
         HttpURLConnection connection = null;
         Response response = new Response();
@@ -45,7 +46,7 @@ public class RequestManager {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(request.getRequestMethod().toString());
             connection.setInstanceFollowRedirects(request.getFollowRedirection());
-            if(request.getContentType().equals("multipart/form-data"))
+            if (request.getContentType().equals("multipart/form-data"))
                 connection.setRequestProperty("Content-Type", "multipart/form-data" + "; boundary=" + BOUNDARY);
             else
                 connection.setRequestProperty("Content-Type", request.getContentType());
@@ -65,7 +66,7 @@ public class RequestManager {
             response.setCode(connection.getResponseCode());
             BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
             if (request.isOutput()) {
-                saveOutput(bufferedInputStream,request);
+                saveOutput(bufferedInputStream, request);
                 response.setBody("Response body saved in " + request.getOutputName());
             } else {
                 byte[] bytes = new byte[1024];
@@ -102,11 +103,13 @@ public class RequestManager {
         }
         if (isSaveRequest())
             saveRequestInList(request);
-        if(request.getResponseVisibility() && response.getCode()/100==3){
+        if (request.getFollowRedirection() && response.getCode() / 100 == 3) {
             setSaveRequest(false);
             String url = connection.getHeaderField("Location");
-            request.setUrl(url);
-            response = sendRequest(request);
+            if(url!=null) {
+                request.setUrl(url);
+                response = sendRequest(request);
+            }
         }
         return response;
     }
@@ -143,12 +146,14 @@ public class RequestManager {
             while ((n = newBuffer.read(bytes)) > 0)
                 bufferedOutputStream.write(bytes, 0, n);
             newBuffer.close();
+        }else if(request.getBodyType() == Request.BodyType.URL_ENCODED){
+            bufferedOutputStream.write(request.getData().getBytes());
         }
         bufferedOutputStream.flush();
         bufferedOutputStream.close();
     }
 
-    private void saveOutput(BufferedInputStream bufferedInputStream,Request request) {
+    private void saveOutput(BufferedInputStream bufferedInputStream, Request request) {
         BufferedOutputStream bufferedOutputStream = null;
         File file = new File(request.getOutputName());
         try {
@@ -170,7 +175,7 @@ public class RequestManager {
     public int getNumberOfRequests() {
         int n = 0;
         for (int i = 1; ; i++) {
-            if (Files.exists(Paths.get("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + i + ".dat")))
+            if (Files.exists(Paths.get(PATH + "request" + i + ".dat")))
                 n++;
             else
                 break;
@@ -180,8 +185,8 @@ public class RequestManager {
 
     public void saveRequestInList(Request request) {
         File file = null;
-        if (!Files.exists(Paths.get("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + (getNumberOfRequests() + 1) + ".dat"))) {
-            file = new File("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + (getNumberOfRequests() + 1) + ".dat");
+        if (!Files.exists(Paths.get(PATH + "request" + (getNumberOfRequests() + 1) + ".dat"))) {
+            file = new File(PATH + "request" + (getNumberOfRequests() + 1) + ".dat");
             try {
                 file.createNewFile();
             } catch (IOException e) {
@@ -203,10 +208,10 @@ public class RequestManager {
         }
     }
 
-    public Request loadRequestFromList(int number) {
-        if (!Files.exists(Paths.get("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + number + ".dat")))
+    public Request loadRequestFromList(int requestNumber) {
+        if (!Files.exists(Paths.get(PATH + "request" + requestNumber + ".dat")))
             return null;
-        File file = new File("C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\" + "request" + number + ".dat");
+        File file = new File(PATH + "request" + requestNumber + ".dat");
         FileInputStream fileInputStream = null;
         Request request = null;
         try {
@@ -227,7 +232,24 @@ public class RequestManager {
         for (int i = 1; i <= getNumberOfRequests(); i++)
             System.out.println(i + ") " + loadRequestFromList(i));
     }
+
+    public boolean deleteRequestFromList(int requestNumber) {
+        File file = new File(PATH + "request" + requestNumber + ".dat");
+        return file.delete();
+    }
+
+    public void reArrangeList(int range) {
+        for (int i = 1; i <= range; i++) {
+            if (!Files.exists(Paths.get(PATH + "request" + i + ".dat"))) {
+                //finding nextFile
+                int nextRequestNumber = i + 1;
+                while (!Files.exists(Paths.get(PATH + "request" + nextRequestNumber + ".dat")) && nextRequestNumber < range)
+                    nextRequestNumber++;
+                //rename file
+                File nextRequestFile = new File(PATH + "request" + nextRequestNumber + ".dat");
+                nextRequestFile.renameTo(new File(PATH + "request" + i + ".dat"));
+            }
+        }
+    }
 }
-
-
 // files: image/png

@@ -1,7 +1,10 @@
 package com.company.Logic;
 
-public class RequestHeader {
+import java.io.Serializable;
 
+public class RequestHeader implements Serializable {
+
+    public static final long serialVersionUID = 1L;
     private String key;
     private String value;
 

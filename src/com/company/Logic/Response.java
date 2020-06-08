@@ -79,7 +79,7 @@ public class Response {
     public String toString() {
         String str = "";
         if (isVisible) {
-            if(headers.size()!=0) {
+            if (headers.size() != 0) {
                 str += "Headers:\n";
                 for (String key : headers.keySet()) {
                     str += key + " : ";
@@ -87,8 +87,7 @@ public class Response {
                         str += value;
                     str += '\n';
                 }
-            }
-            else
+            } else
                 str += "No header returned!\n";
             str += '\n';
         }
@@ -98,5 +97,4 @@ public class Response {
         str += "Size : " + size + " " + sizeUnit;
         return str;
     }
-
 }

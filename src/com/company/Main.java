@@ -1,7 +1,6 @@
 package com.company;
 
-import com.company.Console.*;
-import com.company.GUI.GUIManager;
+import com.company.Console.ConsoleUI;
 import com.company.Logic.Response;
 
 import javax.swing.*;
@@ -20,6 +19,7 @@ public class Main {
 //        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        GUIManager guiManager = GUIManager.getInstance();
 //        guiManager.showGUI();
+
         if (args.length == 0)
             return;
         ConsoleUI console = ConsoleUI.getInstance();

@@ -4,15 +4,14 @@ import com.company.Logic.Request;
 import com.company.Logic.RequestManager;
 import com.company.Logic.Response;
 
-import java.io.File;
 import java.util.Scanner;
 
 public class ConsoleUI {
 
     private static ConsoleUI instance = null;
-    private Scanner scanner;
+    private static Scanner scanner;
 
-    private static void init(){
+    private static void init() {
         FollowRedirectCommand frc = new FollowRedirectCommand();
         FormDataCommand fdc = new FormDataCommand();
         HeadersCommand hc = new HeadersCommand();
@@ -26,11 +25,14 @@ public class ConsoleUI {
         NameCommand nc = new NameCommand();
         FireCommand fc = new FireCommand();
         ListCommand lc = new ListCommand();
+        RemoveCommand rc = new RemoveCommand();
+        FormUrlEncodedCommand fue = new FormUrlEncodedCommand();
     }
 
     public static ConsoleUI getInstance() {
         if (instance == null) {
             instance = new ConsoleUI();
+            scanner = new Scanner(System.in);
             init();
         }
         return instance;
@@ -57,7 +59,8 @@ public class ConsoleUI {
         System.exit(-1);
     }
 
-    public void printFile(File file) {
-
+    public void exitWithMessage(String message){
+        print(message);
+        System.exit(-1);
     }
 }
