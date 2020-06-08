@@ -36,7 +36,7 @@ public class RequestManager {
         if(request.getRequestMethod() == RequestMethod.UNKNOWN)
             request.setRequestMethod(RequestMethod.GET);
         HttpURLConnection connection = null;
-        Response response = null;
+        Response response = new Response();
         if (request.getUrl() == null)
             ConsoleUI.getInstance().raiseError("You have not entered the request url!");
         try {
@@ -57,7 +57,6 @@ public class RequestManager {
                 setOutputStream(request, bufferedOutputStream);
             }
             //working with response
-            response = new Response();
             response.setVisible(request.getResponseVisibility());
             long startTime = System.currentTimeMillis();
             response.setHeaders(new HashMap<>(connection.getHeaderFields()));

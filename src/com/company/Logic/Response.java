@@ -79,13 +79,17 @@ public class Response {
     public String toString() {
         String str = "";
         if (isVisible) {
-            str += "Headers:\n";
-            for (String key : headers.keySet()) {
-                str += key + " : ";
-                for (String value : headers.get(key))
-                    str += value;
-                str += '\n';
+            if(headers.size()!=0) {
+                str += "Headers:\n";
+                for (String key : headers.keySet()) {
+                    str += key + " : ";
+                    for (String value : headers.get(key))
+                        str += value;
+                    str += '\n';
+                }
             }
+            else
+                str += "No header returned!\n";
             str += '\n';
         }
         str += body;
@@ -94,4 +98,5 @@ public class Response {
         str += "Size : " + size + " " + sizeUnit;
         return str;
     }
+
 }

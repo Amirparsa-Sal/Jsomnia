@@ -17,40 +17,36 @@ public class Parser {
         Request request = new Request();
         ArrayList<String> commandList = strArrToArrayList(syntax);
         commandList.add(null);
-        if (syntax.length == 1 && syntax[0].equals("list")) {
-            RequestManager.getInstance().showListOfRequests();
-            return null;
-        } else if (syntax[0].equals("fire")) {
-            for (int i = 1; i < syntax.length; i++) {
-                Request ourRequest = RequestManager.getInstance().loadRequestFromList(Integer.parseInt(syntax[i]));
-                if (ourRequest == null)
-                    ConsoleUI.getInstance().raiseError("Request " + syntax[i] + " not found!");
-                Response response = RequestManager.getInstance().sendRequest(ourRequest);
-                System.out.println("Request " + syntax[i] + ":");
-                if (response != null)
-                    ConsoleUI.getInstance().print(response.toString());
-                ConsoleUI.getInstance().print("------------------------------------");
-            }
-            return null;
-        }
         for (int i = 0; i < commandList.size() - 1; i++) {
             String arg = commandList.get(i);
-            String nextArg = commandList.get(i + 1);
+            //finding next arg
+            String nextArg = "";
+            int n = 0;
+            for(int j=i+1; j<commandList.size();j++) {
+                if (commandList.get(j) != null && !Commands.getInstance().isCommand(commandList.get(j)) && !isMatch(commandList.get(j), "((http://|https://))?((W|w){3}.)?[a-zA-Z0-9.\\-_]+[.][a-zA-Z]+(/[a-zA-Z0-9.\\-_]+)*\\??(?:&?[^=&]*=[^=&]*)*")) {
+                    nextArg += commandList.get(j) + " ";
+                    n++;
+                }
+                else
+                    break;
+            }
+            i += n;
+            if(!nextArg.equals(""))
+                nextArg = nextArg.substring(0,nextArg.length()-1);
+            //processing command
             Command command = Commands.getInstance().findCommandBySign(arg);
             if (command != null) {
                 if (command.getType() == Command.CommandType.MULTI_TYPE) {
-                    if (nextArg == null || Commands.getInstance().isCommand(nextArg))
+                    if (nextArg.equals("") || Commands.getInstance().isCommand(nextArg))
                         command.execute(null, request);
                     else {
                         command.execute(nextArg, request);
-                        i++;
                     }
                 } else if (command.getType() == Command.CommandType.ARGUMENTAL) {
-                    if (nextArg == null || Commands.getInstance().isCommand(nextArg))
+                    if (nextArg.equals("") || Commands.getInstance().isCommand(nextArg))
                         ConsoleUI.getInstance().raiseError("Invalid syntax: " + arg + " must take parameters");
                     else {
                         command.execute(nextArg, request);
-                        i++;
                     }
                 } else
                     command.execute(null, request);

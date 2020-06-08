@@ -24,6 +24,8 @@ public class ConsoleUI {
         HelpCommand hp = new HelpCommand();
         UploadCommand uc = new UploadCommand();
         NameCommand nc = new NameCommand();
+        FireCommand fc = new FireCommand();
+        ListCommand lc = new ListCommand();
     }
 
     public static ConsoleUI getInstance() {
