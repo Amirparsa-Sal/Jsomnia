@@ -10,6 +10,11 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
+    public static final String URL_REGEX = "((http://|https://))?((W|w){3}.)?[a-zA-Z0-9.\\-_]+[.][a-zA-Z]+(/[a-zA-Z0-9.\\-_]+)*\\??(?:&?[^=&]*=[^=&]*)*";
+    public static final String JSON_REGEX = "=[ ]*(\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\":\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\"[ ]*,[ ]*)*(\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\":\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\")[ ]*=";
+    public static final String HEADER_REGEX = "[ ]*([a-zA-Z0-9-\\\\:.\\[\\]]+:[a-zA-Z0-9-\\\\:.\\[\\]]+[ ]*;[ ]*)*([a-zA-Z0-9-\\\\:.\\[\\]]+:[a-zA-Z0-9-\\\\:.\\[\\]]+)[ ]*";
+    public static final String FORM_DATA_REGEX = "[ ]*([a-zA-Z0-9-\\\\:.\\[\\]]+=[a-zA-Z0-9-\\\\:.\\[\\]]+[ ]*&[ ]*)*([a-zA-Z0-9-\\\\:.\\[\\]]+=[a-zA-Z0-9-\\\\:.\\[\\]]+)[ ]*";
+
     public static Request commandToRequest(String[] syntax) {
         boolean flag = true;
         Request request = new Request();
@@ -49,7 +54,7 @@ public class Parser {
                     command.execute(null, request);
                     i -= n;
                 }
-            } else if (isMatch(arg, "((http://|https://))?((W|w){3}.)?[a-zA-Z0-9.\\-_]+[.][a-zA-Z]+(/[a-zA-Z0-9.\\-_]+)*\\??(?:&?[^=&]*=[^=&]*)*"))
+            } else if (isMatch(arg, URL_REGEX))
                 request.setUrl(commandList.get(i));
             else
                 ConsoleUI.getInstance().raiseError("Invalid syntax: " + arg + " is not defined");

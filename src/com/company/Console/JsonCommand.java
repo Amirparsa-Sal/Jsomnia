@@ -16,7 +16,7 @@ public class JsonCommand extends Command {
         String save = arg;
         arg = arg.replace('{', '=');
         arg = arg.replace('}', '=');
-        if (!Parser.isMatch(arg, "=[ ]*(\\\"[a-zA-Z0-9-]+\\\":\\\"[a-zA-Z0-9-]+\\\"[ ]*,[ ]*)*(\\\"[a-zA-Z0-9-]+\\\":\\\"[a-zA-Z0-9-]+\\\")[ ]*=")) {
+        if (!Parser.isMatch(arg, Parser.JSON_REGEX)) {
             ConsoleUI.getInstance().print("The json data is not in correct format[example: \"{'key1':'value1','key2':'value2'}\"]");
             ConsoleUI.getInstance().print("Are you sure you want to send the request?[Y/n]");
             String command = ConsoleUI.getInstance().getCommand();
