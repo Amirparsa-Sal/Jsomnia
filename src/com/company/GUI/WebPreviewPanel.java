@@ -36,7 +36,7 @@ public class WebPreviewPanel extends JPanel {
         this.bgColor = bgColor;
         this.setBackground(bgColor);
         this.setLayout(null);
-        this.setBounds(0,0,size.width,size.height);
+        this.setBounds(0, 0, size.width, size.height);
         try {
             jxBrowser = true;
             System.setProperty("jxbrowser.license.key", "6P830J66YANGBQZ5GSDTTDFQCJLV0YZFUGN295OS6OT8GJ5R494KQAU1GL0KVWNMJTUS");
@@ -49,10 +49,9 @@ public class WebPreviewPanel extends JPanel {
             this.setFocusable(false);
             this.add(view);
             browser.navigation().loadUrl("https://www.google.com");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             jxBrowser = false;
-            this.setBounds(0,0,size.width,size.height);
+            this.setBounds(0, 0, size.width, size.height);
             //web viewer
             try {
                 webViewer = new JEditorPane("https://www.google.com");
@@ -75,11 +74,11 @@ public class WebPreviewPanel extends JPanel {
      */
     public void reArrange() {
         int width = getWidth(), height = getHeight();
-        if(jxBrowser)
+        if (jxBrowser)
             view.setBounds(10, 10, width - 20, height - 20);
-        else{
-            webViewer.setBounds(10,10,width-20,height-20);
-            scrollPane.setBounds(10,10,width-20,height-20);
+        else {
+            webViewer.setBounds(10, 10, width - 20, height - 20);
+            scrollPane.setBounds(10, 10, width - 20, height - 20);
 
         }
     }

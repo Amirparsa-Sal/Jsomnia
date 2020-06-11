@@ -2,12 +2,27 @@ package com.company.Console;
 
 import com.company.Logic.Request;
 
+/**
+ * Represents the help command of ConsoleUI.
+ *
+ * @author Amirparsa Salmankhah
+ * @version 1.0.0
+ */
 public class HelpCommand extends Command {
 
+    /**
+     * Constructor with no parameter.
+     */
     public HelpCommand() {
         super("-h", "--help", Command.CommandType.NON_ARGUMENTAL);
     }
 
+    /**
+     * Executes the help command.
+     *
+     * @param arg     argument of the command
+     * @param request corresponding request
+     */
     @Override
     public void execute(String arg, Request request) {
         ConsoleUI.getInstance().print("-d --data <data> : adds multipart/form-data [example: -d \"key1=value1&key2=value2\"]\n" +

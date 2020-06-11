@@ -10,27 +10,58 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
+/**
+ * Represents a class for managing the requests.
+ *
+ * @author Amirparsa Salmankhah
+ * @version 1.0.0
+ */
 public class RequestManager {
 
+    //Output path
     private static final String PATH = "C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\";
+    //The only instance of the class
     public static RequestManager instance = null;
-    private final String BOUNDARY = "--JSOMNIA--BOUNDARY";
+    //Jsomnia boundary
+    public final String BOUNDARY = "--JSOMNIA--BOUNDARY";
+    //save request or not
     private boolean saveRequest = false;
 
+    /**
+     * Gets the only instance of the request manager.
+     *
+     * @return the only instance of the request manager
+     */
     public static RequestManager getInstance() {
         if (instance == null)
             instance = new RequestManager();
         return instance;
     }
 
+    /**
+     * Checks if the manager should save the request.
+     *
+     * @return true if yes and false if not
+     */
     public boolean isSaveRequest() {
         return saveRequest;
     }
 
+    /**
+     * Sets the save request property.
+     *
+     * @param saveRequest save request situation
+     */
     public void setSaveRequest(boolean saveRequest) {
         this.saveRequest = saveRequest;
     }
 
+    /**
+     * Sends the request
+     *
+     * @param request The request
+     * @return The response
+     */
     public Response sendRequest(Request request) {
         if (request.getName() == null)
             request.setName("Request " + (getNumberOfRequests() + 1));
@@ -38,18 +69,12 @@ public class RequestManager {
             request.setRequestMethod(RequestMethod.GET);
         HttpURLConnection connection = null;
         Response response = new Response();
-        if (request.getUrl() == null)
-            ConsoleUI.getInstance().raiseError("You have not entered the request url!");
         try {
             //sending request
             URL url = new URL(request.getUrl());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(request.getRequestMethod().toString());
             connection.setInstanceFollowRedirects(request.getFollowRedirection());
-            if (request.getContentType().equals("multipart/form-data"))
-                connection.setRequestProperty("Content-Type", "multipart/form-data" + "; boundary=" + BOUNDARY);
-            else
-                connection.setRequestProperty("Content-Type", request.getContentType());
             for (RequestHeader requestHeader : request.getHeaders())
                 connection.setRequestProperty(requestHeader.getKey(), requestHeader.getValue());
             if (request.getRequestMethod() != RequestMethod.GET) {
@@ -104,16 +129,23 @@ public class RequestManager {
         if (isSaveRequest())
             saveRequestInList(request);
         if (request.getFollowRedirection() && response.getCode() / 100 == 3) {
-            setSaveRequest(false);
             String url = connection.getHeaderField("Location");
             if (url != null) {
                 request.setUrl(url);
                 response = sendRequest(request);
             }
         }
+        setSaveRequest(false);
         return response;
     }
 
+    /**
+     * Sets the request output stream
+     *
+     * @param request              The request
+     * @param bufferedOutputStream Stream of the connection
+     * @throws IOException if bad data is written in buffered output stream.
+     */
     private void setOutputStream(Request request, BufferedOutputStream bufferedOutputStream) throws IOException {
         if (request.getData() == null)
             return;
@@ -153,7 +185,13 @@ public class RequestManager {
         bufferedOutputStream.close();
     }
 
-    private void saveOutput(BufferedInputStream bufferedInputStream, Request request) {
+    /**
+     * Saves the output of the request
+     *
+     * @param bufferedInputStream input stream of the connection
+     * @param request             The request
+     */
+    public void saveOutput(BufferedInputStream bufferedInputStream, Request request) {
         BufferedOutputStream bufferedOutputStream = null;
         File file = new File(request.getOutputName());
         try {
@@ -172,6 +210,11 @@ public class RequestManager {
         }
     }
 
+    /**
+     * Gets number of saved requests
+     *
+     * @return Number of saved requests
+     */
     public int getNumberOfRequests() {
         int n = 0;
         for (int i = 1; ; i++) {
@@ -183,6 +226,11 @@ public class RequestManager {
         return n;
     }
 
+    /**
+     * Saves the request in list
+     *
+     * @param request The request
+     */
     public void saveRequestInList(Request request) {
         File file = null;
         if (!Files.exists(Paths.get(PATH + "request" + (getNumberOfRequests() + 1) + ".dat"))) {
@@ -208,6 +256,12 @@ public class RequestManager {
         }
     }
 
+    /**
+     * Loads the request from the list
+     *
+     * @param requestNumber request number
+     * @return The request
+     */
     public Request loadRequestFromList(int requestNumber) {
         if (!Files.exists(Paths.get(PATH + "request" + requestNumber + ".dat")))
             return null;
@@ -228,16 +282,30 @@ public class RequestManager {
         return request;
     }
 
+    /**
+     * Shows the list of the requests
+     */
     public void showListOfRequests() {
         for (int i = 1; i <= getNumberOfRequests(); i++)
             System.out.println(i + ") " + loadRequestFromList(i));
     }
 
+    /**
+     * Deletes a request from the list
+     *
+     * @param requestNumber request number
+     * @return
+     */
     public boolean deleteRequestFromList(int requestNumber) {
         File file = new File(PATH + "request" + requestNumber + ".dat");
         return file.delete();
     }
 
+    /**
+     * Rearranges the request list
+     *
+     * @param range max range to rearrange
+     */
     public void reArrangeList(int range) {
         for (int i = 1; i <= range; i++) {
             if (!Files.exists(Paths.get(PATH + "request" + i + ".dat"))) {

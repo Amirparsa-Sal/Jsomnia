@@ -1,7 +1,6 @@
 package com.company;
 
 import com.company.Console.ConsoleUI;
-import com.company.GUI.GUIManager;
 import com.company.Logic.Response;
 
 import javax.swing.*;

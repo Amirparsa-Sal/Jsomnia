@@ -5,12 +5,27 @@ import com.company.Logic.RequestHeader;
 
 import java.util.ArrayList;
 
+/**
+ * Represents the header command of ConsoleUI.
+ *
+ * @author Amirparsa Salmankhah
+ * @version 1.0.0
+ */
 public class HeadersCommand extends Command {
 
+    /**
+     * Constructor with no parameter.
+     */
     public HeadersCommand() {
         super("-H", "--headers", CommandType.ARGUMENTAL);
     }
 
+    /**
+     * Executes the header command.
+     *
+     * @param arg     argument of the command
+     * @param request corresponding request
+     */
     @Override
     public void execute(String arg, Request request) {
         if (arg == null)
@@ -23,6 +38,7 @@ public class HeadersCommand extends Command {
                 ConsoleUI.getInstance().exitWithMessage("Sending request canceled!");
         }
         ArrayList<RequestHeader> headers = Parser.splitHeaders(arg);
-        request.setHeaders(headers);
+        for (RequestHeader header : headers)
+            request.addHeader(header);
     }
 }

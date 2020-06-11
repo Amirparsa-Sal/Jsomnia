@@ -4,12 +4,27 @@ import com.company.Logic.Request;
 import com.company.Logic.RequestManager;
 import com.company.Logic.Response;
 
+/**
+ * Represents the fire command of ConsoleUI.
+ *
+ * @author Amirparsa Salmankhah
+ * @version 1.0.0
+ */
 public class FireCommand extends Command {
 
+    /**
+     * Constructor with no parameter
+     */
     public FireCommand() {
         super(null, "fire", CommandType.ARGUMENTAL);
     }
 
+    /**
+     * Executes the fire command
+     *
+     * @param arg     argument of the command
+     * @param request corresponding request
+     */
     @Override
     public void execute(String arg, Request request) {
         String[] syntax = arg.split(" ");

@@ -8,13 +8,29 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Represents a class for parsing data.
+ *
+ * @author Amirparsa Salmankhah
+ * @version 1.0.0
+ */
 public class Parser {
 
+    //url regex
     public static final String URL_REGEX = "((http://|https://))?((W|w){3}.)?[a-zA-Z0-9.\\-_]+[.][a-zA-Z]+(/[a-zA-Z0-9.\\-_]+)*\\??(?:&?[^=&]*=[^=&]*)*";
-    public static final String JSON_REGEX = "=[ ]*(\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\":\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\"[ ]*,[ ]*)*(\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\":\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\")[ ]*=";
+    //header regex
     public static final String HEADER_REGEX = "[ ]*([a-zA-Z0-9-\\\\:.\\[\\]]+:[a-zA-Z0-9-\\\\:.\\[\\]]+[ ]*;[ ]*)*([a-zA-Z0-9-\\\\:.\\[\\]]+:[a-zA-Z0-9-\\\\:.\\[\\]]+)[ ]*";
+    //form data regex
     public static final String FORM_DATA_REGEX = "[ ]*([a-zA-Z0-9-\\\\:.\\[\\]]+=[a-zA-Z0-9-\\\\:.\\[\\]]+[ ]*&[ ]*)*([a-zA-Z0-9-\\\\:.\\[\\]]+=[a-zA-Z0-9-\\\\:.\\[\\]]+)[ ]*";
+    //json regex
+    public static final String JSON_REGEX = "=[ ]*(\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\":\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\"[ ]*,[ ]*)*(\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\":\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\")[ ]*=";
 
+    /**
+     * Gets the user command and converts it to a request.
+     *
+     * @param syntax User command
+     * @return Corresponding request
+     */
     public static Request commandToRequest(String[] syntax) {
         boolean flag = true;
         Request request = new Request();
@@ -62,6 +78,12 @@ public class Parser {
         return request;
     }
 
+    /**
+     * Splits the headers and makes an array list of headers.
+     *
+     * @param headers String of the headers
+     * @return Array list of request headers
+     */
     public static ArrayList<RequestHeader> splitHeaders(String headers) {
         ArrayList<RequestHeader> list = new ArrayList<>();
         if (headers.equals(""))
@@ -74,27 +96,25 @@ public class Parser {
         return list;
     }
 
-    public static String removeSpaces(String command) {
-        String newStr = "";
-        boolean check = true;
-        for (int i = 0; i < command.length(); i++) {
-            char c = command.charAt(i);
-            if (c == '"')
-                check = !check;
-            if (c != ' ')
-                newStr += c;
-            else if (check)
-                newStr += c;
-        }
-        return newStr;
-    }
-
+    /**
+     * Checks if an string is match with a pattern.
+     *
+     * @param str   The string
+     * @param regex The pattern
+     * @return True if yes and false if not
+     */
     public static boolean isMatch(String str, String regex) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();
     }
 
+    /**
+     * Converts an string array to array list of strings.
+     *
+     * @param strArr The string array
+     * @return an array list of strings
+     */
     public static ArrayList<String> strArrToArrayList(String[] strArr) {
         ArrayList<String> strings = new ArrayList<>();
         Collections.addAll(strings, strArr);

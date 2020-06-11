@@ -1,13 +1,29 @@
 package com.company.Console;
 
 import com.company.Logic.Request;
+import com.company.Logic.RequestHeader;
 
+/**
+ * Represents the form urlencoded command of ConsoleUI.
+ *
+ * @author Amirparsa Salmankhah
+ * @version 1.0.0
+ */
 public class FormUrlEncodedCommand extends Command {
 
+    /**
+     * Constructor with no parameter
+     */
     public FormUrlEncodedCommand() {
         super("-e", "--encoded", CommandType.ARGUMENTAL);
     }
 
+    /**
+     * Executes the form urlencoded command.
+     *
+     * @param arg     argument of the command
+     * @param request corresponding request
+     */
     @Override
     public void execute(String arg, Request request) {
         if (!Parser.isMatch(arg, Parser.FORM_DATA_REGEX)) {
@@ -19,5 +35,6 @@ public class FormUrlEncodedCommand extends Command {
         }
         request.setData(arg);
         request.setBodyType(Request.BodyType.URL_ENCODED);
+        request.addHeader(new RequestHeader("Content-Type", request.getContentType()));
     }
 }

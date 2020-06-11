@@ -29,7 +29,9 @@ public class Request implements Serializable {
     private String data;
     //body type
     private BodyType bodyType;
+    //has output
     private boolean output = false;
+    //output name
     private String outputName;
 
     /**
@@ -54,18 +56,38 @@ public class Request implements Serializable {
         headers = new ArrayList<>();
     }
 
+    /**
+     * Checks if request has output
+     *
+     * @return true if yes and false if not
+     */
     public boolean isOutput() {
         return output;
     }
 
+    /**
+     * Sets the existence of the output.
+     *
+     * @param output has output?
+     */
     public void setOutput(boolean output) {
         this.output = output;
     }
 
+    /**
+     * Gets the output name.
+     *
+     * @return Output name
+     */
     public String getOutputName() {
         return outputName;
     }
 
+    /**
+     * Sets the output name.
+     *
+     * @param outputName
+     */
     public void setOutputName(String outputName) {
         this.outputName = outputName;
     }
@@ -181,18 +203,38 @@ public class Request implements Serializable {
         this.followRedirection = followRedirection;
     }
 
+    /**
+     * Gets request body data
+     *
+     * @return Request body data
+     */
     public String getData() {
         return data;
     }
 
+    /**
+     * Sets request body data
+     *
+     * @param data Requst body data
+     */
     public void setData(String data) {
         this.data = data;
     }
 
+    /**
+     * Gets request body type
+     *
+     * @return
+     */
     public BodyType getBodyType() {
         return bodyType;
     }
 
+    /**
+     * Sets request body type
+     *
+     * @param bodyType
+     */
     public void setBodyType(BodyType bodyType) {
         this.bodyType = bodyType;
     }
@@ -204,6 +246,11 @@ public class Request implements Serializable {
      */
 
 
+    /**
+     * Makes an string from with request data.
+     *
+     * @return an string of request data.
+     */
     @Override
     public String toString() {
         String str = "name: " + name + " | " +
@@ -221,6 +268,11 @@ public class Request implements Serializable {
         return str;
     }
 
+    /**
+     * Gets the request content type.
+     *
+     * @return Content type of the request.(example : multipart/form-data)
+     */
     public String getContentType() {
         if (bodyType == BodyType.JSON)
             return "application/json";
@@ -231,6 +283,11 @@ public class Request implements Serializable {
         return "multipart/form-data";
     }
 
+    /**
+     * Makes an hash map from form data pairs.
+     *
+     * @return a hash map of form data pairs.
+     */
     public HashMap<String, String> getFormDataPairs() {
         if (bodyType == BodyType.FORM_DATA) {
             HashMap<String, String> dataHashMap = new HashMap<>();
@@ -244,11 +301,28 @@ public class Request implements Serializable {
         return null;
     }
 
+    /**
+     * Adds a header to the request.
+     *
+     * @param header The header
+     */
+    public void addHeader(RequestHeader header) {
+        headers.add(header);
+    }
+
+    /**
+     * Checks if the request is empty or not
+     *
+     * @return true if yes and false if not
+     */
     public boolean isEmpty() {
         return name == null && url == null && requestMethod == RequestMethod.UNKNOWN && headers.size() == 0 && !responseVisibility && !followRedirection
                 && data == null && bodyType == BodyType.UNKNOWN && !output && outputName == null;
     }
 
+    /**
+     * Represents a body type for the request
+     */
     public enum BodyType {
         FORM_DATA, JSON, BINARY_FILE, URL_ENCODED, UNKNOWN
     }
