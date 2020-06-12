@@ -75,6 +75,10 @@ public class RequestManager {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(request.getRequestMethod().toString());
             connection.setInstanceFollowRedirects(request.getFollowRedirection());
+            if(request.getBodyType()== Request.BodyType.FORM_DATA)
+                connection.setRequestProperty("Content-Type", "multipart/form-data" + "; boundary=" + RequestManager.getInstance().BOUNDARY);
+            else
+                connection.setRequestProperty("Content-Type", request.getContentType());
             for (RequestHeader requestHeader : request.getHeaders())
                 connection.setRequestProperty(requestHeader.getKey(), requestHeader.getValue());
             if (request.getRequestMethod() != RequestMethod.GET) {
@@ -89,10 +93,12 @@ public class RequestManager {
             long finishTime = System.currentTimeMillis();
             response.setTime(finishTime - startTime);
             response.setCode(connection.getResponseCode());
+            response.setResponseMessage(connection.getResponseMessage());
             BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
             if (request.isOutput()) {
                 saveOutput(bufferedInputStream, request);
                 response.setBody("Response body saved in " + request.getOutputName());
+                response.setSize(new File(request.getOutputName()).length());
             } else {
                 byte[] bytes = new byte[1024];
                 int n = 0, sum = 0;
@@ -112,7 +118,7 @@ public class RequestManager {
                 if (connection.getResponseCode() / 100 == 4)
                     response.setBody("Cannot " + request.getRequestMethod().toString() + " this page!");
             } catch (IOException ex) {
-                ConsoleUI.getInstance().raiseError("Cannot " + request.getRequestMethod().toString() + " this page!");
+                response.setBody("Cannot " + request.getRequestMethod().toString() + " this page!");
             }
         } catch (UnknownHostException e) {
             response.setBody("Cannot resolve host name! check the website address or your internet connection and try again!");
@@ -136,6 +142,8 @@ public class RequestManager {
             }
         }
         setSaveRequest(false);
+
+        request.setResponse(response);
         return response;
     }
 
@@ -248,7 +256,6 @@ public class RequestManager {
             objectOutputStream.flush();
             objectOutputStream.close();
             fileOutputStream.close();
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -320,4 +327,3 @@ public class RequestManager {
         }
     }
 }
-// files: image/png

@@ -1,10 +1,12 @@
-package com.company.Console;
+package com.company.Logic;
 
-import com.company.Logic.Request;
-import com.company.Logic.RequestHeader;
+import com.company.Console.Command;
+import com.company.Console.Commands;
+import com.company.Console.ConsoleUI;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,7 +25,6 @@ public class Parser {
     //form data regex
     public static final String FORM_DATA_REGEX = "[ ]*([a-zA-Z0-9-\\\\:.\\[\\]]+=[a-zA-Z0-9-\\\\:.\\[\\]]+[ ]*&[ ]*)*([a-zA-Z0-9-\\\\:.\\[\\]]+=[a-zA-Z0-9-\\\\:.\\[\\]]+)[ ]*";
     //json regex
-    public static final String JSON_REGEX = "=[ ]*(\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\":\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\"[ ]*,[ ]*)*(\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\":\\\"[a-zA-Z0-9-\\\\:.\\[\\]]+\\\")[ ]*=";
 
     /**
      * Gets the user command and converts it to a request.
@@ -119,5 +120,46 @@ public class Parser {
         ArrayList<String> strings = new ArrayList<>();
         Collections.addAll(strings, strArr);
         return strings;
+    }
+
+    /**
+     * Converts form data hash map to string
+     * @param map form data hash map
+     * @return form data string
+     */
+    public static String splitFormDataMap(LinkedHashMap <String,String> map){
+        String data = "";
+        if(map.size()==0)
+            return data;
+        for(String key : map.keySet())
+            data += key + "=" + map.get(key) + "&";
+        return data.substring(0,data.length()-1);
+    }
+
+    /**
+     * Converts headers array list to linked hash map
+     * @param list headers list
+     * @return headers linked hash map
+     */
+    public static LinkedHashMap<String,String> headersListToMap(ArrayList<RequestHeader> list){
+        LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        for(RequestHeader requestHeader : list)
+            map.put(requestHeader.getKey(),requestHeader.getValue());
+        return map;
+    }
+
+    /**
+     * Converts form data string to linked hash map
+     * @param data form data string
+     * @return form data linked hash map
+     */
+    public static LinkedHashMap<String,String> formDataToMap(String data){
+        LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        if(data=="")
+            return map;
+        String[] pairs = data.split("&");
+        for(String pair : pairs)
+            map.put(pair.split("=")[0],pair.split("=")[1]);
+        return map;
     }
 }

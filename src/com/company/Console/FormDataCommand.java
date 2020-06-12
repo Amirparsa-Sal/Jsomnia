@@ -1,5 +1,6 @@
 package com.company.Console;
 
+import com.company.Logic.Parser;
 import com.company.Logic.Request;
 import com.company.Logic.RequestHeader;
 import com.company.Logic.RequestManager;
@@ -34,7 +35,6 @@ public class FormDataCommand extends Command {
             if (!command.equals("Y"))
                 ConsoleUI.getInstance().exitWithMessage("Sending request canceled!");
         }
-        request.addHeader(new RequestHeader("Content-Type", "multipart/form-data" + "; boundary=" + RequestManager.getInstance().BOUNDARY));
         request.setData(arg);
         request.setBodyType(Request.BodyType.FORM_DATA);
     }

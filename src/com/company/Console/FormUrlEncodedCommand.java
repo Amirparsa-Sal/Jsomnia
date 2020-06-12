@@ -1,5 +1,6 @@
 package com.company.Console;
 
+import com.company.Logic.Parser;
 import com.company.Logic.Request;
 import com.company.Logic.RequestHeader;
 
@@ -35,6 +36,6 @@ public class FormUrlEncodedCommand extends Command {
         }
         request.setData(arg);
         request.setBodyType(Request.BodyType.URL_ENCODED);
-        request.addHeader(new RequestHeader("Content-Type", request.getContentType()));
+
     }
 }

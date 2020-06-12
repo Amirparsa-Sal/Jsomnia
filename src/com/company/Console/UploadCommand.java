@@ -33,6 +33,5 @@ public class UploadCommand extends Command {
             ConsoleUI.getInstance().raiseError("File not found! Please enter a valid absolute path.");
         request.setBodyType(Request.BodyType.BINARY_FILE);
         request.setData(arg);
-        request.addHeader(new RequestHeader("Content-Type", request.getContentType()));
     }
 }

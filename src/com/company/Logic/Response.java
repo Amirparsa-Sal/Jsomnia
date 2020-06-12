@@ -1,5 +1,7 @@
 package com.company.Logic;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,8 +11,9 @@ import java.util.List;
  * @author Amirparsa Salmankhah
  * @version 1.0.0
  */
-public class Response {
+public class Response implements Serializable {
 
+    public static final long serialVersionUID = 1L;
     //response headers
     private HashMap<String, List<String>> headers;
     //response body
@@ -25,6 +28,8 @@ public class Response {
     private boolean isVisible;
     //response size unit (B or KB)
     private String sizeUnit;
+    //response message
+    private String responseMessage;
 
     /**
      * Constructor with no parameter
@@ -176,5 +181,38 @@ public class Response {
         str += "Time : " + time + " ms\n";
         str += "Size : " + size + " " + sizeUnit;
         return str;
+    }
+
+    /**
+     * Gets response content type
+     * @return response content type
+     */
+    public String getContentType(){
+        ArrayList<String> list = new ArrayList<>(getHeaders().get("Content-Type"));
+        return list.get(0).split(";")[0];
+    }
+
+    /**
+     * gets response message
+     * @return response message
+     */
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    /**
+     * Sets response message
+     * @param responseMessage response message
+     */
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
+    }
+
+    /**
+     * gets response size unit
+     * @return response size unit
+     */
+    public String getSizeUnit() {
+        return sizeUnit;
     }
 }

@@ -1,5 +1,6 @@
 package com.company.Console;
 
+import com.company.Logic.Parser;
 import com.company.Logic.Request;
 import com.company.Logic.RequestHeader;
 

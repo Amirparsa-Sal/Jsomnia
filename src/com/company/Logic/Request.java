@@ -33,6 +33,8 @@ public class Request implements Serializable {
     private boolean output = false;
     //output name
     private String outputName;
+    //response
+    private Response response;
 
     /**
      * Constructor with no parameter
@@ -40,6 +42,7 @@ public class Request implements Serializable {
     public Request() {
         requestMethod = RequestMethod.UNKNOWN;
         bodyType = BodyType.UNKNOWN;
+        data = "";
         headers = new ArrayList<>();
     }
 
@@ -125,7 +128,9 @@ public class Request implements Serializable {
      * @param url URL of the request
      */
     public void setUrl(String url) {
-        if (url.substring(0, 7).equals("http://") || url.substring(0, 8).equals("https://"))
+        if(url.equals("http://") || url.equals("https://"))
+            return;
+        if (url.length()>8 && (url.substring(0, 7).equals("http://") || url.substring(0, 8).equals("https://")))
             this.url = url;
         else
             this.url = "http://" + url;
@@ -289,9 +294,12 @@ public class Request implements Serializable {
      * @return a hash map of form data pairs.
      */
     public HashMap<String, String> getFormDataPairs() {
+        if(data.equals(""))
+            return new HashMap<String,String>();
         if (bodyType == BodyType.FORM_DATA) {
             HashMap<String, String> dataHashMap = new HashMap<>();
             String[] pairs = data.split("&");
+            System.out.println(pairs.length);
             for (String pair : pairs) {
                 String[] splitedPairs = pair.split("=");
                 dataHashMap.put(splitedPairs[0], splitedPairs[1]);
@@ -317,13 +325,29 @@ public class Request implements Serializable {
      */
     public boolean isEmpty() {
         return name == null && url == null && requestMethod == RequestMethod.UNKNOWN && headers.size() == 0 && !responseVisibility && !followRedirection
-                && data == null && bodyType == BodyType.UNKNOWN && !output && outputName == null;
+                && data == "" && bodyType == BodyType.UNKNOWN && !output && outputName == null;
+    }
+
+    /**
+     * Gets request's last response
+     * @return request's last response
+     */
+    public Response getResponse() {
+        return response;
+    }
+
+    /**
+     * Sets request response
+     * @param response request's response
+     */
+    public void setResponse(Response response) {
+        this.response = response;
     }
 
     /**
      * Represents a body type for the request
      */
     public enum BodyType {
-        FORM_DATA, JSON, BINARY_FILE, URL_ENCODED, UNKNOWN
+        FORM_DATA, JSON, BINARY_FILE, URL_ENCODED, UNKNOWN;
     }
 }
