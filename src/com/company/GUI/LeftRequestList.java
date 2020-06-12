@@ -1,6 +1,8 @@
 package com.company.GUI;
 
+import com.company.Logic.Parser;
 import com.company.Logic.Request;
+import com.company.Logic.RequestManager;
 import com.company.Logic.RequestMethod;
 
 import javax.swing.*;
@@ -41,6 +43,8 @@ public class LeftRequestList extends JPanel {
     private JPanel panelsPanel;
     //New request Dialog
     private RequestDialog requestDialog;
+    //Selected request
+    private Request selectedRequest;
 
     /**
      * Constructor with 4 parameters
@@ -53,6 +57,7 @@ public class LeftRequestList extends JPanel {
     public LeftRequestList(int x, int y, Dimension size, Color bgColor) {
         super();
         //init panel
+        selectedRequest = null;
         isFiltered = false;
         this.setLayout(null);
         this.setBounds(x, y, size.width, size.height);
@@ -144,6 +149,36 @@ public class LeftRequestList extends JPanel {
         GUIManager.getInstance().getFrame().dispatchEvent(new ComponentEvent(GUIManager.getInstance().getFrame(), ComponentEvent.COMPONENT_RESIZED));
         newRequestPanel.addMouseListener(new MouseAdapter() {
             @Override
+            public void mouseClicked(MouseEvent e) {
+                SwingWorker worker = new SwingWorker() {
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        GUIManager.getInstance().getCenter().fillRequestData(false);
+                        GUIManager.getInstance().getRight().reset();
+                        selectedRequest = allRequestPanels.get(e.getComponent());
+                        GUIManager.getInstance().getCenter().reset();
+                        GUIManager.getInstance().getCenter().setUrl(selectedRequest.getUrl());
+                        GUIManager.getInstance().getCenter().setMethod(selectedRequest.getRequestMethod().toString());
+                        GUIManager.getInstance().getCenter().setSetHeadersPanelContent(Parser.headersListToMap(selectedRequest.getHeaders()));
+                        if(selectedRequest.getBodyType() == Request.BodyType.FORM_DATA){
+                            GUIManager.getInstance().getCenter().getSecondTabs().setSelectedIndex(0);
+                            GUIManager.getInstance().getCenter().setSetFormDataPanelContent(Parser.formDataToMap(selectedRequest.getData()));
+                        }
+                        else if(selectedRequest.getBodyType()== Request.BodyType.JSON){
+                            GUIManager.getInstance().getCenter().getSecondTabs().setSelectedIndex(1);
+                            GUIManager.getInstance().getCenter().setBodyPanelText(selectedRequest.getData());
+                        }
+                        else if(selectedRequest.getBodyType() == Request.BodyType.BINARY_FILE){
+                            GUIManager.getInstance().getCenter().getSecondTabs().setSelectedIndex(2);
+                            GUIManager.getInstance().getCenter().setFileName(selectedRequest.getData());
+                        }
+                        GUIManager.getInstance().getRight().setResponse(selectedRequest.getResponse());
+                        return null;
+                    }
+                };
+                worker.execute();
+            }
+            @Override
             public void mouseEntered(MouseEvent e) {
                 e.getComponent().setBackground(Color.BLACK);
             }
@@ -156,6 +191,7 @@ public class LeftRequestList extends JPanel {
                 else
                     e.getComponent().setBackground(new Color(bgColor.getRed() + 10, bgColor.getGreen() + 10, bgColor.getBlue() + 10));
             }
+
         });
 
     }
@@ -198,6 +234,18 @@ public class LeftRequestList extends JPanel {
         }
     }
 
+    public LinkedHashMap<JPanel, Request> getFilteredRequestPanels() {
+        return filteredRequestPanels;
+    }
+
+    public LinkedHashMap<JPanel, Request> getAllRequestPanels() {
+        return allRequestPanels;
+    }
+
+    public boolean isFiltered() {
+        return isFiltered;
+    }
+
     /**
      * Filters the request
      *
@@ -215,6 +263,14 @@ public class LeftRequestList extends JPanel {
             }
         }
         reArrange();
+    }
+
+    public void setSelectedRequest(Request selectedRequest) {
+        this.selectedRequest = selectedRequest;
+    }
+
+    public Request getSelectedRequest() {
+        return selectedRequest;
     }
 
     /**
@@ -259,6 +315,11 @@ public class LeftRequestList extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             JPanel panel = (JPanel) ((JButton) e.getSource()).getParent();
+            if(selectedRequest == allRequestPanels.get(panel)) {
+                selectedRequest = null;
+                GUIManager.getInstance().getCenter().reset();
+                GUIManager.getInstance().getRight().reset();
+            }
             allRequestPanels.remove(panel);
             for (Component jPanel : LeftRequestList.this.getComponents()) {
                 if (jPanel.equals(panel)) {

@@ -137,6 +137,10 @@ public class GUIManager {
         right.reArrange();
     }
 
+    public LeftRequestList getLeft() {
+        return left;
+    }
+
     /**
      * Main frame getter
      *
@@ -261,5 +265,13 @@ public class GUIManager {
                 reArrange();
             }
         });
+    }
+
+    public CenterPanel getCenter() {
+        return center;
+    }
+
+    public RightResponsePanel getRight(){
+        return right;
     }
 }

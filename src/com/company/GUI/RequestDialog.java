@@ -105,7 +105,13 @@ public class RequestDialog extends JFrame {
             String requestName = requestNameField.getText();
             if (!requestName.equals("")) {
                 String requestMethod = ((String) requestMethodBox.getSelectedItem());
-                leftBar.addToReqList(new Request(requestName, RequestMethod.valueOf(requestMethod)));
+                Request request = new Request(requestName, RequestMethod.valueOf(requestMethod));
+                leftBar.addToReqList(request);
+                GUIManager.getInstance().getCenter().fillRequestData(false);
+                GUIManager.getInstance().getCenter().reset();
+                GUIManager.getInstance().getCenter().setMethod(requestMethod);
+                GUIManager.getInstance().getRight().reset();
+                leftBar.setSelectedRequest(request);
                 clear();
                 setVisible(false);
             }

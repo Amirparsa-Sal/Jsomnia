@@ -1,5 +1,7 @@
 package com.company.GUI;
 
+import com.company.Logic.Response;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
@@ -48,15 +50,15 @@ public class RightResponsePanel extends JPanel {
         this.setBackground(bgColor);
         this.setBorder(new LineBorder(new Color(85, 85, 85), 1));
         //init labels
-        statusLabel = new JLabel("200 OK", SwingConstants.CENTER);
+        statusLabel = new JLabel("0 Unknown", SwingConstants.CENTER);
         statusLabel.setOpaque(true);
-        statusLabel.setBackground(new Color(0, 75, 0));
+        statusLabel.setBackground(Color.GRAY);
         statusLabel.setForeground(Color.WHITE);
-        timeLabel = new JLabel("6.51 s", SwingConstants.CENTER);
+        timeLabel = new JLabel("0 s", SwingConstants.CENTER);
         timeLabel.setOpaque(true);
         timeLabel.setBackground(Color.GRAY);
         timeLabel.setForeground(Color.WHITE);
-        sizeLabel = new JLabel("7.56 KB", SwingConstants.CENTER);
+        sizeLabel = new JLabel("0 B", SwingConstants.CENTER);
         sizeLabel.setOpaque(true);
         sizeLabel.setBackground(Color.GRAY);
         sizeLabel.setForeground(Color.WHITE);
@@ -90,9 +92,9 @@ public class RightResponsePanel extends JPanel {
     public void reArrange() {
         int width = getWidth(), height = getHeight();
         rawTextPanel.setBounds(10, 10, width - 20, height - 120);
-        statusLabel.setBounds(10, 0, width / 6, 40);
-        timeLabel.setBounds(width / 6 + 20, 0, width / 6, 40);
-        sizeLabel.setBounds(width * 2 / 6 + 30, 0, width / 6, 40);
+        statusLabel.setBounds(10, 0, width / 3, 40);
+        timeLabel.setBounds(width / 3 + 20, 0, width / 6, 40);
+        sizeLabel.setBounds(width * 1 / 2 + 30, 0, width / 6, 40);
         tabs.setBounds(10, 50, width - 20, height - 60);
         rawTextPanel.reArrange();
         webViewer.reArrange();
@@ -105,5 +107,34 @@ public class RightResponsePanel extends JPanel {
         public void stateChanged(ChangeEvent e) {
             GUIManager.getInstance().getFrame().requestFocus();
         }
+    }
+
+    public void setResponse(Response response){
+        reset();
+        rawTextPanel.setText(response.getBody());
+        for(String key : response.getHeaders().keySet()){
+            String values = "";
+            for(String value : response.getHeaders().get(key))
+                values += value + " ";
+            headersTablePanel.addRow(key,values);
+        }
+        webViewer.setPreview(response);
+        statusLabel.setText(response.getCode() +  " " + response.getResponseMessage());
+        timeLabel.setText(Long.toString(response.getTime()) + " ms");
+        sizeLabel.setText(Double.toString(response.getSize()) + " " + response.getSizeUnit());
+        if(response.getCode()/100==2)
+            statusLabel.setBackground(new Color(0, 75, 0));
+        else if(response.getCode()/100==3)
+            statusLabel.setBackground(Color.ORANGE);
+        else if(response.getCode()/100==4)
+            statusLabel.setBackground(Color.RED);
+    }
+    public void reset(){
+        rawTextPanel.setText("");
+        headersTablePanel.reset();
+        webViewer.reset();
+        statusLabel.setText("0 Unknown");
+        timeLabel.setText("0 s");
+        sizeLabel.setText("0 B");
     }
 }

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Represents a class for setting headers
@@ -24,15 +25,22 @@ public class SetHeadersPanel extends JPanel {
     private JScrollPane scrollPane;
     //Panel of panels
     private JPanel headersPanel;
+    //left text
+    private String leftText;
+    //right
+    private String rightText;
 
     /**
      * Constructor with 2 parameters
-     *
+     * @param leftText           key of the header
+     * @param rightText          Value of the header
      * @param bgColor Background color of the panel
      * @param size    Size of the panel
      */
-    public SetHeadersPanel(Color bgColor, Dimension size) {
+    public SetHeadersPanel(String leftText, String rightText, Color bgColor, Dimension size) {
         //init
+        this.leftText = leftText;
+        this.rightText = rightText;
         panels = new ArrayList<>();
         this.bgColor = bgColor;
         this.setLayout(null);
@@ -45,6 +53,7 @@ public class SetHeadersPanel extends JPanel {
         scrollPane.getViewport().add(headersPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.getViewport().setBackground(bgColor);
+        addHeader(false,false);
         this.add(scrollPane);
         headersPanel.setBounds(10, 10, size.width - 20, size.height - 90);
         scrollPane.setBounds(10, 10, size.width - 20, size.height - 90);
@@ -53,12 +62,10 @@ public class SetHeadersPanel extends JPanel {
     /**
      * Adds a header to the list
      *
-     * @param leftText           key of the header
-     * @param rightText          Value of the header
      * @param checkBoxVisibility Check box visibility
      * @param buttonVisibility   Delete button visibility
      */
-    public void addHeader(String leftText, String rightText, boolean checkBoxVisibility, boolean buttonVisibility) {
+    public void addHeader(boolean checkBoxVisibility, boolean buttonVisibility) {
         Color color = new Color(bgColor.getRed() - 10, bgColor.getGreen() - 10, bgColor.getBlue() - 10);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
@@ -69,6 +76,7 @@ public class SetHeadersPanel extends JPanel {
         value.setBackground(color);
         value.setForeground(Color.WHITE);
         JCheckBox checkBox = new JCheckBox("Use");
+        checkBox.setSelected(true);
         checkBox.setVisible(checkBoxVisibility);
         JButton deleteButton = new JButton("×");
         deleteButton.setBackground(Color.RED);
@@ -90,7 +98,7 @@ public class SetHeadersPanel extends JPanel {
                     if (!panel.getComponent(2).isVisible()) {
                         panel.getComponent(2).setVisible(true);
                         panel.getComponent(3).setVisible(true);
-                        SetHeadersPanel.this.addHeader("New header", "New value", false, false);
+                        SetHeadersPanel.this.addHeader(false, false);
                     }
                 }
             }
@@ -103,7 +111,7 @@ public class SetHeadersPanel extends JPanel {
                     if (!panel.getComponent(2).isVisible()) {
                         panel.getComponent(2).setVisible(true);
                         panel.getComponent(3).setVisible(true);
-                        SetHeadersPanel.this.addHeader("New header", "New value", false, false);
+                        SetHeadersPanel.this.addHeader( false, false);
                     }
                 }
             }
@@ -127,6 +135,45 @@ public class SetHeadersPanel extends JPanel {
         }
     }
 
+    public LinkedHashMap<String,String> getMap(boolean checkBoxEffect){
+        LinkedHashMap<String,String> map = new LinkedHashMap<>();
+        for(JPanel panel : panels) {
+            String leftText = ((JTextField) panel.getComponent(0)).getText();
+            String rightText = ((JTextField) panel.getComponent(1)).getText();
+            if(checkBoxEffect) {
+                if (!this.leftText.equals(leftText) && !this.rightText.equals(rightText) && ((JCheckBox) panel.getComponent(2)).isSelected())
+                    map.put(leftText, rightText);
+            }
+            else{
+                if (!this.leftText.equals(leftText) && !this.rightText.equals(rightText))
+                    map.put(leftText, rightText);
+            }
+        }
+        return map;
+    }
+
+    public void setFields(LinkedHashMap<String,String> map){
+        reset();
+        headersPanel.remove(0);
+        panels.remove(0);
+        int i = 0;
+        for(String key : map.keySet()){
+            addHeader(true,true);
+            ((JTextField)panels.get(i).getComponent(0)).setText(key);
+            ((JTextField)panels.get(i).getComponent(1)).setText(map.get(key));
+            i++;
+        }
+        addHeader(false,false);
+    }
+
+    public void reset(){
+        for(Component c : headersPanel.getComponents()) {
+            headersPanel.remove(c);
+            panels.remove((JPanel) c);
+        }
+        addHeader(false,false);
+        reArrange();
+    }
     private class DeleteButtonListener implements ActionListener {
 
         @Override

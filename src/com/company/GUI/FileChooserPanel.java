@@ -76,11 +76,28 @@ public class FileChooserPanel extends JPanel {
         addressField.setMinimumSize(new Dimension(addressField.getParent().getWidth(), addressField.getParent().getHeight() / 2));
     }
 
+    public void reset(){
+        addressField.setText("No file selected");
+    }
+
+    public String getCurrentFileName(){
+        if(addressField.getText().equals("No file selected"))
+            return null;
+        return addressField.getText();
+    }
+
+    public void setFileName(String name){
+        if(name.equals(""))
+            addressField.setText("No file selected");
+        else
+            addressField.setText(name);
+    }
+
     private class ResetListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            addressField.setText("No file selected");
+            FileChooserPanel.this.reset();
         }
     }
 

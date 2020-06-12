@@ -45,11 +45,9 @@ public class HeadersTablePanel extends JPanel {
                 return false;
             }
         };
-        this.addRow("Title", "Jsomnia");
-        this.addRow("Time", "04:25");
-        this.addRow("Mode", "Plain Text");
         //scroll
         scrollPane = new JScrollPane(headersTable);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setBackground(bgColor);
         scrollPane.getViewport().setBackground(bgColor);
         scrollPane.getViewport().setFocusable(true);
@@ -74,7 +72,7 @@ public class HeadersTablePanel extends JPanel {
         scrollPane.setBounds(10, 10, width - 20, height - 120);
     }
 
-    private void addRow(String name, String value) {
+    public void addRow(String name, String value) {
         DefaultTableModel dtm = (DefaultTableModel) headersTable.getModel();
         dtm.addRow(new Object[]{name, value});
         numOfRows++;
@@ -91,5 +89,11 @@ public class HeadersTablePanel extends JPanel {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
         }
+    }
+    public void reset(){
+        DefaultTableModel dtm = (DefaultTableModel) headersTable.getModel();
+        for(int i=numOfRows-1;i>=0;i--)
+            dtm.removeRow(i);
+        numOfRows = 0;
     }
 }
