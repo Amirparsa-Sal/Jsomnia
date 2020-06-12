@@ -4,6 +4,7 @@ import com.company.Console.Command;
 import com.company.Console.Commands;
 import com.company.Console.ConsoleUI;
 
+import org.json.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -161,5 +162,23 @@ public class Parser {
         for(String pair : pairs)
             map.put(pair.split("=")[0],pair.split("=")[1]);
         return map;
+    }
+
+    /**
+     * Checks if the string is a valid json or not
+     * @param json The json string
+     * @return true if yes and false if not
+     */
+    public static boolean isJson(String json){
+        try {
+            new JSONObject(json);
+        } catch (JSONException ex) {
+            try {
+                new JSONArray(json);
+            } catch (JSONException ex1) {
+                return false;
+            }
+        }
+        return true;
     }
 }

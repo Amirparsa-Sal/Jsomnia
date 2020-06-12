@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class RequestManager {
 
     //Output path
-    private static final String PATH = "C:\\Users\\Adak\\Desktop\\CE AUT\\Term 2\\Advanced Programming\\HW\\Projects\\MidTerm\\Data\\";
+    private static final String PATH = ".\\Data\\";
     //The only instance of the class
     public static RequestManager instance = null;
     //Jsomnia boundary
