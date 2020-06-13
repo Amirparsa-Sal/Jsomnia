@@ -57,11 +57,7 @@ public class GUIManager {
         left = new LeftRequestList(0, 20, new Dimension(200, size.height - 25), bgColor);
         center = new CenterPanel(200, 20, new Dimension((size.width - 200) / 2, size.height - 25), bgColor);
         this.showSplashScreen();
-        try {
-            right = new RightResponsePanel(200 + (size.width - 200) / 2, 20, bgColor, new Dimension((size.width - 200) / 2, size.height - 25));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        right = new RightResponsePanel(200 + (size.width - 200) / 2, 20, bgColor, new Dimension((size.width - 200) / 2, size.height - 25));
         optionFrame = new OptionFrame();
         frame.getLayeredPane().add(left, 1);
         frame.getLayeredPane().add(center, 2);
@@ -71,7 +67,9 @@ public class GUIManager {
             @Override
             protected Object doInBackground() throws Exception {
                 for (int i = 1; i <= RequestManager.getInstance().getNumberOfRequests(); i++)
-                    left.addToReqList(RequestManager.getInstance().loadRequestFromList(i));
+                    left.addToReqList(RequestManager.getInstance().loadRequestFromList(i), false);
+                left.reArrange();
+                GUIManager.getInstance().getFrame().dispatchEvent(new ComponentEvent(GUIManager.getInstance().getFrame(), ComponentEvent.COMPONENT_RESIZED));
                 return null;
             }
         };
@@ -163,6 +161,8 @@ public class GUIManager {
 
     /**
      * Main frame setter
+     *
+     * @param frame new frame
      */
     public void setFrame(JFrame frame) {
         this.frame = frame;
@@ -179,6 +179,8 @@ public class GUIManager {
 
     /**
      * fullscreen mode setter
+     *
+     * @param fullScreen is full screen?
      */
     public void setFullScreen(boolean fullScreen) {
         isFullScreen = fullScreen;
@@ -203,7 +205,6 @@ public class GUIManager {
             BufferedImage bufferedImage = ImageIO.read(new File(new File(".").getAbsolutePath() + "\\Assets\\SplashScreen.png"));
             img = new JLabel(new ImageIcon(bufferedImage));
         } catch (IOException e) {
-            System.out.println("Resource not found");
             System.exit(-1);
         }
         splashScreen.add(img);
@@ -221,7 +222,6 @@ public class GUIManager {
             @Override
             public void windowClosing(WindowEvent e) {
                 int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to close the program?", "Are you sure?", JOptionPane.YES_NO_OPTION);
-                System.out.println(result);
                 if (result == JOptionPane.YES_NO_OPTION) {
                     if (optionFrame.getSystemTray()) {
                         frame.setVisible(false);
@@ -257,7 +257,6 @@ public class GUIManager {
                     } else
                         System.exit(0);
                 } else {
-                    System.out.println(".");
                     frame.setVisible(true);
                 }
             }
@@ -278,10 +277,20 @@ public class GUIManager {
         });
     }
 
+    /**
+     * gets center panel
+     *
+     * @return center panel
+     */
     public CenterPanel getCenter() {
         return center;
     }
 
+    /**
+     * gets right panel
+     *
+     * @return right panel
+     */
     public RightResponsePanel getRight() {
         return right;
     }

@@ -136,6 +136,12 @@ public class SetHeadersPanel extends JPanel {
         }
     }
 
+    /**
+     * gets map of headers
+     *
+     * @param checkBoxEffect is checkbox important or not
+     * @return map of headers
+     */
     public LinkedHashMap<String, String> getMap(boolean checkBoxEffect) {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         for (JPanel panel : panels) {
@@ -152,6 +158,11 @@ public class SetHeadersPanel extends JPanel {
         return map;
     }
 
+    /**
+     * sets headers field
+     *
+     * @param map map of headers
+     */
     public void setFields(LinkedHashMap<String, String> map) {
         reset();
         headersPanel.remove(0);
@@ -166,6 +177,9 @@ public class SetHeadersPanel extends JPanel {
         addHeader(false, false);
     }
 
+    /**
+     * resets the panel
+     */
     public void reset() {
         for (Component c : headersPanel.getComponents()) {
             headersPanel.remove(c);

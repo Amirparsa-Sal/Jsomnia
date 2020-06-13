@@ -32,6 +32,7 @@ public class FileChooserPanel extends JPanel {
      *
      * @param bgColor Background color of the panel
      * @param size    Size of the panel
+     * @param isPath  is path or file?
      */
     public FileChooserPanel(Color bgColor, Dimension size, boolean isPath) {
         this.isPath = isPath;
@@ -87,6 +88,9 @@ public class FileChooserPanel extends JPanel {
         addressField.setMinimumSize(new Dimension(addressField.getParent().getWidth(), addressField.getParent().getHeight() / 2));
     }
 
+    /**
+     * resers the file chooser
+     */
     public void reset() {
         if (isPath)
             addressField.setText("No path selected");
@@ -94,13 +98,24 @@ public class FileChooserPanel extends JPanel {
             addressField.setText("No file selected");
     }
 
+    /**
+     * gets current file or path name
+     *
+     * @return file or path name
+     */
     public String getCurrentFileName() {
         if (addressField.getText().equals("No file selected") || addressField.getText().equals("No path selected"))
             return null;
         return addressField.getText();
     }
 
+    /**
+     * Sets curernt file or path name
+     *
+     * @param name file or path name
+     */
     public void setFileName(String name) {
+
         if (name.equals(""))
             reset();
         else

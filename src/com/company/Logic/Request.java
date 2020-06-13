@@ -59,6 +59,8 @@ public class Request implements Serializable {
         this.name = name;
         this.requestMethod = requestMethod;
         bodyType = BodyType.UNKNOWN;
+        data = "";
+        outputName = "";
         headers = new ArrayList<>();
     }
 
@@ -92,7 +94,7 @@ public class Request implements Serializable {
     /**
      * Sets the output name.
      *
-     * @param outputName
+     * @param outputName output name
      */
     public void setOutputName(String outputName) {
         this.outputName = outputName;
@@ -232,7 +234,7 @@ public class Request implements Serializable {
     /**
      * Gets request body type
      *
-     * @return
+     * @return request body type
      */
     public BodyType getBodyType() {
         return bodyType;
@@ -241,7 +243,7 @@ public class Request implements Serializable {
     /**
      * Sets request body type
      *
-     * @param bodyType
+     * @param bodyType request body type
      */
     public void setBodyType(BodyType bodyType) {
         this.bodyType = bodyType;
@@ -302,7 +304,6 @@ public class Request implements Serializable {
         if (bodyType == BodyType.FORM_DATA) {
             HashMap<String, String> dataHashMap = new HashMap<>();
             String[] pairs = data.split("&");
-            System.out.println(pairs.length);
             for (String pair : pairs) {
                 String[] splitedPairs = pair.split("=");
                 dataHashMap.put(splitedPairs[0], splitedPairs[1]);
@@ -349,10 +350,20 @@ public class Request implements Serializable {
         this.response = response;
     }
 
+    /**
+     * gets save file name
+     *
+     * @return save file name
+     */
     public String getSaveFileName() {
         return saveFileName;
     }
 
+    /**
+     * Sets save file name
+     *
+     * @param saveFileName save file name
+     */
     public void setSaveFileName(String saveFileName) {
         this.saveFileName = saveFileName;
     }

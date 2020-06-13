@@ -72,12 +72,21 @@ public class HeadersTablePanel extends JPanel {
         scrollPane.setBounds(10, 10, width - 20, height - 120);
     }
 
+    /**
+     * adds row to the table
+     *
+     * @param name  key
+     * @param value value
+     */
     public void addRow(String name, String value) {
         DefaultTableModel dtm = (DefaultTableModel) headersTable.getModel();
         dtm.addRow(new Object[]{name, value});
         numOfRows++;
     }
 
+    /**
+     * resets the table
+     */
     public void reset() {
         DefaultTableModel dtm = (DefaultTableModel) headersTable.getModel();
         for (int i = numOfRows - 1; i >= 0; i--)

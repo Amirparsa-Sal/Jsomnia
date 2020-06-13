@@ -50,14 +50,27 @@ public class BodyPanel extends JPanel {
         scroll.setBounds(10, 10, width - 20, height - 20);
     }
 
+    /**
+     * Gets the text
+     *
+     * @return thet text
+     */
     public String getText() {
         return textArea.getText();
     }
 
+    /**
+     * Sets the text
+     *
+     * @param text the text
+     */
     public void setText(String text) {
         textArea.setText(text);
     }
 
+    /**
+     * Resets the text
+     */
     public void reset() {
         textArea.setText("");
     }

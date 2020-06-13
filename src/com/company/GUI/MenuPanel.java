@@ -1,12 +1,8 @@
 package com.company.GUI;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class MenuPanel extends JMenuBar {
 
@@ -117,9 +113,7 @@ public class MenuPanel extends JMenuBar {
 
     private static class HelpFrame extends JFrame {
         private static HelpFrame instance;
-
-        private JLabel workers;
-        private JLabel toBeDone;
+        private JEditorPane help;
 
         private HelpFrame() {
             super();
@@ -127,23 +121,28 @@ public class MenuPanel extends JMenuBar {
             this.setResizable(false);
             this.getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
             this.getContentPane().setBackground(GUIManager.bgColor);
-            //workers
-            try {
-                BufferedImage bufferedImage = ImageIO.read(new File(new File(".").getAbsolutePath() + "\\Assets\\workers.png"));
-                workers = new JLabel(new ImageIcon(bufferedImage));
-            } catch (IOException e) {
-                System.out.println("Resource not found");
-                System.exit(-1);
-            }
-            //label
-            workers.setAlignmentX(Component.CENTER_ALIGNMENT);
-            toBeDone = new JLabel("To be done in next phase");
-            toBeDone.setBackground(GUIManager.bgColor);
-            toBeDone.setForeground(Color.WHITE);
-            toBeDone.setAlignmentX(Component.CENTER_ALIGNMENT);
-            this.add(workers);
-            this.add(toBeDone);
-            this.pack();
+            help = new JEditorPane();
+            help.setText("You can run ConsoleRun class in terminal using this command:\n" +
+                    "java -cp out/production/Midterm;lib/* ConsoleRun <Commands> \n\n" +
+                    "which the <Commands> are as following: \n" +
+                    "-d --data <data> : adds multipart/form-data [example: -d \"key1=value1&key2=value2\"]\n" +
+                    "-e --encoded <data> : adds form urlencoded data [example: -e \"key1=value1&key2=value2\"]\n" +
+                    "-f : turns on follow redirect for the request\n" +
+                    "-H --header <headers>: adds headers to the request [example: -H \"key1:value1;key2:value2\"]\n" +
+                    "-h --help : shows list of commands\n" +
+                    "-j --json <json data>: adds json data [example: -j \"{'key1':value1','key2':'value2'}\"]\n" +
+                    "-M --method <method name>: sets the request method [Methods: GET,POST,PUT,DELETE]\n" +
+                    "-N --name <request name>: sets the request name\n" +
+                    "-O --output [=file_name]: downloads output of the request\n" +
+                    "-i : turns on response visibility\n" +
+                    "-S --save : saves request to the list\n" +
+                    "list : shows list of the requests\n" +
+                    "fire <RequestNumber> ... <RequestNumber> : executes the saved requests\n" +
+                    "remove <RequestNumber> ... <RequestNumber> : removes the requests\n\n" +
+                    "In GUIRun class you can create a new reqeust with new request button and fill the request data\n" +
+                    "in center panel and see the response in right panel.");
+            this.add(help);
+            this.setSize(600, 400);
         }
 
         public static HelpFrame getInstance() {

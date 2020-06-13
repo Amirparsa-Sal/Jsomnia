@@ -314,11 +314,10 @@ public class RequestManager {
      * Deletes a request from the list
      *
      * @param requestNumber request number
-     * @return
+     * @return true if deleting was successful and false if not
      */
     public boolean deleteRequestFromList(int requestNumber) {
         File file = new File(PATH + "request" + requestNumber + ".dat");
-        System.out.println(file.getName());
         return file.delete();
     }
 
@@ -326,6 +325,7 @@ public class RequestManager {
      * Rearranges the request list
      *
      * @param range max range to rearrange
+     * @return hash map of changes
      */
     public HashMap<String, String> reArrangeList(int range) {
         HashMap<String, String> changes = new HashMap<>();

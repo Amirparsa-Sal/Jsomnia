@@ -82,9 +82,25 @@ public class CenterPanel extends JPanel {
                 SwingWorker worker = new SwingWorker() {
                     @Override
                     protected Object doInBackground() throws Exception {
+                        String method = getMethod();
+                        JPanel panel = GUIManager.getInstance().getLeft().findRequestPanel(GUIManager.getInstance().getLeft().getSelectedRequest());
+                        GUIManager.getInstance().getLeft().changePanelLabel(panel, method);
                         fillRequestData(true);
                         Request request = GUIManager.getInstance().getLeft().getSelectedRequest();
-                        GUIManager.getInstance().getRight().setResponse(RequestManager.getInstance().sendRequest(request));
+                        if (request == null) {
+                            JOptionPane.showMessageDialog(null, "You have not selected a request yet!");
+                            return null;
+                        }
+                        if (request.getBodyType() == Request.BodyType.JSON) {
+                            String json = bodyPanel.getText();
+                            if (!Parser.isJson(json)) {
+                                int result = JOptionPane.showConfirmDialog(null, "It seems the json data is not valid.Are you sure you want to send the request?", "Are you sure?", JOptionPane.YES_NO_OPTION);
+                                if (result == JOptionPane.YES_OPTION)
+                                    GUIManager.getInstance().getRight().setResponse(RequestManager.getInstance().sendRequest(request));
+                            } else
+                                GUIManager.getInstance().getRight().setResponse(RequestManager.getInstance().sendRequest(request));
+                        } else
+                            GUIManager.getInstance().getRight().setResponse(RequestManager.getInstance().sendRequest(request));
                         return null;
                     }
                 };
@@ -103,10 +119,13 @@ public class CenterPanel extends JPanel {
                 SwingWorker worker = new SwingWorker() {
                     @Override
                     protected Object doInBackground() throws Exception {
+                        String method = getMethod();
+                        JPanel panel = GUIManager.getInstance().getLeft().findRequestPanel(GUIManager.getInstance().getLeft().getSelectedRequest());
+                        GUIManager.getInstance().getLeft().changePanelLabel(panel, method);
                         fillRequestData(false);
                         Request request = GUIManager.getInstance().getLeft().getSelectedRequest();
                         if (request == null) {
-                            //error
+                            JOptionPane.showMessageDialog(null, "You have not selected a request yet!");
                         } else
                             RequestManager.getInstance().saveRequestInList(request);
                         return null;
@@ -169,8 +188,6 @@ public class CenterPanel extends JPanel {
             return;
         request.setRequestMethod(RequestMethod.getMethod((String) (requestMethodBox.getSelectedItem())));
         request.setUrl(urlField.getText());
-        //headers
-
         for (String key : setHeadersPanel.getMap(checkboxEffect).keySet())
             request.addHeader(new RequestHeader(key, setHeadersPanel.getMap(checkboxEffect).get(key)));
         if (secondTabs.getSelectedIndex() == 0) {
@@ -196,6 +213,9 @@ public class CenterPanel extends JPanel {
         request.setFollowRedirection(GUIManager.getInstance().getOptionFrame().getFollowRedirect());
     }
 
+    /**
+     * Resets the panel
+     */
     public void reset() {
         requestMethodBox.setSelectedItem("GET");
         urlField.setText("");
@@ -205,48 +225,105 @@ public class CenterPanel extends JPanel {
         setFormUrlEncodedPanel.reset();
         fileChooserPanel.reset();
         outputChooserPanel.reset();
+        tabs.setSelectedIndex(0);
+        secondTabs.setSelectedIndex(0);
     }
 
+    /**
+     * Gets request url
+     *
+     * @return request url
+     */
     public String getUrl() {
         return urlField.getText();
     }
 
+    /**
+     * Sets reqeust url
+     *
+     * @param url request url
+     */
     public void setUrl(String url) {
         urlField.setText(url);
     }
 
+    /**
+     * Gets requeest method
+     *
+     * @return request method
+     */
     public String getMethod() {
         return (String) (requestMethodBox.getSelectedItem());
     }
 
+    /**
+     * Sets the request method
+     *
+     * @param method request method
+     */
     public void setMethod(String method) {
         requestMethodBox.setSelectedItem(method);
     }
 
+    /**
+     * Sets the header panel
+     *
+     * @param map map of headers
+     */
     public void setSetHeadersPanelContent(LinkedHashMap<String, String> map) {
         setHeadersPanel.setFields(map);
     }
 
+    /**
+     * Sets the form data panel
+     *
+     * @param map map of form data
+     */
     public void setSetFormDataPanelContent(LinkedHashMap<String, String> map) {
         setFormDataPanel.setFields(map);
     }
 
+    /**
+     * Sets the url encoded panel
+     *
+     * @param map map of form urlencoded
+     */
     public void setFormUrlEncodedPanelContent(LinkedHashMap<String, String> map) {
         setFormUrlEncodedPanel.setFields(map);
     }
 
+    /**
+     * Sets the json panel
+     *
+     * @param text json string
+     */
     public void setBodyPanelText(String text) {
         bodyPanel.setText(text);
     }
 
+    /**
+     * Sets the binary file name
+     *
+     * @param name binary file name
+     */
     public void setFileName(String name) {
         fileChooserPanel.setFileName(name);
     }
 
+    /**
+     * Sets the output path name
+     *
+     * @param name output path name
+     */
     public void setOutputPathName(String name) {
         outputChooserPanel.setFileName(name);
     }
 
+    /**
+     * gets second tabs
+     *
+     * @return second tab
+     */
     public JTabbedPane getSecondTabs() {
         return secondTabs;
     }

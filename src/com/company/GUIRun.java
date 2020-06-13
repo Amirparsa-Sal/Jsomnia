@@ -7,23 +7,16 @@ import java.io.IOException;
 
 
 /**
- * A class for running the program
+ * A class for running the GUI
  *
  * @author Amiraprsa Salmankhah
  * @version 1.0.0
  */
-public class Main {
+public class GUIRun {
 
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, IOException {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         GUIManager guiManager = GUIManager.getInstance();
         guiManager.showGUI();
-
-//        if (args.length == 0)
-//            return;
-//        ConsoleUI console = ConsoleUI.getInstance();
-//        Response response = console.ProcessCommand(args);
-//        if (response != null)
-//            ConsoleUI.getInstance().print(response.toString());
     }
 }

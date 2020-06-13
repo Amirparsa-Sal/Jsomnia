@@ -51,7 +51,6 @@ public class WebPreviewPanel extends JPanel {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         //add
         this.add(scrollPane);
-        System.out.println(".");
     }
 
     /**
@@ -65,7 +64,14 @@ public class WebPreviewPanel extends JPanel {
 
     }
 
+    /**
+     * Sets response preview
+     *
+     * @param response the response
+     */
     public void setPreview(Response response) {
+        if (!response.getBody().substring(0, 5).equals("Body:"))
+            return;
         if (response.getContentType().equals("text/html")) {
             scrollPane.getViewport().remove(0);
             scrollPane.getViewport().add(webViewer);
@@ -76,7 +82,25 @@ public class WebPreviewPanel extends JPanel {
                 fileoutputStream.write(response.getBody().substring(5).getBytes());
                 fileoutputStream.close();
                 webViewer.setPage(file.toURI().toURL());
-                System.out.println(file.delete());
+                file.delete();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if (response.getContentType().equals("text/plain")) {
+            scrollPane.getViewport().remove(0);
+            scrollPane.getViewport().add(webViewer);
+            File file = new File("tmp.txt");
+            try {
+                file.createNewFile();
+                FileOutputStream fileoutputStream = new FileOutputStream(file);
+                fileoutputStream.write(response.getBody().substring(5).getBytes());
+                fileoutputStream.close();
+                webViewer.setPage(file.toURI().toURL());
+                file.delete();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (MalformedURLException e) {
@@ -89,7 +113,6 @@ public class WebPreviewPanel extends JPanel {
             scrollPane.getViewport().add(pic);
             pic.setHorizontalAlignment(SwingConstants.CENTER);
             try {
-                System.out.println("pic." + response.getContentType().split("/")[1]);
                 Request request = GUIManager.getInstance().getLeft().getSelectedRequest();
                 request.setOutputName("pic." + response.getContentType().split("/")[1]);
                 request.setOutput(true);
@@ -100,7 +123,6 @@ public class WebPreviewPanel extends JPanel {
                 pic.setIcon(new ImageIcon(bufferedImage));
                 pic.setAlignmentX(SwingConstants.CENTER);
                 request.setOutput(false);
-
                 file.delete();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -129,6 +151,9 @@ public class WebPreviewPanel extends JPanel {
         }
     }
 
+    /**
+     * resets the panel
+     */
     public void reset() {
         webViewer = new JEditorPane();
         scrollPane.getViewport().remove(0);

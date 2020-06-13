@@ -7,7 +7,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.io.IOException;
 
 /**
  * Represents the right panel of the GUI
@@ -43,7 +42,7 @@ public class RightResponsePanel extends JPanel {
      * @param size    size of the panel
      * @param bgColor Background color of the panel
      */
-    public RightResponsePanel(int x, int y, Color bgColor, Dimension size) throws IOException {
+    public RightResponsePanel(int x, int y, Color bgColor, Dimension size) {
         this.bgColor = bgColor;
         this.setLayout(null);
         this.setBounds(x, y, size.width, size.height);
@@ -101,6 +100,11 @@ public class RightResponsePanel extends JPanel {
         headersTablePanel.reArrange();
     }
 
+    /**
+     * Sets response to the panel
+     *
+     * @param response the response
+     */
     public void setResponse(Response response) {
         reset();
         if (response == null)
@@ -124,6 +128,9 @@ public class RightResponsePanel extends JPanel {
             statusLabel.setBackground(Color.RED);
     }
 
+    /**
+     * resets the panel
+     */
     public void reset() {
         rawTextPanel.setText("");
         headersTablePanel.reset();
