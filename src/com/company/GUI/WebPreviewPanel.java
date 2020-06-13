@@ -3,21 +3,16 @@ package com.company.GUI;
 import com.company.Logic.Request;
 import com.company.Logic.RequestManager;
 import com.company.Logic.Response;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.teamdev.jxbrowser.browser.Browser;
-import com.teamdev.jxbrowser.engine.Engine;
-import com.teamdev.jxbrowser.engine.EngineOptions;
-import com.teamdev.jxbrowser.engine.RenderingMode;
-import com.teamdev.jxbrowser.view.swing.BrowserView;
+import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 /**
@@ -32,9 +27,6 @@ public class WebPreviewPanel extends JPanel {
     private Color bgColor;
     private JEditorPane webViewer;
     private JScrollPane scrollPane;
-    //The Browser
-    private BrowserView view;
-    private boolean jxBrowser;
     private JLabel pic;
 
     /**
@@ -49,7 +41,6 @@ public class WebPreviewPanel extends JPanel {
         this.setLayout(null);
         this.setBounds(0, 0, size.width, size.height);
         pic = new JLabel();
-        jxBrowser = false;
         //web viewer
         webViewer = new JEditorPane();
         webViewer.setEditable(false);
@@ -68,24 +59,21 @@ public class WebPreviewPanel extends JPanel {
      */
     public void reArrange() {
         int width = getWidth(), height = getHeight();
-        if (jxBrowser)
-            view.setBounds(10, 10, width - 20, height - 20);
-        else {
-            webViewer.setBounds(10, 10, width - 20, height - 20);
-            scrollPane.setBounds(10, 10, width - 20, height - 20);
-            pic.setBounds(10, 10, width - 20, height - 20);
-        }
+        webViewer.setBounds(10, 10, width - 20, height - 20);
+        scrollPane.setBounds(10, 10, width - 20, height - 20);
+        pic.setBounds(10, 10, width - 20, height - 20);
+
     }
 
-    public void setPreview(Response response){
-        if(response.getContentType().equals("text/html")) {
+    public void setPreview(Response response) {
+        if (response.getContentType().equals("text/html")) {
             scrollPane.getViewport().remove(0);
             scrollPane.getViewport().add(webViewer);
             File file = new File("tmp.html");
             try {
                 file.createNewFile();
                 FileOutputStream fileoutputStream = new FileOutputStream(file);
-                fileoutputStream.write(response.getBody().substring(5,response.getBody().length()).getBytes());
+                fileoutputStream.write(response.getBody().substring(5).getBytes());
                 fileoutputStream.close();
                 webViewer.setPage(file.toURI().toURL());
                 System.out.println(file.delete());
@@ -96,12 +84,11 @@ public class WebPreviewPanel extends JPanel {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else if(response.getContentType().split("/")[0].equals("image")){
+        } else if (response.getContentType().split("/")[0].equals("image")) {
             scrollPane.getViewport().remove(0);
             scrollPane.getViewport().add(pic);
             pic.setHorizontalAlignment(SwingConstants.CENTER);
-            try{
+            try {
                 System.out.println("pic." + response.getContentType().split("/")[1]);
                 Request request = GUIManager.getInstance().getLeft().getSelectedRequest();
                 request.setOutputName("pic." + response.getContentType().split("/")[1]);
@@ -120,17 +107,10 @@ public class WebPreviewPanel extends JPanel {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else if(response.getContentType().equals("application/json")){
+        } else if (response.getContentType().equals("application/json")) {
             scrollPane.getViewport().remove(0);
             scrollPane.getViewport().add(webViewer);
-            System.out.println(".");
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            JsonParser jp = new JsonParser();
-            System.out.println("..");
-            JsonElement je = jp.parse(response.getBody().substring(5,response.getBody().length()));
-            String prettyJson = gson.toJson(je);
-            System.out.println(prettyJson);
+            String prettyJson = new JSONObject(response.getBody().substring(5)).toString(4);
             File file = new File("json.txt");
             try {
                 file.createNewFile();
@@ -138,6 +118,7 @@ public class WebPreviewPanel extends JPanel {
                 fileoutputStream.write(prettyJson.getBytes());
                 webViewer.setPage(file.toURI().toURL());
                 fileoutputStream.close();
+                file.delete();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (MalformedURLException e) {
@@ -147,7 +128,8 @@ public class WebPreviewPanel extends JPanel {
             }
         }
     }
-    public void reset(){
+
+    public void reset() {
         webViewer = new JEditorPane();
         scrollPane.getViewport().remove(0);
         scrollPane.getViewport().add(webViewer);

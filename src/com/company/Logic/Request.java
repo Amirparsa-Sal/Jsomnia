@@ -35,6 +35,8 @@ public class Request implements Serializable {
     private String outputName;
     //response
     private Response response;
+    //saved data
+    private String saveFileName;
 
     /**
      * Constructor with no parameter
@@ -43,6 +45,7 @@ public class Request implements Serializable {
         requestMethod = RequestMethod.UNKNOWN;
         bodyType = BodyType.UNKNOWN;
         data = "";
+        outputName = "";
         headers = new ArrayList<>();
     }
 
@@ -128,9 +131,9 @@ public class Request implements Serializable {
      * @param url URL of the request
      */
     public void setUrl(String url) {
-        if(url.equals("http://") || url.equals("https://"))
+        if (url.equals("http://") || url.equals("https://"))
             return;
-        if (url.length()>8 && (url.substring(0, 7).equals("http://") || url.substring(0, 8).equals("https://")))
+        if (url.length() > 8 && (url.substring(0, 7).equals("http://") || url.substring(0, 8).equals("https://")))
             this.url = url;
         else
             this.url = "http://" + url;
@@ -294,8 +297,8 @@ public class Request implements Serializable {
      * @return a hash map of form data pairs.
      */
     public HashMap<String, String> getFormDataPairs() {
-        if(data.equals(""))
-            return new HashMap<String,String>();
+        if (data.equals(""))
+            return new HashMap<String, String>();
         if (bodyType == BodyType.FORM_DATA) {
             HashMap<String, String> dataHashMap = new HashMap<>();
             String[] pairs = data.split("&");
@@ -330,6 +333,7 @@ public class Request implements Serializable {
 
     /**
      * Gets request's last response
+     *
      * @return request's last response
      */
     public Response getResponse() {
@@ -338,16 +342,27 @@ public class Request implements Serializable {
 
     /**
      * Sets request response
+     *
      * @param response request's response
      */
     public void setResponse(Response response) {
         this.response = response;
     }
 
+    public String getSaveFileName() {
+        return saveFileName;
+    }
+
+    public void setSaveFileName(String saveFileName) {
+        this.saveFileName = saveFileName;
+    }
+
     /**
      * Represents a body type for the request
      */
+
+
     public enum BodyType {
-        FORM_DATA, JSON, BINARY_FILE, URL_ENCODED, UNKNOWN;
+        FORM_DATA, JSON, BINARY_FILE, URL_ENCODED, UNKNOWN
     }
 }

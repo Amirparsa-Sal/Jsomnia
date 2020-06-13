@@ -1,8 +1,6 @@
 package com.company;
 
-import com.company.Console.ConsoleUI;
 import com.company.GUI.GUIManager;
-import com.company.Logic.Response;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -17,15 +15,15 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, IOException {
-//        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-//        GUIManager guiManager = GUIManager.getInstance();
-//        guiManager.showGUI();
+        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        GUIManager guiManager = GUIManager.getInstance();
+        guiManager.showGUI();
 
-        if (args.length == 0)
-            return;
-        ConsoleUI console = ConsoleUI.getInstance();
-        Response response = console.ProcessCommand(args);
-        if (response != null)
-            ConsoleUI.getInstance().print(response.toString());
+//        if (args.length == 0)
+//            return;
+//        ConsoleUI console = ConsoleUI.getInstance();
+//        Response response = console.ProcessCommand(args);
+//        if (response != null)
+//            ConsoleUI.getInstance().print(response.toString());
     }
 }

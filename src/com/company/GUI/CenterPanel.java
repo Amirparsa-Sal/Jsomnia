@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
@@ -37,8 +36,12 @@ public class CenterPanel extends JPanel {
     private SetHeadersPanel setHeadersPanel;
     //form data panel
     private SetHeadersPanel setFormDataPanel;
+    //form url encoded panel
+    private SetHeadersPanel setFormUrlEncodedPanel;
     //File chooser
     private FileChooserPanel fileChooserPanel;
+    //output chooser
+    private FileChooserPanel outputChooserPanel;
 
     /**
      * Constructor with 4 parameters
@@ -67,7 +70,7 @@ public class CenterPanel extends JPanel {
         urlField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                if(GUIManager.getInstance().getLeft().getSelectedRequest()!=null)
+                if (GUIManager.getInstance().getLeft().getSelectedRequest() != null)
                     GUIManager.getInstance().getLeft().getSelectedRequest().setUrl(urlField.getText());
             }
         });
@@ -87,27 +90,48 @@ public class CenterPanel extends JPanel {
                 };
                 try {
                     worker.execute();
-                }
-                catch (Exception ex){
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
         //save button
         saveButton = new JButton("Save");
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingWorker worker = new SwingWorker() {
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        fillRequestData(false);
+                        Request request = GUIManager.getInstance().getLeft().getSelectedRequest();
+                        if (request == null) {
+                            //error
+                        } else
+                            RequestManager.getInstance().saveRequestInList(request);
+                        return null;
+                    }
+                };
+                worker.execute();
+            }
+        });
         //second tabs
         setFormDataPanel = new SetHeadersPanel("New key", "New value", bgColor, new Dimension(size.width, size.height - 50));
+        setFormUrlEncodedPanel = new SetHeadersPanel("New key", "New value", bgColor, new Dimension(size.width, size.height - 50));
         secondTabs = new JTabbedPane();
         bodyPanel = new BodyPanel(bgColor, new Dimension(size.width, size.height - 50), true);
-        fileChooserPanel = new FileChooserPanel(bgColor, new Dimension(size.width, size.height - 50));
+        fileChooserPanel = new FileChooserPanel(bgColor, new Dimension(size.width, size.height - 50), false);
+        outputChooserPanel = new FileChooserPanel(bgColor, new Dimension(size.width, size.height - 50), true);
         secondTabs.add("Form data", setFormDataPanel);
         secondTabs.add("JSON", bodyPanel);
         secondTabs.addTab("Binary File", fileChooserPanel);
+        secondTabs.addTab("Form urlencoded", setFormUrlEncodedPanel);
         //tabs
         tabs = new JTabbedPane();
         tabs.addTab("Body", secondTabs);
         setHeadersPanel = new SetHeadersPanel("New header", "New value", bgColor, new Dimension(size.width, size.height - 50));
         tabs.addTab("Headers", setHeadersPanel);
+        tabs.addTab("Output", outputChooserPanel);
         //add items
         this.add(requestMethodBox);
         this.add(urlField);
@@ -133,72 +157,99 @@ public class CenterPanel extends JPanel {
         setHeadersPanel.setSize(width, height - 50);
         setHeadersPanel.reArrange();
         setFormDataPanel.reArrange();
+        setFormUrlEncodedPanel.reArrange();
         bodyPanel.reArrange();
         fileChooserPanel.reArrange();
+        outputChooserPanel.reArrange();
     }
 
-    public void fillRequestData(boolean checkboxEffect){
+    public void fillRequestData(boolean checkboxEffect) {
         Request request = GUIManager.getInstance().getLeft().getSelectedRequest();
-        if(request==null)
+        if (request == null)
             return;
-        request.setRequestMethod(RequestMethod.getMethod((String)(requestMethodBox.getSelectedItem())));
+        request.setRequestMethod(RequestMethod.getMethod((String) (requestMethodBox.getSelectedItem())));
         request.setUrl(urlField.getText());
         //headers
 
-        for(String key : setHeadersPanel.getMap(checkboxEffect).keySet())
-            request.addHeader(new RequestHeader(key,setHeadersPanel.getMap(checkboxEffect).get(key)));
-        if(secondTabs.getSelectedIndex()==0){
-            //form data
+        for (String key : setHeadersPanel.getMap(checkboxEffect).keySet())
+            request.addHeader(new RequestHeader(key, setHeadersPanel.getMap(checkboxEffect).get(key)));
+        if (secondTabs.getSelectedIndex() == 0) {
             request.setBodyType(Request.BodyType.FORM_DATA);
             request.setData(Parser.splitFormDataMap(setFormDataPanel.getMap(checkboxEffect)));
-        }
-        else if(secondTabs.getSelectedIndex()==1){
+        } else if (secondTabs.getSelectedIndex() == 1) {
             request.setBodyType(Request.BodyType.JSON);
             request.setData(bodyPanel.getText());
-        }
-        else if(secondTabs.getSelectedIndex()==2){
+        } else if (secondTabs.getSelectedIndex() == 2) {
             request.setBodyType(Request.BodyType.BINARY_FILE);
-            if(fileChooserPanel.getCurrentFileName()!=null)
+            if (fileChooserPanel.getCurrentFileName() != null)
                 request.setData(fileChooserPanel.getCurrentFileName());
             else
                 request.setData("");
+        } else if (secondTabs.getSelectedIndex() == 3) {
+            request.setBodyType(Request.BodyType.URL_ENCODED);
+            request.setData(Parser.splitFormDataMap(setFormUrlEncodedPanel.getMap(checkboxEffect)));
+        }
+        System.out.println(outputChooserPanel.getCurrentFileName());
+        if (outputChooserPanel.getCurrentFileName() != null) {
+            request.setOutput(true);
+            request.setOutputName(outputChooserPanel.getCurrentFileName());
         }
         request.setFollowRedirection(GUIManager.getInstance().getOptionFrame().getFollowRedirect());
     }
-    public void reset(){
+
+    public void reset() {
         requestMethodBox.setSelectedItem("GET");
         urlField.setText("");
         bodyPanel.reset();
         setHeadersPanel.reset();
         setFormDataPanel.reset();
+        setFormUrlEncodedPanel.reset();
         fileChooserPanel.reset();
+        outputChooserPanel.reset();
     }
-    public void setUrl(String url){
-        urlField.setText(url);
-    }
-    public String getUrl(){
+
+    public String getUrl() {
         return urlField.getText();
     }
-    public String getMethod(){
-        return (String)(requestMethodBox.getSelectedItem());
+
+    public void setUrl(String url) {
+        urlField.setText(url);
     }
-    public void setMethod(String method){
+
+    public String getMethod() {
+        return (String) (requestMethodBox.getSelectedItem());
+    }
+
+    public void setMethod(String method) {
         requestMethodBox.setSelectedItem(method);
     }
-    public void setSetHeadersPanelContent(LinkedHashMap<String,String> map){
+
+    public void setSetHeadersPanelContent(LinkedHashMap<String, String> map) {
         setHeadersPanel.setFields(map);
     }
-    public void setSetFormDataPanelContent(LinkedHashMap<String,String> map){
+
+    public void setSetFormDataPanelContent(LinkedHashMap<String, String> map) {
         setFormDataPanel.setFields(map);
     }
-    public void setBodyPanelText(String text){
+
+    public void setFormUrlEncodedPanelContent(LinkedHashMap<String, String> map) {
+        setFormUrlEncodedPanel.setFields(map);
+    }
+
+    public void setBodyPanelText(String text) {
         bodyPanel.setText(text);
     }
 
-    public void setFileName(String name){
+    public void setFileName(String name) {
         fileChooserPanel.setFileName(name);
     }
+
+    public void setOutputPathName(String name) {
+        outputChooserPanel.setFileName(name);
+    }
+
     public JTabbedPane getSecondTabs() {
         return secondTabs;
     }
+
 }

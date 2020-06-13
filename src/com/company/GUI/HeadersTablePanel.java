@@ -78,6 +78,13 @@ public class HeadersTablePanel extends JPanel {
         numOfRows++;
     }
 
+    public void reset() {
+        DefaultTableModel dtm = (DefaultTableModel) headersTable.getModel();
+        for (int i = numOfRows - 1; i >= 0; i--)
+            dtm.removeRow(i);
+        numOfRows = 0;
+    }
+
     private class ClipboardListener implements ActionListener {
 
         @Override
@@ -89,11 +96,5 @@ public class HeadersTablePanel extends JPanel {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
         }
-    }
-    public void reset(){
-        DefaultTableModel dtm = (DefaultTableModel) headersTable.getModel();
-        for(int i=numOfRows-1;i>=0;i--)
-            dtm.removeRow(i);
-        numOfRows = 0;
     }
 }

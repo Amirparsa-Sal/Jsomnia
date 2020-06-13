@@ -160,24 +160,29 @@ public class LeftRequestList extends JPanel {
                         GUIManager.getInstance().getCenter().setUrl(selectedRequest.getUrl());
                         GUIManager.getInstance().getCenter().setMethod(selectedRequest.getRequestMethod().toString());
                         GUIManager.getInstance().getCenter().setSetHeadersPanelContent(Parser.headersListToMap(selectedRequest.getHeaders()));
-                        if(selectedRequest.getBodyType() == Request.BodyType.FORM_DATA){
+                        if (selectedRequest.getBodyType() == Request.BodyType.FORM_DATA) {
                             GUIManager.getInstance().getCenter().getSecondTabs().setSelectedIndex(0);
+                            System.out.println(Parser.formDataToMap(selectedRequest.getData()));
                             GUIManager.getInstance().getCenter().setSetFormDataPanelContent(Parser.formDataToMap(selectedRequest.getData()));
-                        }
-                        else if(selectedRequest.getBodyType()== Request.BodyType.JSON){
+                        } else if (selectedRequest.getBodyType() == Request.BodyType.JSON) {
                             GUIManager.getInstance().getCenter().getSecondTabs().setSelectedIndex(1);
                             GUIManager.getInstance().getCenter().setBodyPanelText(selectedRequest.getData());
-                        }
-                        else if(selectedRequest.getBodyType() == Request.BodyType.BINARY_FILE){
+                        } else if (selectedRequest.getBodyType() == Request.BodyType.BINARY_FILE) {
                             GUIManager.getInstance().getCenter().getSecondTabs().setSelectedIndex(2);
                             GUIManager.getInstance().getCenter().setFileName(selectedRequest.getData());
+                        } else if (selectedRequest.getBodyType() == Request.BodyType.URL_ENCODED) {
+                            GUIManager.getInstance().getCenter().getSecondTabs().setSelectedIndex(2);
+                            GUIManager.getInstance().getCenter().setFormUrlEncodedPanelContent(Parser.formDataToMap(selectedRequest.getData()));
                         }
+                        GUIManager.getInstance().getCenter().setOutputPathName(selectedRequest.getOutputName());
+                        System.out.println(selectedRequest.getResponse());
                         GUIManager.getInstance().getRight().setResponse(selectedRequest.getResponse());
                         return null;
                     }
                 };
                 worker.execute();
             }
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 e.getComponent().setBackground(Color.BLACK);
@@ -265,12 +270,12 @@ public class LeftRequestList extends JPanel {
         reArrange();
     }
 
-    public void setSelectedRequest(Request selectedRequest) {
-        this.selectedRequest = selectedRequest;
-    }
-
     public Request getSelectedRequest() {
         return selectedRequest;
+    }
+
+    public void setSelectedRequest(Request selectedRequest) {
+        this.selectedRequest = selectedRequest;
     }
 
     /**
@@ -315,7 +320,14 @@ public class LeftRequestList extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             JPanel panel = (JPanel) ((JButton) e.getSource()).getParent();
-            if(selectedRequest == allRequestPanels.get(panel)) {
+            Request request = allRequestPanels.get(panel);
+            if (request.getSaveFileName() != null) {
+                String saveName = request.getSaveFileName();
+                int numOfRequests = RequestManager.getInstance().getNumberOfRequests();
+                System.out.println(RequestManager.getInstance().deleteRequestFromList(Integer.parseInt(saveName.substring(7))));
+                RequestManager.getInstance().reArrangeList(numOfRequests);
+            }
+            if (selectedRequest == request) {
                 selectedRequest = null;
                 GUIManager.getInstance().getCenter().reset();
                 GUIManager.getInstance().getRight().reset();

@@ -3,8 +3,10 @@ package com.company.Logic;
 import com.company.Console.Command;
 import com.company.Console.Commands;
 import com.company.Console.ConsoleUI;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import org.json.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -125,51 +127,55 @@ public class Parser {
 
     /**
      * Converts form data hash map to string
+     *
      * @param map form data hash map
      * @return form data string
      */
-    public static String splitFormDataMap(LinkedHashMap <String,String> map){
+    public static String splitFormDataMap(LinkedHashMap<String, String> map) {
         String data = "";
-        if(map.size()==0)
+        if (map.size() == 0)
             return data;
-        for(String key : map.keySet())
+        for (String key : map.keySet())
             data += key + "=" + map.get(key) + "&";
-        return data.substring(0,data.length()-1);
+        return data.substring(0, data.length() - 1);
     }
 
     /**
      * Converts headers array list to linked hash map
+     *
      * @param list headers list
      * @return headers linked hash map
      */
-    public static LinkedHashMap<String,String> headersListToMap(ArrayList<RequestHeader> list){
-        LinkedHashMap<String,String> map = new LinkedHashMap<>();
-        for(RequestHeader requestHeader : list)
-            map.put(requestHeader.getKey(),requestHeader.getValue());
+    public static LinkedHashMap<String, String> headersListToMap(ArrayList<RequestHeader> list) {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        for (RequestHeader requestHeader : list)
+            map.put(requestHeader.getKey(), requestHeader.getValue());
         return map;
     }
 
     /**
      * Converts form data string to linked hash map
+     *
      * @param data form data string
      * @return form data linked hash map
      */
-    public static LinkedHashMap<String,String> formDataToMap(String data){
-        LinkedHashMap<String,String> map = new LinkedHashMap<>();
-        if(data=="")
+    public static LinkedHashMap<String, String> formDataToMap(String data) {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        if (data.equals(""))
             return map;
         String[] pairs = data.split("&");
-        for(String pair : pairs)
-            map.put(pair.split("=")[0],pair.split("=")[1]);
+        for (String pair : pairs)
+            map.put(pair.split("=")[0], pair.split("=")[1]);
         return map;
     }
 
     /**
      * Checks if the string is a valid json or not
+     *
      * @param json The json string
      * @return true if yes and false if not
      */
-    public static boolean isJson(String json){
+    public static boolean isJson(String json) {
         try {
             new JSONObject(json);
         } catch (JSONException ex) {

@@ -15,15 +15,17 @@ import java.io.File;
 public class FileChooserPanel extends JPanel {
 
     //description label
-    private final JLabel label = new JLabel("Selected File: ");
+    private JLabel label;
     //Address text field
-    private final JTextField addressField = new JTextField("No file selected");
+    private JTextField addressField;
     //Background color
     private Color bgColor;
     //Reset button
     private JButton resetButton;
     //Load button
     private JButton loadButton;
+    //mode
+    private boolean isPath;
 
     /**
      * Constructor with 2 parameters
@@ -31,7 +33,8 @@ public class FileChooserPanel extends JPanel {
      * @param bgColor Background color of the panel
      * @param size    Size of the panel
      */
-    public FileChooserPanel(Color bgColor, Dimension size) {
+    public FileChooserPanel(Color bgColor, Dimension size, boolean isPath) {
+        this.isPath = isPath;
         Color color = new Color(bgColor.getRed() - 10, bgColor.getGreen() - 10, bgColor.getBlue() - 10);
         this.bgColor = bgColor;
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -39,6 +42,15 @@ public class FileChooserPanel extends JPanel {
         JPanel addressPanel = new JPanel();
         addressPanel.setLayout(new BoxLayout(addressPanel, BoxLayout.LINE_AXIS));
         addressPanel.setBackground(bgColor);
+        if (isPath) {
+            label = new JLabel("Selected path: ");
+            addressField = new JTextField("No path selected");
+            loadButton = new JButton("Choose path");
+        } else {
+            label = new JLabel("Selected file: ");
+            addressField = new JTextField("No file selected");
+            loadButton = new JButton("Choose file");
+        }
         label.setBackground(bgColor);
         label.setForeground(Color.WHITE);
         addressField.setBackground(bgColor);
@@ -53,7 +65,6 @@ public class FileChooserPanel extends JPanel {
         resetButton = new JButton("Reset");
         resetButton.addActionListener(new ResetListener());
         resetButton.setFocusable(false);
-        loadButton = new JButton("Choose File");
         loadButton.addActionListener(new LoadListener());
         loadButton.setFocusable(false);
         buttonPanel.add(resetButton);
@@ -76,19 +87,22 @@ public class FileChooserPanel extends JPanel {
         addressField.setMinimumSize(new Dimension(addressField.getParent().getWidth(), addressField.getParent().getHeight() / 2));
     }
 
-    public void reset(){
-        addressField.setText("No file selected");
+    public void reset() {
+        if (isPath)
+            addressField.setText("No path selected");
+        else
+            addressField.setText("No file selected");
     }
 
-    public String getCurrentFileName(){
-        if(addressField.getText().equals("No file selected"))
+    public String getCurrentFileName() {
+        if (addressField.getText().equals("No file selected") || addressField.getText().equals("No path selected"))
             return null;
         return addressField.getText();
     }
 
-    public void setFileName(String name){
-        if(name.equals(""))
-            addressField.setText("No file selected");
+    public void setFileName(String name) {
+        if (name.equals(""))
+            reset();
         else
             addressField.setText(name);
     }
@@ -106,7 +120,12 @@ public class FileChooserPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             JFileChooser fileChooser = new JFileChooser(new File("."));
-            int result = fileChooser.showSaveDialog(null);
+            int result;
+            System.out.println(isPath);
+            if (isPath)
+                result = fileChooser.showSaveDialog(null);
+            else
+                result = fileChooser.showOpenDialog(null);
             if (result == JFileChooser.APPROVE_OPTION) {
                 addressField.setText(fileChooser.getSelectedFile().getAbsolutePath());
             }

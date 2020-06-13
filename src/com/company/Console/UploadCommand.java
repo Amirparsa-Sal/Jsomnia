@@ -1,7 +1,6 @@
 package com.company.Console;
 
 import com.company.Logic.Request;
-import com.company.Logic.RequestHeader;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

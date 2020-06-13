@@ -1,5 +1,7 @@
 package com.company.GUI;
 
+import com.company.Logic.RequestManager;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -65,6 +67,15 @@ public class GUIManager {
         frame.getLayeredPane().add(center, 2);
         frame.getLayeredPane().add(right, 3);
         frame.getLayeredPane().add(up, 4);
+        SwingWorker worker = new SwingWorker() {
+            @Override
+            protected Object doInBackground() throws Exception {
+                for (int i = 1; i <= RequestManager.getInstance().getNumberOfRequests(); i++)
+                    left.addToReqList(RequestManager.getInstance().loadRequestFromList(i));
+                return null;
+            }
+        };
+        worker.execute();
         this.initFrame();
     }
 
@@ -271,7 +282,7 @@ public class GUIManager {
         return center;
     }
 
-    public RightResponsePanel getRight(){
+    public RightResponsePanel getRight() {
         return right;
     }
 }

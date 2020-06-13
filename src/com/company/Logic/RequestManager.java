@@ -75,7 +75,7 @@ public class RequestManager {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(request.getRequestMethod().toString());
             connection.setInstanceFollowRedirects(request.getFollowRedirection());
-            if(request.getBodyType()== Request.BodyType.FORM_DATA)
+            if (request.getBodyType() == Request.BodyType.FORM_DATA)
                 connection.setRequestProperty("Content-Type", "multipart/form-data" + "; boundary=" + RequestManager.getInstance().BOUNDARY);
             else
                 connection.setRequestProperty("Content-Type", request.getContentType());
@@ -95,24 +95,29 @@ public class RequestManager {
             response.setCode(connection.getResponseCode());
             response.setResponseMessage(connection.getResponseMessage());
             BufferedInputStream bufferedInputStream = new BufferedInputStream(connection.getInputStream());
+            String responseBody = "";
+            byte[] bytes = new byte[1024];
+            int n = 0, sum = 0;
             if (request.isOutput()) {
                 saveOutput(bufferedInputStream, request);
                 response.setBody("Response body saved in " + request.getOutputName());
-                response.setSize(new File(request.getOutputName()).length());
+                File file = new File(request.getOutputName());
+                FileInputStream fileInputStream = new FileInputStream(file);
+                while ((n = fileInputStream.read(bytes)) != -1) {
+                    sum += n;
+                    responseBody += new String(bytes, 0, n);
+                }
             } else {
-                byte[] bytes = new byte[1024];
-                int n = 0, sum = 0;
-                String responseBody = "";
                 while ((n = bufferedInputStream.read(bytes)) != -1) {
                     sum += n;
                     responseBody += new String(bytes, 0, n);
                 }
-                if (responseBody.equals(""))
-                    response.setBody("No body returned!");
-                else
-                    response.setBody("Body:\n" + responseBody);
-                response.setSize(sum);
             }
+            response.setSize(sum);
+            if (responseBody.equals(""))
+                response.setBody("No body returned!");
+            else
+                response.setBody("Body:\n" + responseBody);
         } catch (FileNotFoundException e) {
             try {
                 if (connection.getResponseCode() / 100 == 4)
@@ -241,12 +246,17 @@ public class RequestManager {
      */
     public void saveRequestInList(Request request) {
         File file = null;
-        if (!Files.exists(Paths.get(PATH + "request" + (getNumberOfRequests() + 1) + ".dat"))) {
-            file = new File(PATH + "request" + (getNumberOfRequests() + 1) + ".dat");
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (request.getSaveFileName() != null) {
+            file = new File(PATH + request.getSaveFileName() + ".dat");
+        } else {
+            if (!Files.exists(Paths.get(PATH + "request" + (getNumberOfRequests() + 1) + ".dat"))) {
+                file = new File(PATH + "request" + (getNumberOfRequests() + 1) + ".dat");
+                request.setSaveFileName("request" + (getNumberOfRequests() + 1));
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         try {
@@ -279,6 +289,8 @@ public class RequestManager {
             fileInputStream = new FileInputStream(file);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             request = ((Request) objectInputStream.readObject());
+            fileInputStream.close();
+            objectInputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -321,8 +333,12 @@ public class RequestManager {
                 while (!Files.exists(Paths.get(PATH + "request" + nextRequestNumber + ".dat")) && nextRequestNumber < range)
                     nextRequestNumber++;
                 //rename file
-                File nextRequestFile = new File(PATH + "request" + nextRequestNumber + ".dat");
-                nextRequestFile.renameTo(new File(PATH + "request" + i + ".dat"));
+                Request request = loadRequestFromList(nextRequestNumber);
+                if (request != null) {
+                    File nextRequestFile = new File(PATH + "request" + nextRequestNumber + ".dat");
+                    nextRequestFile.renameTo(new File(PATH + "request" + i + ".dat"));
+                    request.setSaveFileName("request" + i);
+                }
             }
         }
     }

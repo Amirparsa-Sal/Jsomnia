@@ -54,7 +54,7 @@ public class RightResponsePanel extends JPanel {
         statusLabel.setOpaque(true);
         statusLabel.setBackground(Color.GRAY);
         statusLabel.setForeground(Color.WHITE);
-        timeLabel = new JLabel("0 s", SwingConstants.CENTER);
+        timeLabel = new JLabel("0 ms", SwingConstants.CENTER);
         timeLabel.setOpaque(true);
         timeLabel.setBackground(Color.GRAY);
         timeLabel.setForeground(Color.WHITE);
@@ -101,40 +101,41 @@ public class RightResponsePanel extends JPanel {
         headersTablePanel.reArrange();
     }
 
+    public void setResponse(Response response) {
+        reset();
+        rawTextPanel.setText(response.getBody());
+        for (String key : response.getHeaders().keySet()) {
+            String values = "";
+            for (String value : response.getHeaders().get(key))
+                values += value + " ";
+            headersTablePanel.addRow(key, values);
+        }
+        webViewer.setPreview(response);
+        statusLabel.setText(response.getCode() + " " + response.getResponseMessage());
+        timeLabel.setText(response.getTime() + " ms");
+        sizeLabel.setText(response.getSize() + " " + response.getSizeUnit());
+        if (response.getCode() / 100 == 2)
+            statusLabel.setBackground(new Color(0, 75, 0));
+        else if (response.getCode() / 100 == 3)
+            statusLabel.setBackground(Color.ORANGE);
+        else if (response.getCode() / 100 == 4)
+            statusLabel.setBackground(Color.RED);
+    }
+
+    public void reset() {
+        rawTextPanel.setText("");
+        headersTablePanel.reset();
+        webViewer.reset();
+        statusLabel.setText("0 Unknown");
+        timeLabel.setText("0 ms");
+        sizeLabel.setText("0 B");
+    }
+
     private class TabChangeListener implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
             GUIManager.getInstance().getFrame().requestFocus();
         }
-    }
-
-    public void setResponse(Response response){
-        reset();
-        rawTextPanel.setText(response.getBody());
-        for(String key : response.getHeaders().keySet()){
-            String values = "";
-            for(String value : response.getHeaders().get(key))
-                values += value + " ";
-            headersTablePanel.addRow(key,values);
-        }
-        webViewer.setPreview(response);
-        statusLabel.setText(response.getCode() +  " " + response.getResponseMessage());
-        timeLabel.setText(Long.toString(response.getTime()) + " ms");
-        sizeLabel.setText(Double.toString(response.getSize()) + " " + response.getSizeUnit());
-        if(response.getCode()/100==2)
-            statusLabel.setBackground(new Color(0, 75, 0));
-        else if(response.getCode()/100==3)
-            statusLabel.setBackground(Color.ORANGE);
-        else if(response.getCode()/100==4)
-            statusLabel.setBackground(Color.RED);
-    }
-    public void reset(){
-        rawTextPanel.setText("");
-        headersTablePanel.reset();
-        webViewer.reset();
-        statusLabel.setText("0 Unknown");
-        timeLabel.setText("0 s");
-        sizeLabel.setText("0 B");
     }
 }

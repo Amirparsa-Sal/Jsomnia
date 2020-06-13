@@ -185,15 +185,17 @@ public class Response implements Serializable {
 
     /**
      * Gets response content type
+     *
      * @return response content type
      */
-    public String getContentType(){
+    public String getContentType() {
         ArrayList<String> list = new ArrayList<>(getHeaders().get("Content-Type"));
         return list.get(0).split(";")[0];
     }
 
     /**
      * gets response message
+     *
      * @return response message
      */
     public String getResponseMessage() {
@@ -202,6 +204,7 @@ public class Response implements Serializable {
 
     /**
      * Sets response message
+     *
      * @param responseMessage response message
      */
     public void setResponseMessage(String responseMessage) {
@@ -210,6 +213,7 @@ public class Response implements Serializable {
 
     /**
      * gets response size unit
+     *
      * @return response size unit
      */
     public String getSizeUnit() {
