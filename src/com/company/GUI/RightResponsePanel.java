@@ -103,6 +103,8 @@ public class RightResponsePanel extends JPanel {
 
     public void setResponse(Response response) {
         reset();
+        if (response == null)
+            return;
         rawTextPanel.setText(response.getBody());
         for (String key : response.getHeaders().keySet()) {
             String values = "";
@@ -129,6 +131,9 @@ public class RightResponsePanel extends JPanel {
         statusLabel.setText("0 Unknown");
         timeLabel.setText("0 ms");
         sizeLabel.setText("0 B");
+        statusLabel.setBackground(Color.GRAY);
+        timeLabel.setBackground(Color.GRAY);
+        sizeLabel.setBackground(Color.GRAY);
     }
 
     private class TabChangeListener implements ChangeListener {

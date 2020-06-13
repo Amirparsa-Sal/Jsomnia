@@ -189,7 +189,6 @@ public class CenterPanel extends JPanel {
             request.setBodyType(Request.BodyType.URL_ENCODED);
             request.setData(Parser.splitFormDataMap(setFormUrlEncodedPanel.getMap(checkboxEffect)));
         }
-        System.out.println(outputChooserPanel.getCurrentFileName());
         if (outputChooserPanel.getCurrentFileName() != null) {
             request.setOutput(true);
             request.setOutputName(outputChooserPanel.getCurrentFileName());

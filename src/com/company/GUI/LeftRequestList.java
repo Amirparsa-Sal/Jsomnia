@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
@@ -175,7 +176,6 @@ public class LeftRequestList extends JPanel {
                             GUIManager.getInstance().getCenter().setFormUrlEncodedPanelContent(Parser.formDataToMap(selectedRequest.getData()));
                         }
                         GUIManager.getInstance().getCenter().setOutputPathName(selectedRequest.getOutputName());
-                        System.out.println(selectedRequest.getResponse());
                         GUIManager.getInstance().getRight().setResponse(selectedRequest.getResponse());
                         return null;
                     }
@@ -302,14 +302,13 @@ public class LeftRequestList extends JPanel {
         public void actionPerformed(ActionEvent e) {
             isFiltered = true;
             filterRequests(filterField.getText());
-            System.out.println(((JButton) e.getSource()).getText());
-
         }
     }
 
     private class ResetButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            filterField.setText("");
             isFiltered = false;
             reArrange();
         }
@@ -324,8 +323,13 @@ public class LeftRequestList extends JPanel {
             if (request.getSaveFileName() != null) {
                 String saveName = request.getSaveFileName();
                 int numOfRequests = RequestManager.getInstance().getNumberOfRequests();
-                System.out.println(RequestManager.getInstance().deleteRequestFromList(Integer.parseInt(saveName.substring(7))));
-                RequestManager.getInstance().reArrangeList(numOfRequests);
+                HashMap<String, String> changes = RequestManager.getInstance().reArrangeList(numOfRequests);
+                for (JPanel p : allRequestPanels.keySet()) {
+                    Request req = allRequestPanels.get(p);
+                    if (req.getSaveFileName() != null && changes.get(req.getSaveFileName()) != null) {
+                        req.setSaveFileName(changes.get(req.getSaveFileName()));
+                    }
+                }
             }
             if (selectedRequest == request) {
                 selectedRequest = null;

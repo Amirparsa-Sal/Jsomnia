@@ -107,6 +107,7 @@ public class RequestManager {
                     sum += n;
                     responseBody += new String(bytes, 0, n);
                 }
+                fileInputStream.close();
             } else {
                 while ((n = bufferedInputStream.read(bytes)) != -1) {
                     sum += n;
@@ -317,6 +318,7 @@ public class RequestManager {
      */
     public boolean deleteRequestFromList(int requestNumber) {
         File file = new File(PATH + "request" + requestNumber + ".dat");
+        System.out.println(file.getName());
         return file.delete();
     }
 
@@ -325,7 +327,8 @@ public class RequestManager {
      *
      * @param range max range to rearrange
      */
-    public void reArrangeList(int range) {
+    public HashMap<String, String> reArrangeList(int range) {
+        HashMap<String, String> changes = new HashMap<>();
         for (int i = 1; i <= range; i++) {
             if (!Files.exists(Paths.get(PATH + "request" + i + ".dat"))) {
                 //finding nextFile
@@ -338,8 +341,11 @@ public class RequestManager {
                     File nextRequestFile = new File(PATH + "request" + nextRequestNumber + ".dat");
                     nextRequestFile.renameTo(new File(PATH + "request" + i + ".dat"));
                     request.setSaveFileName("request" + i);
+                    saveRequestInList(request);
+                    changes.put("request" + nextRequestNumber, "request" + i);
                 }
             }
         }
+        return changes;
     }
 }

@@ -328,7 +328,7 @@ public class Request implements Serializable {
      */
     public boolean isEmpty() {
         return name == null && url == null && requestMethod == RequestMethod.UNKNOWN && headers.size() == 0 && !responseVisibility && !followRedirection
-                && data == "" && bodyType == BodyType.UNKNOWN && !output && outputName == null;
+                && data.equals("") && bodyType == BodyType.UNKNOWN && !output && outputName.equals("");
     }
 
     /**
