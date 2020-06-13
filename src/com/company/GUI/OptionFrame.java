@@ -73,6 +73,10 @@ public class OptionFrame extends JFrame {
         });
         this.add(checkBoxPanel);
         this.add(buttons);
+        File directory = new File(".\\Data");
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
         File file = new File(new File(".").getAbsolutePath() + "\\Data\\options.dat");
         if (file.exists())
             this.load();
@@ -80,19 +84,27 @@ public class OptionFrame extends JFrame {
 
     private void load() {
         try {
+            File directory = new File(".\\Data\\");
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
             File file = new File(new File(".").getAbsolutePath() + "\\Data\\options.dat");
             Scanner scanner = new Scanner(file);
             this.setFollowRedirect(scanner.next().equals("true"));
             this.setSystemTray(scanner.next().equals("true"));
         } catch (FileNotFoundException e) {
-            System.out.println(e);
-            System.exit(-1);
+            save();
         }
 
     }
 
     private void save() {
         try {
+            File directory = new File(".\\Data\\");
+            System.out.println(directory.exists());
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
             String data = getFollowRedirect().toString() + " " + getSystemTray().toString();
             PrintWriter printWriter = new PrintWriter(new File(".").getAbsolutePath() + "\\Data\\options.dat", "UTF-8");
             printWriter.print(data);

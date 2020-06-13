@@ -246,6 +246,10 @@ public class RequestManager {
      * @param request The request
      */
     public void saveRequestInList(Request request) {
+        File directory = new File(PATH);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
         File file = null;
         if (request.getSaveFileName() != null) {
             file = new File(PATH + request.getSaveFileName() + ".dat");
@@ -281,6 +285,10 @@ public class RequestManager {
      * @return The request
      */
     public Request loadRequestFromList(int requestNumber) {
+        File directory = new File(PATH);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
         if (!Files.exists(Paths.get(PATH + "request" + requestNumber + ".dat")))
             return null;
         File file = new File(PATH + "request" + requestNumber + ".dat");
@@ -317,6 +325,10 @@ public class RequestManager {
      * @return true if deleting was successful and false if not
      */
     public boolean deleteRequestFromList(int requestNumber) {
+        File directory = new File(PATH);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
         File file = new File(PATH + "request" + requestNumber + ".dat");
         return file.delete();
     }
@@ -329,6 +341,10 @@ public class RequestManager {
      */
     public HashMap<String, String> reArrangeList(int range) {
         HashMap<String, String> changes = new HashMap<>();
+        File directory = new File(PATH);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
         for (int i = 1; i <= range; i++) {
             if (!Files.exists(Paths.get(PATH + "request" + i + ".dat"))) {
                 //finding nextFile
